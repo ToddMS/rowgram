@@ -23,5 +23,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "src/routes/**", "src/routeTree.gen.ts", "src/client.tsx", "src/ssr.tsx"]
+  "exclude": ["node_modules", "seed.ts", "prisma/**", "scripts/**", "src/routes/**", "src/routeTree.gen.ts", "src/client.tsx", "src/ssr.tsx"]
 }
