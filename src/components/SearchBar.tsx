@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './Button.css'
+import './SearchBar.css'
 
 interface SearchBarProps<T> {
   items: Array<T>
@@ -58,18 +59,17 @@ export function SearchBar<T>({
   actionButtons = [],
   leftActions
 }: SearchBarProps<T>) {
-  const [internalFiltered, setInternalFiltered] = useState<Array<T>>(items)
+  // Stable string key representing which items are present (avoids re-renders on reference changes)
+  const itemKeys = items.map((item: any) => item.id ?? JSON.stringify(item)).join(',')
 
-  // Apply all filters whenever dependencies change
-  const applyAllFilters = () => {
+  // Apply filters whenever inputs change
+  React.useEffect(() => {
     let filtered = [...items]
 
-    // Apply search filter
     if (searchQuery.trim()) {
       filtered = filtered.filter(item => filterFunction(item, searchQuery.toLowerCase()))
     }
 
-    // Apply advanced filters
     if (advancedFilters) {
       advancedFilters.forEach(filter => {
         if (filter.selectedValue) {
@@ -78,22 +78,16 @@ export function SearchBar<T>({
       })
     }
 
-    // Apply sorting
     if (selectedSort && sortOptions) {
       const sortOption = sortOptions.find(option => option.value === selectedSort)
       if (sortOption) {
-        filtered = filtered.sort(sortOption.sortFn)
+        filtered = [...filtered].sort(sortOption.sortFn)
       }
     }
 
-    setInternalFiltered(filtered)
     onItemsFiltered(filtered)
-  }
-
-  // Apply filters whenever inputs change
-  React.useEffect(() => {
-    applyAllFilters()
-  }, [searchQuery, selectedSort, advancedFilters?.map(f => f.selectedValue).join(','), items])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, selectedSort, advancedFilters?.map(f => f.selectedValue).join(','), itemKeys])
 
   const activeFiltersCount = advancedFilters?.filter(f => f.selectedValue).length || 0
 

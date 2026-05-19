@@ -1,5 +1,16 @@
-//  @ts-check
+// @ts-check
 
-import { tanstackConfig } from '@tanstack/eslint-config'
+import js from '@eslint/js'
 
-export default [...tanstackConfig]
+export default [
+  js.configs.recommended,
+  {
+    rules: {
+      'no-unused-vars': 'warn',
+      'no-console': 'off',
+    },
+  },
+  {
+    ignores: ['node_modules/**', '.next/**', 'dist/**', '*.gen.ts'],
+  },
+]

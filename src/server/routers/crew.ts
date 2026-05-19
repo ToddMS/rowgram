@@ -1,20 +1,15 @@
 import { z } from 'zod'
-import { publicProcedure, router } from '../../lib/trpc'
+import { publicProcedure, protectedProcedure, router } from '../../lib/trpc'
 import { prisma } from '../../lib/prisma'
 
 export const crewRouter = router({
   getAll: publicProcedure.query(async () => {
     try {
-      // Include club data for logo information
       return await prisma.crew.findMany({
-        include: {
-          boatType: true,
-          club: true,
-        },
+        include: { boatType: true, club: true },
       })
     } catch (error) {
       console.error('Error fetching crews:', error)
-      // Return empty array if there's an error
       return []
     }
   }),
@@ -28,11 +23,7 @@ export const crewRouter = router({
           boatType: true,
           user: true,
           club: true,
-          savedImages: {
-            include: {
-              template: true,
-            },
-          },
+          savedImages: { include: { template: true } },
         },
       })
     }),
@@ -42,11 +33,7 @@ export const crewRouter = router({
     .query(async ({ input }) => {
       return await prisma.crew.findMany({
         where: { id: { in: input.ids } },
-        include: {
-          boatType: true,
-          user: true,
-          club: true,
-        },
+        include: { boatType: true, user: true, club: true },
       })
     }),
 
@@ -58,43 +45,36 @@ export const crewRouter = router({
         include: {
           boatType: true,
           club: true,
-          savedImages: {
-            include: {
-              template: true,
-            },
-          },
+          savedImages: { include: { template: true } },
         },
       })
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         name: z.string(),
-        clubName: z.string().optional(), // Optional fallback club name
-        clubId: z.string().optional(), // Optional club preset reference
+        clubName: z.string().optional(),
+        clubId: z.string().optional(),
         raceName: z.string().optional(),
-        raceDate: z.string().optional(), // Optional race date for cover images
+        raceDate: z.string().optional(),
         boatName: z.string().optional(),
         coachName: z.string().optional(),
-        raceCategory: z.string().optional(), // Optional race category like "Heat 2", "Final H"
+        raceCategory: z.string().optional(),
         crewNames: z.array(z.string()),
         boatTypeId: z.string(),
-        userId: z.string(),
+        userId: z.string().optional(),
       }),
     )
-    .mutation(async ({ input }) => {
-      return await prisma.crew.create({
-        data: input,
-        include: {
-          boatType: true,
-          user: true,
-          club: true,
-        },
+    .mutation(async ({ input, ctx }): Promise<{ id: string; name: string }> => {
+      const { userId: _ignored, ...rest } = input
+      const crew = await prisma.crew.create({
+        data: { ...rest, userId: ctx.user.id },
       })
+      return { id: crew.id, name: crew.name }
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -109,24 +89,19 @@ export const crewRouter = router({
         boatTypeId: z.string().optional(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input }): Promise<{ id: string; name: string }> => {
       const { id, ...data } = input
-      return await prisma.crew.update({
+      const crew = await prisma.crew.update({
         where: { id },
         data,
-        include: {
-          boatType: true,
-          user: true,
-          club: true,
-        },
       })
+      return { id: crew.id, name: crew.name }
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .mutation(async ({ input }) => {
-      return await prisma.crew.delete({
-        where: { id: input.id },
-      })
+    .mutation(async ({ input }): Promise<{ id: string }> => {
+      await prisma.crew.delete({ where: { id: input.id } })
+      return { id: input.id }
     }),
 })

@@ -269,7 +269,7 @@ async function main() {
 
       if (!existingCrew) {
         await prisma.crew.create({
-          data: crew,
+          data: { ...crew, boatTypeId: crew.boatTypeId! },
         })
       }
     }

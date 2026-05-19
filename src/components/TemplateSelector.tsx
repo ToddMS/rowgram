@@ -54,8 +54,8 @@ export function TemplateSelector({
     )
   }
 
-  // Show all templates without filtering
-  const filteredTemplates = templates
+  type Template = { id: string; name: string; templateType: string; previewUrl: string; isActive: boolean; metadata: any }
+  const filteredTemplates = (templates ?? []) as Array<Template>
 
   return (
     <div className={`${className}`}>

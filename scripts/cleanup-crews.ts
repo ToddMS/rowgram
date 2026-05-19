@@ -47,23 +47,6 @@ async function cleanupCrews() {
     }
   }
 
-  // Clean up any orphaned saved images
-  console.log('\n🧹 Cleaning up orphaned saved images...')
-  const orphanedImages = await prisma.savedImage.findMany({
-    where: {
-      crew: null
-    }
-  })
-
-  if (orphanedImages.length > 0) {
-    console.log(`🗑️  Deleting ${orphanedImages.length} orphaned images`)
-    await prisma.savedImage.deleteMany({
-      where: {
-        crew: null
-      }
-    })
-  }
-
   // Show final summary
   console.log('\n📊 Final summary:')
   const finalCrews = await prisma.crew.findMany({

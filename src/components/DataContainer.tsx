@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react'
 import { SearchBar } from './SearchBar'
 import { LoadingState } from './LoadingState'
 import { ErrorBoundary } from './ErrorBoundary'
 import './DataContainer.css'
+import type { ReactNode } from 'react'
 
 export interface DataItem {
   id: string
@@ -106,7 +106,7 @@ export function DataContainer<T extends DataItem>({
     )
   }
 
-  if (error && !loading) {
+  if (error) {
     return (
       <div className={`data-container ${className}`}>
         <div className="container">
@@ -130,7 +130,7 @@ export function DataContainer<T extends DataItem>({
     )
   }
 
-  if (items.length === 0 && !loading) {
+  if (items.length === 0) {
     return (
       <div className={`data-container ${className}`}>
         <div className="container">

@@ -1,9 +1,10 @@
-import { PrismaAdapter } from '@auth/prisma-adapter'
-import bcrypt from 'bcryptjs'
-import { prisma } from './prisma'
 import type { AuthConfig } from '@auth/core'
 import type { Adapter } from '@auth/core/adapters'
 import Google from '@auth/core/providers/google'
+import { PrismaAdapter } from '@auth/prisma-adapter'
+import bcrypt from 'bcryptjs'
+
+import { prisma } from './prisma'
 
 export const authConfig: AuthConfig = {
   adapter: PrismaAdapter(prisma),
@@ -58,9 +59,7 @@ export const authConfig: AuthConfig = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.sub = user.id
-      }
+      token.sub = user?.id ?? token.sub
       return token
     },
     async session({ session, token }) {
@@ -72,6 +71,5 @@ export const authConfig: AuthConfig = {
   },
   pages: {
     signIn: '/auth/signin',
-    signUp: '/auth/signup',
   },
 }

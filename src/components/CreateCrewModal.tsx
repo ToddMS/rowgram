@@ -61,10 +61,12 @@ export function CreateCrewModal({ isOpen, onClose, onSuccess, editingCrew }: Cre
   const [highlightedClubIndex, setHighlightedClubIndex] = useState(-1)
 
   // Get boat types for the mutation
-  const { data: boatTypes = [] } = trpc.boatType.getAll.useQuery()
+  const { data: boatTypesRaw = [] } = trpc.boatType.getAll.useQuery()
+  const boatTypes = boatTypesRaw as Array<{ id: string; name: string; code: string; seats: number; category: string }>
 
   // Get existing clubs for the dropdown
-  const { data: existingClubs = [] } = trpc.club.getAll.useQuery()
+  const { data: existingClubsRaw = [] } = trpc.club.getAll.useQuery()
+  const existingClubs = existingClubsRaw as Array<{ id: string; name: string; primaryColor: string; secondaryColor: string; logoUrl: string | null }>
 
   const isEditing = !!editingCrew?.id
 
@@ -493,7 +495,7 @@ export function CreateCrewModal({ isOpen, onClose, onSuccess, editingCrew }: Cre
                 <div className="review-item-compact">
                   <span className="review-label">Boat Class:</span>
                   <span className="review-value">
-                    {boatClassToBoatType(boatClass)?.name} - {boatClass}
+                    {boatClassToBoatType(boatClass).name} - {boatClass}
                   </span>
                 </div>
                 <div className="review-item-compact">
