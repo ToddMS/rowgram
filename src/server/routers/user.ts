@@ -57,7 +57,6 @@ export const userRouter = router({
         data: {
           name: input.name,
           email: input.email,
-          avatarUrl: input.avatarUrl,
           preferences: input.preferences,
         },
       })
@@ -94,8 +93,8 @@ export const userRouter = router({
       })
 
       // Return user without password
-      const { password, ...userWithoutPassword } = user
-      return userWithoutPassword
+      const { password: _pw, ...userWithoutPassword } = user
+      return userWithoutPassword as { id: string; name: string | null; email: string | null; image: string | null; createdAt: Date; updatedAt: Date }
     }),
 
   signin: publicProcedure
@@ -123,8 +122,8 @@ export const userRouter = router({
       }
 
       // Return user without password
-      const { password, ...userWithoutPassword } = user
-      return userWithoutPassword
+      const { password: _pw2, ...userWithoutPassword } = user
+      return userWithoutPassword as { id: string; name: string | null; email: string | null; image: string | null; createdAt: Date; updatedAt: Date }
     }),
 
   update: publicProcedure

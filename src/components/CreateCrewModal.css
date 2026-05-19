@@ -1,0 +1,341 @@
+/* Crew Creation Modal Styles */
+
+/* Modal specific overrides for crew modal */
+.crew-modal {
+  /* Make the crew modal body scrollable and properly sized */
+}
+
+.crew-modal .modal-body {
+  padding: 0;
+  overflow: visible;
+}
+
+.crew-modal .stepper,
+.crew-modal .crew-form-container,
+.crew-modal .crew-modal-actions {
+  padding: 0 1.5rem;
+}
+
+.crew-modal .crew-modal-actions {
+  padding: 1.5rem;
+  border-top: 1px solid var(--gray-200);
+  margin: 0 -1.5rem -1.5rem -1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Stepper Styles */
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: calc(100% + 1rem);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2px;
+  background: var(--gray-300);
+  transition: var(--transition);
+}
+
+.step.completed:not(:last-child)::after {
+  background: var(--primary);
+}
+
+.step-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: var(--transition);
+  border: 2px solid;
+}
+
+.step.inactive .step-icon {
+  background: var(--gray-100);
+  border-color: var(--gray-300);
+  color: var(--gray-500);
+}
+
+.step.active .step-icon {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.step.completed .step-icon {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.step-label {
+  font-weight: 500;
+  color: var(--gray-700);
+  font-size: 0.875rem;
+}
+
+.step.inactive .step-label {
+  color: var(--gray-400);
+}
+
+/* Form Styles */
+.crew-form-container {
+  max-width: 100%;
+}
+
+.crew-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.crew-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.crew-form-group label {
+  font-weight: 600;
+  color: var(--gray-700);
+  font-size: 0.875rem;
+}
+
+.crew-form-group input,
+.crew-form-group select {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  transition: var(--transition);
+  background: var(--white);
+}
+
+.crew-form-group input:focus,
+.crew-form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.crew-form-group input.error,
+.crew-form-group select.error {
+  border-color: #ef4444;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+/* Combobox Styles */
+.combobox-container {
+  position: relative;
+}
+
+.combobox-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.combobox-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.combobox-option:last-child {
+  border-bottom: none;
+}
+
+.combobox-option:hover,
+.combobox-option.highlighted {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+/* Crew Names Section */
+.crew-names-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cox-input {
+  margin-bottom: 1rem;
+}
+
+.crew-names-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.crew-names-grid.single-sculler-grid {
+  grid-template-columns: 1fr;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.crew-names-grid.two-seat-grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.crew-name-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.seat-label {
+  font-weight: 600;
+  color: var(--gray-700);
+  font-size: 0.875rem;
+}
+
+/* Review Section */
+.review-section-clean {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.crew-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.review-item-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  background: var(--gray-50);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+}
+
+.review-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.review-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gray-900);
+}
+
+.crew-members-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.crew-members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .crew-modal-content {
+    width: 98%;
+    max-height: 95vh;
+  }
+
+  .stepper {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .step:not(:last-child)::after {
+    display: none;
+  }
+
+  .crew-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .crew-names-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .crew-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .crew-members-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .crew-modal-actions {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .crew-modal-actions > div {
+    margin-left: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+/* Button overwrites for modal context */
+.crew-modal-footer .btn {
+  min-width: 120px;
+  justify-content: center;
+}

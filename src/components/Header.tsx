@@ -1,18 +1,29 @@
-import { Link } from '@tanstack/react-router'
+'use client'
 
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import {
-  Home,
-  Image,
-  Menu,
-  Palette,
-  Users,
-  X,
-} from 'lucide-react'
+import { Home, Image, Menu, Palette, Users, X } from 'lucide-react'
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
-  // Removed unused grouped expansion state
+  const pathname = usePathname()
+
+  const navLink = (href: string, label: string, icon: React.ReactNode) => {
+    const active = pathname === href
+    return (
+      <Link
+        href={href}
+        onClick={() => setIsOpen(false)}
+        className={`flex items-center gap-3 p-3 rounded-lg transition-colors mb-2 ${
+          active ? 'bg-cyan-600 hover:bg-cyan-700' : 'hover:bg-gray-800'
+        }`}
+      >
+        {icon}
+        <span className="font-medium">{label}</span>
+      </Link>
+    )
+  }
 
   return (
     <>
@@ -25,7 +36,7 @@ export default function Header() {
           <Menu size={24} />
         </button>
         <h1 className="ml-4 text-xl font-semibold">
-          <Link to="/" search={{ auth: '', user: '', error: '' }} className="text-white hover:text-gray-200">
+          <Link href="/" className="text-white hover:text-gray-200">
             Crew Image Creator
           </Link>
         </h1>
@@ -48,58 +59,10 @@ export default function Header() {
         </div>
 
         <nav className="flex-1 p-4 overflow-y-auto">
-          <Link
-            to="/"
-            search={{ auth: '', user: '', error: '' }}
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Home size={20} />
-            <span className="font-medium">Home</span>
-          </Link>
-
-          <Link
-            to="/crews"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Users size={20} />
-            <span className="font-medium">Crew Management</span>
-          </Link>
-
-          <Link
-            to="/gallery"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Image size={20} />
-            <span className="font-medium">Image Gallery</span>
-          </Link>
-
-          <Link
-            to="/generate"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Palette size={20} />
-            <span className="font-medium">Templates</span>
-          </Link>
+          {navLink('/', 'Home', <Home size={20} />)}
+          {navLink('/crews', 'Crew Management', <Users size={20} />)}
+          {navLink('/gallery', 'Image Gallery', <Image size={20} />)}
+          {navLink('/generate', 'Templates', <Palette size={20} />)}
         </nav>
       </aside>
     </>

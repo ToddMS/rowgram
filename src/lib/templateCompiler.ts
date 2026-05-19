@@ -18,6 +18,14 @@ export interface TemplateData {
   }>
   BOAT_IMAGE_URL?: string
   BOAT_IMAGE_AVAILABLE: boolean
+  // Legacy lowercase fields used by some templates
+  raceName?: string
+  crewCategory?: string
+  crewMembers?: Array<{ name: string; badge: string; style: string }>
+  clubLogo?: string | null
+  clubName?: string
+  boatImage?: string
+  positions?: Array<any>
 }
 
 export interface ColorScheme {
@@ -157,8 +165,8 @@ export class TemplateCompiler {
     templateMetadata?: TemplateMetadata,
   ): string {
     console.log('🎯 DEBUG: TemplateCompiler.compileTemplate called')
-    console.log('  - Has crewMembers:', !!data.crewMembers, 'Count:', data.crewMembers?.length)
-    console.log('  - crewMembers data:', JSON.stringify(data.crewMembers, null, 2))
+    console.log('  - Has CREW_MEMBERS:', !!data.CREW_MEMBERS, 'Count:', data.CREW_MEMBERS?.length)
+    console.log('  - CREW_MEMBERS data:', JSON.stringify(data.CREW_MEMBERS, null, 2))
     let compiledHtml = templateHtml
 
     // Replace single variables (both uppercase and lowercase versions)
@@ -182,13 +190,9 @@ export class TemplateCompiler {
     })
 
     // Handle crew members array (both formats)
-    if (data.CREW_MEMBERS) {
+    if (data.CREW_MEMBERS.length > 0) {
       compiledHtml = this.compileCrewMembers(compiledHtml, data.CREW_MEMBERS)
     }
-    if (data.crewMembers) {
-      compiledHtml = this.compileCrewMembersNew(compiledHtml, data.crewMembers)
-    }
-
     // Handle boat image with template-specific positioning
     compiledHtml = this.applyBoatImage(
       compiledHtml,

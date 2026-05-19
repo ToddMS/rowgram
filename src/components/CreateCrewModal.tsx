@@ -1,11 +1,15 @@
-import { createFileRoute, useNavigate, useLocation } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { trpc } from '../lib/trpc-client'
-import './create-crew.css'
+import { useAuth } from '../lib/auth-context'
+import { Modal } from './Modal'
+import './CreateCrewModal.css'
 
-export const Route = createFileRoute('/crews_/create')({
-  component: CreateCrewPage,
-})
+interface CreateCrewModalProps {
+  isOpen: boolean
+  onClose: () => void
+  onSuccess: () => void
+  editingCrew?: any
+}
 
 const boatClassToSeats: Record<string, number> = {
   '8+': 8,
@@ -36,13 +40,8 @@ const boatClassToBoatType = (boatClass: string) => {
   return mapping[boatClass]
 }
 
-function CreateCrewPage() {
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  // Get the first user from the database - in production this would come from auth context
-  const { data: users } = trpc.user.getAll.useQuery()
-  const user = users?.[0]
+export function CreateCrewModal({ isOpen, onClose, onSuccess, editingCrew }: CreateCrewModalProps) {
+  const { user } = useAuth()
 
   const [activeStep, setActiveStep] = useState(0)
   const [boatClass, setBoatClass] = useState('')
@@ -62,19 +61,20 @@ function CreateCrewPage() {
   const [highlightedClubIndex, setHighlightedClubIndex] = useState(-1)
 
   // Get boat types for the mutation
-  const { data: boatTypes = [] } = trpc.boatType.getAll.useQuery()
+  const { data: boatTypesRaw = [] } = trpc.boatType.getAll.useQuery()
+  const boatTypes = boatTypesRaw as Array<{ id: string; name: string; code: string; seats: number; category: string }>
 
   // Get existing clubs for the dropdown
-  const { data: existingClubs = [] } = trpc.club.getAll.useQuery()
+  const { data: existingClubsRaw = [] } = trpc.club.getAll.useQuery()
+  const existingClubs = existingClubsRaw as Array<{ id: string; name: string; primaryColor: string; secondaryColor: string; logoUrl: string | null }>
 
-  // Check if we're editing an existing crew
-  const isEditing = !!location.state?.editingCrew?.id
-  const editingCrewId = location.state?.editingCrew?.id
+  const isEditing = !!editingCrew?.id
 
   const createCrewMutation = trpc.crew.create.useMutation({
     onSuccess: () => {
       alert(`Crew "${boatName}" created successfully!`)
-      navigate({ to: '/crews' })
+      onSuccess()
+      handleClose()
     },
     onError: (error) => {
       alert(`Failed to create crew: ${error.message}`)
@@ -85,7 +85,8 @@ function CreateCrewPage() {
   const updateCrewMutation = trpc.crew.update.useMutation({
     onSuccess: () => {
       alert(`Crew "${boatName}" updated successfully!`)
-      navigate({ to: '/crews' })
+      onSuccess()
+      handleClose()
     },
     onError: (error) => {
       alert(`Failed to update crew: ${error.message}`)
@@ -93,10 +94,29 @@ function CreateCrewPage() {
     },
   })
 
+  // Reset form when modal opens/closes
+  const resetForm = () => {
+    setActiveStep(0)
+    setBoatClass('')
+    setClubName('')
+    setSelectedClubId('')
+    setRaceName('')
+    setRaceDate('')
+    setBoatName('')
+    setCoachName('')
+    setRaceCategory('')
+    setCrewNames([])
+    setCoxName('')
+    setSaving(false)
+    setShowValidation(false)
+    setShowClubDropdown(false)
+    setFilteredClubs([])
+    setHighlightedClubIndex(-1)
+  }
+
   // Populate form when editing a crew
   useEffect(() => {
-    const editingCrew = location.state?.editingCrew
-    if (editingCrew) {
+    if (editingCrew && isOpen) {
       setBoatClass(editingCrew.boatClass || '')
       setClubName(editingCrew.clubName || '')
       setRaceName(editingCrew.raceName || '')
@@ -106,19 +126,20 @@ function CreateCrewPage() {
       setRaceDate(editingCrew.raceDate || '')
       setCoachName(editingCrew.coachName || '')
       setRaceCategory(editingCrew.raceCategory || '')
+    } else if (isOpen) {
+      resetForm()
     }
-  }, [location.state])
+  }, [editingCrew, isOpen])
+
+  const handleClose = () => {
+    resetForm()
+    onClose()
+  }
 
   const steps = [
-    {
-      label: 'Crew Information',
-    },
-    {
-      label: 'Add Crew',
-    },
-    {
-      label: 'Review & Save',
-    },
+    { label: 'Crew Information' },
+    { label: 'Add Crew' },
+    { label: 'Review & Save' },
   ]
 
   const canProceedFromStep = (step: number): boolean => {
@@ -133,28 +154,6 @@ function CreateCrewPage() {
       default:
         return true
     }
-  }
-
-  const getValidationMessage = (step: number): string => {
-    const missingFields: Array<string> = []
-
-    switch (step) {
-      case 0:
-        if (!boatClass) missingFields.push('Boat Class')
-        if (!clubName) missingFields.push('Club Name')
-        if (!raceName) missingFields.push('Race Name')
-        if (!boatName) missingFields.push('Boat Name')
-        break
-      case 1:
-        if (crewNames.some(name => !name.trim())) missingFields.push('All crew member names')
-        if (boatClassHasCox(boatClass) && !coxName.trim()) missingFields.push('Coxswain name')
-        break
-    }
-
-    if (missingFields.length === 0) return ''
-    if (missingFields.length === 1) return `Please fill in: ${missingFields[0]}`
-    if (missingFields.length === 2) return `Please fill in: ${missingFields.join(' and ')}`
-    return `Please fill in: ${missingFields.slice(0, -1).join(', ')} and ${missingFields.slice(-1)}`
   }
 
   const handleNext = () => {
@@ -174,117 +173,29 @@ function CreateCrewPage() {
     setCrewNames((names) => names.map((n, i) => (i === idx ? value : n)))
   }
 
-  // Club combobox handlers
   const handleClubNameChange = (value: string) => {
     setClubName(value)
-
-    // If manually typing (not selecting from dropdown), clear the clubId
     const exactMatch = existingClubs.find(club => club.name === value)
     setSelectedClubId(exactMatch?.id || '')
 
-    // Filter clubs based on input
     const clubNames = existingClubs.map(club => club.name)
     const filtered = value.length === 0
-      ? clubNames.slice(0, 5) // Show first 5 clubs when no input
+      ? clubNames.slice(0, 5)
       : clubNames.filter(name =>
           name.toLowerCase().includes(value.toLowerCase())
-        ).slice(0, 5) // Limit to 5 results
+        ).slice(0, 5)
 
     setFilteredClubs(filtered)
-    setShowClubDropdown(true) // Always show dropdown when focused
+    setShowClubDropdown(true)
     setHighlightedClubIndex(-1)
   }
 
   const selectClub = (clubName: string) => {
     setClubName(clubName)
-
-    // Find the club ID if this is an existing club
     const matchingClub = existingClubs.find(club => club.name === clubName)
     setSelectedClubId(matchingClub?.id || '')
-
     setShowClubDropdown(false)
     setHighlightedClubIndex(-1)
-  }
-
-  const handleClubKeyDown = (e: React.KeyboardEvent) => {
-    // Handle dropdown navigation if dropdown is shown
-    if (showClubDropdown && filteredClubs.length > 0) {
-      switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault()
-          setHighlightedClubIndex(prev =>
-            prev < filteredClubs.length - 1 ? prev + 1 : prev
-          )
-          break
-        case 'ArrowUp':
-          e.preventDefault()
-          setHighlightedClubIndex(prev => prev > 0 ? prev - 1 : prev)
-          break
-        case 'Enter':
-          e.preventDefault()
-          if (highlightedClubIndex >= 0) {
-            selectClub(filteredClubs[highlightedClubIndex])
-          }
-          return
-        case 'Escape':
-          setShowClubDropdown(false)
-          setHighlightedClubIndex(-1)
-          break
-      }
-    }
-
-    // Handle regular Enter key navigation when no dropdown or no selection
-    handleInputKeyDown(e, 1, 5, false) // Club name is field index 1 out of 5 total fields in step 1
-  }
-
-  // Handle Enter key navigation between fields
-  const handleInputKeyDown = (e: React.KeyboardEvent, fieldIndex: number, totalFields: number, isLastStep: boolean = false) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-
-      if (fieldIndex < totalFields - 1) {
-        // Move to next field
-        const nextFieldIndex = fieldIndex + 1
-        const inputs = document.querySelectorAll('input[type="text"], select')
-        const nextInput = inputs[nextFieldIndex] as HTMLInputElement | HTMLSelectElement
-        if (nextInput) {
-          nextInput.focus()
-        }
-      } else {
-        // Last field - advance to next step or save
-        if (isLastStep) {
-          // On last step, trigger save
-          handleSaveCrew()
-        } else {
-          // On other steps, go to next step
-          handleNext()
-        }
-      }
-    }
-  }
-
-  // Handle crew member input navigation
-  const handleCrewMemberKeyDown = (e: React.KeyboardEvent, memberIndex: number, totalMembers: number) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-
-      if (memberIndex < totalMembers - 1) {
-        // Move to next crew member field
-        setTimeout(() => {
-          const inputs = document.querySelectorAll('input[required]')
-          const currentStepInputs = Array.from(inputs).filter(input =>
-            input.closest('.form-container') !== null
-          )
-          const nextInput = currentStepInputs[memberIndex + 1] as HTMLInputElement
-          if (nextInput) {
-            nextInput.focus()
-          }
-        }, 0)
-      } else {
-        // Last crew member field - go to next step
-        handleNext()
-      }
-    }
   }
 
   const handleSaveCrew = async () => {
@@ -306,9 +217,8 @@ function CreateCrewPage() {
       ]
 
       if (isEditing) {
-        // Update existing crew
         await updateCrewMutation.mutateAsync({
-          id: editingCrewId,
+          id: editingCrew.id,
           name: boatName,
           clubName: clubName,
           raceName: raceName,
@@ -320,7 +230,6 @@ function CreateCrewPage() {
           boatTypeId: selectedBoatType.id,
         })
       } else {
-        // Create new crew
         await createCrewMutation.mutateAsync({
           name: boatName,
           clubName: clubName,
@@ -343,9 +252,9 @@ function CreateCrewPage() {
     switch (step) {
       case 0:
         return (
-          <div className="form-container">
-            <div className="form-grid">
-              <div className="form-group">
+          <div className="crew-form-container">
+            <div className="crew-form-grid">
+              <div className="crew-form-group">
                 <label htmlFor="boatClass">
                   Boat Class <span className="required">*</span>
                 </label>
@@ -355,12 +264,9 @@ function CreateCrewPage() {
                   onChange={(e) => {
                     const newBoatClass = e.target.value
                     setBoatClass(newBoatClass)
-                    setCrewNames(
-                      Array(boatClassToSeats[newBoatClass] || 0).fill(''),
-                    )
+                    setCrewNames(Array(boatClassToSeats[newBoatClass] || 0).fill(''))
                     setCoxName('')
                   }}
-                  onKeyDown={(e) => handleInputKeyDown(e, 0, 5, false)} // Boat class is field 0 out of 5 in step 1
                   className={showValidation && !boatClass ? 'error' : ''}
                   required
                 >
@@ -374,13 +280,11 @@ function CreateCrewPage() {
                   <option value="1x">1x (Single Sculls)</option>
                 </select>
                 {showValidation && !boatClass && (
-                  <div className="error-message">
-                    Please select a boat class
-                  </div>
+                  <div className="error-message">Please select a boat class</div>
                 )}
               </div>
 
-              <div className="form-group">
+              <div className="crew-form-group">
                 <label htmlFor="clubName">
                   Club Name <span className="required">*</span>
                 </label>
@@ -390,20 +294,17 @@ function CreateCrewPage() {
                     id="clubName"
                     value={clubName}
                     onChange={(e) => handleClubNameChange(e.target.value)}
-                    onKeyDown={handleClubKeyDown}
                     onFocus={() => {
                       const clubNames = existingClubs.map(club => club.name)
                       const filtered = clubName.length === 0
-                        ? clubNames.slice(0, 5) // Show first 5 clubs when empty
+                        ? clubNames.slice(0, 5)
                         : clubNames.filter(name =>
                             name.toLowerCase().includes(clubName.toLowerCase())
                           ).slice(0, 5)
-
                       setFilteredClubs(filtered)
                       setShowClubDropdown(filtered.length > 0)
                     }}
                     onBlur={(e) => {
-                      // Delay hiding dropdown to allow click selection
                       setTimeout(() => setShowClubDropdown(false), 150)
                     }}
                     className={showValidation && !clubName ? 'error' : ''}
@@ -431,7 +332,7 @@ function CreateCrewPage() {
                 )}
               </div>
 
-              <div className="form-group">
+              <div className="crew-form-group">
                 <label htmlFor="raceName">
                   Race/Event Name <span className="required">*</span>
                 </label>
@@ -440,7 +341,6 @@ function CreateCrewPage() {
                   id="raceName"
                   value={raceName}
                   onChange={(e) => setRaceName(e.target.value)}
-                  onKeyDown={(e) => handleInputKeyDown(e, 2, 6, false)} // Race name is field 2 out of 6 in step 1
                   className={showValidation && !raceName ? 'error' : ''}
                   placeholder="Enter race or event name"
                   required
@@ -450,19 +350,18 @@ function CreateCrewPage() {
                 )}
               </div>
 
-              <div className="form-group">
+              <div className="crew-form-group">
                 <label htmlFor="raceDate">Race Date (Optional)</label>
                 <input
                   type="date"
                   id="raceDate"
                   value={raceDate}
                   onChange={(e) => setRaceDate(e.target.value)}
-                  onKeyDown={(e) => handleInputKeyDown(e, 3, 6, false)} // Race date is field 3 out of 6 in step 1
                   placeholder="Select race date"
                 />
               </div>
 
-              <div className="form-group">
+              <div className="crew-form-group">
                 <label htmlFor="boatName">
                   Boat Name <span className="required">*</span>
                 </label>
@@ -471,7 +370,6 @@ function CreateCrewPage() {
                   id="boatName"
                   value={boatName}
                   onChange={(e) => setBoatName(e.target.value)}
-                  onKeyDown={(e) => handleInputKeyDown(e, 4, 6, false)} // Boat name is field 4 out of 6 in step 1
                   className={showValidation && !boatName ? 'error' : ''}
                   placeholder="Enter boat name"
                   required
@@ -481,26 +379,24 @@ function CreateCrewPage() {
                 )}
               </div>
 
-              <div className="form-group">
+              <div className="crew-form-group">
                 <label htmlFor="coachName">Coach Name (Optional)</label>
                 <input
                   type="text"
                   id="coachName"
                   value={coachName}
                   onChange={(e) => setCoachName(e.target.value)}
-                  onKeyDown={(e) => handleInputKeyDown(e, 5, 6, false)} // Coach name is field 5 out of 6 in step 1
                   placeholder="Enter coach name (optional)"
                 />
               </div>
 
-              <div className="form-group">
+              <div className="crew-form-group">
                 <label htmlFor="raceCategory">Race Category (Optional)</label>
                 <input
                   type="text"
                   id="raceCategory"
                   value={raceCategory}
                   onChange={(e) => setRaceCategory(e.target.value)}
-                  onKeyDown={(e) => handleInputKeyDown(e, 5, 6, false)} // Race category is field 5 out of 6 in step 1 (last field in step 1)
                   placeholder="e.g., Heat 2, Final H"
                 />
               </div>
@@ -511,29 +407,19 @@ function CreateCrewPage() {
       case 1:
         if (!canProceedFromStep(0)) {
           return (
-            <div
-              className="form-container"
-              style={{ textAlign: 'center', padding: '3rem' }}
-            >
-              <p
-                style={{
-                  fontSize: '1.1rem',
-                  color: '#6b7280',
-                  marginBottom: '1rem',
-                }}
-              >
+            <div className="crew-form-container" style={{ textAlign: 'center', padding: '3rem' }}>
+              <p style={{ fontSize: '1.1rem', color: '#6b7280', marginBottom: '1rem' }}>
                 ⬅️ Please complete crew information first
               </p>
               <p style={{ color: '#9ca3af' }}>
-                Go back to fill in boat class, club name, race name, and boat
-                name
+                Go back to fill in boat class, club name, race name, and boat name
               </p>
             </div>
           )
         }
 
         return (
-          <div className="form-container">
+          <div className="crew-form-container">
             <div className="crew-names-section">
               {boatClassHasCox(boatClass) && (
                 <div className="cox-input">
@@ -545,17 +431,12 @@ function CreateCrewPage() {
                       type="text"
                       value={coxName}
                       onChange={(e) => setCoxName(e.target.value)}
-                      onKeyDown={(e) => handleCrewMemberKeyDown(e, 0, crewNames.length + 1)} // Cox is first field
-                      className={
-                        showValidation && !coxName.trim() ? 'error' : ''
-                      }
+                      className={showValidation && !coxName.trim() ? 'error' : ''}
                       placeholder="Enter coxswain's name"
                       required
                     />
                     {showValidation && !coxName.trim() && (
-                      <div className="error-message">
-                        Please enter coxswain name
-                      </div>
+                      <div className="error-message">Please enter coxswain name</div>
                     )}
                   </div>
                 </div>
@@ -590,20 +471,13 @@ function CreateCrewPage() {
                       <input
                         type="text"
                         value={name}
-                        onChange={(e) =>
-                          handleNameChange(index, e.target.value)
-                        }
-                        onKeyDown={(e) => handleCrewMemberKeyDown(e, boatClassHasCox(boatClass) ? index + 1 : index, crewNames.length + (boatClassHasCox(boatClass) ? 1 : 0))}
-                        className={
-                          showValidation && !name.trim() ? 'error' : ''
-                        }
+                        onChange={(e) => handleNameChange(index, e.target.value)}
+                        className={showValidation && !name.trim() ? 'error' : ''}
                         placeholder={placeholderText}
                         required
                       />
                       {showValidation && !name.trim() && (
-                        <div className="error-message">
-                          Please enter rower name
-                        </div>
+                        <div className="error-message">Please enter rower name</div>
                       )}
                     </div>
                   )
@@ -615,9 +489,8 @@ function CreateCrewPage() {
 
       case 2:
         return (
-          <div className="form-container">
+          <div className="crew-form-container">
             <div className="review-section-clean">
-              {/* Crew Details in 2-column grid */}
               <div className="crew-details-grid">
                 <div className="review-item-compact">
                   <span className="review-label">Boat Class:</span>
@@ -657,7 +530,6 @@ function CreateCrewPage() {
                 )}
               </div>
 
-              {/* Crew Members */}
               <div className="crew-members-compact">
                 {boatClassHasCox(boatClass) && (
                   <div className="review-item-compact">
@@ -666,7 +538,6 @@ function CreateCrewPage() {
                   </div>
                 )}
 
-                {/* All crew members in correct rowing order - Cox, Stroke, 7, 6, 5, 4, 3, 2, Bow */}
                 <div className="crew-members-grid">
                   {crewNames.map((name, index) => {
                     const seatNumber = boatClassToSeats[boatClass] - index
@@ -693,103 +564,76 @@ function CreateCrewPage() {
     }
   }
 
-  if (!user) {
-    return (
-      <div className="create-crew-container">
-        <div className="container">
-          <div className="empty-state">
-            <h2>{isEditing ? 'Edit Crew' : 'Create Crew'}</h2>
-            <p>Sign in to create and manage your crew lineups</p>
-            <button className="btn btn-primary">Sign In to Create Crew</button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="create-crew-container">
-      <div className="container">
-        <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          {activeStep === 0 ? (
-            <button
-              className="btn-text-small"
-              onClick={() => navigate({ to: '/crews' })}
-            >
-              ← Back to Crews
-            </button>
-          ) : (
-            <button className="btn-text-small" onClick={handleBack}>
-              ← Back
-            </button>
-          )}
-
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            {activeStep === steps.length - 1 ? (
-              <button
-                className="btn-success-small"
-                onClick={handleSaveCrew}
-                disabled={saving || !canProceedFromStep(activeStep)}
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title={isEditing ? 'Edit Crew' : 'Create New Crew'}
+      maxWidth="900px"
+      className="modal-large crew-modal"
+    >
+          {/* Stepper */}
+          <div className="stepper">
+            {steps.map((step, index) => (
+              <div
+                key={step.label}
+                className={`step ${
+                  activeStep > index
+                    ? 'completed'
+                    : activeStep === index
+                      ? 'active'
+                      : 'inactive'
+                }`}
               >
-                {saving ? (
-                  isEditing ? 'Updating...' : 'Saving...'
-                ) : (
-                  <>
-                    {isEditing ? 'Update Crew' : 'Save Crew'}
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                      <polyline points="17,21 17,13 7,13 7,21"/>
-                      <polyline points="7,3 7,8 15,8"/>
-                    </svg>
-                  </>
-                )}
-              </button>
-            ) : (
-              <button
-                className="btn-primary-small"
-                onClick={handleNext}
-              >
-                Next Step →
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Stepper */}
-        <div className="stepper">
-          {steps.map((step, index) => (
-            <div
-              key={step.label}
-              className={`step ${
-                activeStep > index
-                  ? 'completed'
-                  : activeStep === index
-                    ? 'active'
-                    : 'inactive'
-              }`}
-            >
-              <div className="step-icon">
-                {activeStep > index ? '✓' : index + 1}
+                <div className="step-icon">
+                  {activeStep > index ? '✓' : index + 1}
+                </div>
+                <div className="step-content">
+                  <div className="step-label">{step.label}</div>
+                </div>
               </div>
-              <div className="step-content">
-                <div className="step-label">{step.label}</div>
+            ))}
+          </div>
+
+          {/* Step Content */}
+          {renderStepContent(activeStep)}
+
+          <div className="crew-modal-footer">
+            <div className="crew-modal-actions">
+              {activeStep > 0 && (
+                <button className="btn btn-secondary" onClick={handleBack}>
+                  ← Back
+                </button>
+              )}
+
+              <div style={{ marginLeft: 'auto', display: 'flex', gap: '1rem' }}>
+                <button className="btn btn-secondary" onClick={handleClose}>
+                  Cancel
+                </button>
+
+                {activeStep === steps.length - 1 ? (
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleSaveCrew}
+                    disabled={saving || !canProceedFromStep(activeStep)}
+                  >
+                    {saving ? (
+                      isEditing ? 'Updating...' : 'Saving...'
+                    ) : (
+                      isEditing ? 'Update Crew' : 'Save Crew'
+                    )}
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleNext}
+                  >
+                    Next Step →
+                  </button>
+                )}
               </div>
             </div>
-          ))}
-        </div>
-
-        {/* Step Content */}
-        {renderStepContent(activeStep)}
-      </div>
-    </div>
+          </div>
+      </Modal>
   )
 }

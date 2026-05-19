@@ -5,14 +5,19 @@ dist-ssr
 *.local
 count.txt
 .env
+.env.production
 .nitro
 .tanstack
 .output
 .vinxi
 todos.json
 
+# Next.js build output
+.next/
+
 /generated/prisma
 
 # Uploaded files
 public/uploads/*
 !public/uploads/*/.gitkeep
+.vercel

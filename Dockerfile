@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Copy package files
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production
+RUN npm ci
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -35,10 +35,11 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy built application
-COPY --from=builder --chown=nextjs:nodejs /app/.output ./.output
+COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/server.js ./server.js
 
 # Copy production dependencies
 COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
@@ -48,9 +49,9 @@ USER nextjs
 
 EXPOSE 3000
 
-# Health check - use root path instead of non-existent /api/health
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:3000/ || exit 1
 
-# Run migrations and start server
-CMD ["npm", "start"]
+# Run database setup and start the server
+CMD ["sh", "-c", "npx prisma db push && node dist/server/server.js"]

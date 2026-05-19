@@ -37,7 +37,7 @@ A modern full-stack web application for generating custom rowing crew images wit
 
    ```bash
    git clone <repository-url>
-   cd crew-image-creator
+   cd rowgram
    npm install
    ```
 

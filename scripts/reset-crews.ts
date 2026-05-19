@@ -163,7 +163,7 @@ async function resetCrews() {
 
     try {
       const crew = await prisma.crew.create({
-        data: crewData,
+        data: { ...crewData, boatTypeId: crewData.boatTypeId! },
         include: {
           boatType: true,
           club: true
@@ -171,7 +171,7 @@ async function resetCrews() {
       })
       console.log(`   ✅ Created: ${crew.name} (${crew.boatType.name}) - Race Category: ${crew.raceCategory || 'None'}`)
     } catch (error) {
-      console.log(`   ❌ Failed to create ${crewData.name}:`, error.message)
+      console.log(`   ❌ Failed to create ${crewData.name}:`, error instanceof Error ? error.message : error)
     }
   }
 

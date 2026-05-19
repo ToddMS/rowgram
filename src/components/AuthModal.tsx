@@ -84,9 +84,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   }
 
   const handleGoogleSignIn = () => {
-    // For now, redirect to Google OAuth URL
-    // In production, you'd set up proper Google OAuth
-    window.location.href = `/api/auth/google`
+    window.location.href = '/api/auth/signin/google'
   }
 
   if (!isOpen) return null
