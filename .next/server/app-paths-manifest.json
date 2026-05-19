@@ -1,9 +1,0 @@
-{
-  "/api/trpc/[trpc]/route": "app/api/trpc/[trpc]/route.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/clubs/page": "app/clubs/page.js",
-  "/crews/page": "app/crews/page.js",
-  "/gallery/page": "app/gallery/page.js",
-  "/generate/page": "app/generate/page.js"
-}
