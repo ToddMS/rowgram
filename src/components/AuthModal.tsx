@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { signIn } from 'next-auth/react'
 import { trpc } from '../lib/trpc-client'
 
 interface AuthModalProps {
@@ -84,7 +85,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   }
 
   const handleGoogleSignIn = () => {
-    window.location.href = '/api/auth/signin/google'
+    signIn('google', { callbackUrl: '/' })
   }
 
   if (!isOpen) return null
