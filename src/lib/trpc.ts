@@ -1,12 +1,13 @@
 import { TRPCError, initTRPC } from '@trpc/server'
-import { auth } from '../../auth'
+import { getServerSession } from 'next-auth'
+import { authOptions } from './auth-options'
 
 interface Context {
   user?: { id: string }
 }
 
 export async function createContext(): Promise<Context> {
-  const session = await auth()
+  const session = await getServerSession(authOptions)
   if (session?.user?.id) {
     return { user: { id: session.user.id } }
   }
