@@ -1,8 +1,7 @@
 /* Shared Dashboard styles - ported from original RowGram design */
 
-/* CSS Variables */
+/* CSS Variables (dashboard-specific — base vars live in globals.css) */
 :root {
-  --primary: #3b82f6;
   --primary-dark: #2563eb;
   --primary-light: #dbeafe;
   --secondary: #06b6d4;
@@ -16,11 +15,6 @@
   --gray-700: #374151;
   --gray-900: #111827;
   --white: #ffffff;
-  --error: #dc2626;
-  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg:
-    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --radius: 0.5rem;
   --radius-lg: 0.75rem;
   --transition: all 0.2s ease;
 }
@@ -597,7 +591,7 @@ html {
 }
 
 .btn-success-small {
-  background: rgb(var(--success));
+  background: var(--success);
   color: var(--white);
   padding: 0.625rem 0.75rem;
   font-size: 0.8125rem;

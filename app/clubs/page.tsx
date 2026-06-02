@@ -7,7 +7,6 @@ import { DataContainer } from '@/components/DataContainer'
 import { ClubCard } from '@/components/ClubCard'
 import { ConfirmDeleteModal } from '@/components/ConfirmDeleteModal'
 import { Modal } from '@/components/Modal'
-import '@/components/DataContainer.css'
 import '@/routes/clubs.css'
 
 interface ClubFormData {

@@ -4,9 +4,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc-client'
+import { useAuth } from '@/lib/auth-context'
 
 export default function SignupPage() {
   const router = useRouter()
+  const { setUser } = useAuth()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -15,7 +17,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false)
 
   const signupMutation = trpc.user.signup.useMutation({
-    onSuccess: () => { router.push('/crews') },
+    onSuccess: (user) => { setUser({ id: user.id, name: user.name ?? '', email: user.email ?? '' }); router.push('/crews') },
     onError: (err) => { setFormError(err.message); setLoading(false) },
   })
 

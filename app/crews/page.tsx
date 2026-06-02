@@ -8,7 +8,6 @@ import { DataContainer } from '@/components/DataContainer'
 import { CrewCard } from '@/components/CrewCard'
 import { ConfirmDeleteModal } from '@/components/ConfirmDeleteModal'
 import { CreateCrewModal } from '@/components/CreateCrewModal'
-import '@/components/DataContainer.css'
 import '@/routes/crews.css'
 
 const boatClassHasCox = (boatClass: string) => boatClass === '8+' || boatClass === '4+'

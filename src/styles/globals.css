@@ -1,13 +1,13 @@
 @import 'tailwindcss';
 
 :root {
-  --primary: 59 130 246;
-  --secondary: 100 116 139;
-  --success: 16 185 129;
-  --warning: 245 158 11;
-  --error: 239 68 68;
-  --muted: 241 245 249;
-  --accent: 99 102 241;
+  --primary: #3b82f6;
+  --secondary: #64748b;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --muted: #f1f5f9;
+  --accent: #6366f1;
 
   --radius: 0.5rem;
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
@@ -35,7 +35,7 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid rgb(var(--primary));
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 

@@ -72,8 +72,6 @@ export function TemplateSelector({
               selectedTemplateId === template.id ? 'selected' : ''
             }`}
             onClick={() => {
-              console.log('🎨 DEBUG: Template clicked:', template.id, template.name)
-              // Allow deselection if clicking the same template
               if (selectedTemplateId === template.id) {
                 onTemplateSelect('')
               } else {

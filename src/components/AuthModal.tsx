@@ -5,7 +5,7 @@ import { trpc } from '../lib/trpc-client'
 interface AuthModalProps {
   isOpen: boolean
   onClose: () => void
-  onSuccess: (user: any) => void
+  onSuccess: (user: { id: string; name: string; email: string }) => void
 }
 
 export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
@@ -19,7 +19,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
   const signupMutation = trpc.user.signup.useMutation({
     onSuccess: (user) => {
-      onSuccess(user)
+      onSuccess({ id: user.id, name: user.name ?? '', email: user.email ?? '' })
       onClose()
       resetForm()
     },
@@ -31,7 +31,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
   const signinMutation = trpc.user.signin.useMutation({
     onSuccess: (user) => {
-      onSuccess(user)
+      onSuccess({ id: user.id, name: user.name ?? '', email: user.email ?? '' })
       onClose()
       resetForm()
     },

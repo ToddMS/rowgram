@@ -6,7 +6,6 @@ import { DataContainer } from '@/components/DataContainer'
 import { ImageCard } from '@/components/ImageCard'
 import { BatchDownloadModal } from '@/components/BatchDownloadModal'
 import { ConfirmDeleteModal } from '@/components/ConfirmDeleteModal'
-import '@/components/DataContainer.css'
 import '@/routes/gallery.css'
 import '@/routes/crews.css'
 
