@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { trpc } from '@/lib/trpc-client'
 import { TemplateSelector } from '@/components/TemplateSelector'
 import { SearchBar } from '@/components/SearchBar'
+import { SkeletonGrid } from '@/components/SkeletonGrid'
 import '@/components/SearchBar.css'
 import '@/components/Button.css'
 import '@/routes/generate.css'
@@ -177,7 +178,7 @@ function GenerateImagePageContent() {
               </div>
 
               {crewsLoading ? (
-                <div className="animate-pulse"><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3">{[...Array(5)].map((_, i) => <div key={i} className="h-20 bg-gray-200 rounded-md" />)}</div></div>
+                <SkeletonGrid variant="generate" />
               ) : crews && crews.length > 0 && filteredCrews.length > 0 ? (
                 <div className="max-h-60 pr-4 custom-scrollbar">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

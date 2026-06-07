@@ -152,6 +152,7 @@ export default function GalleryPage() {
       <DataContainer
         items={savedImages}
         loading={loading}
+        skeletonVariant="gallery"
         error=""
         emptyState={{ title: 'No Images Yet', message: 'Start creating beautiful crew images by generating your first image', actionLabel: 'Generate Your First Image', actionHref: '/generate' }}
         searchConfig={{

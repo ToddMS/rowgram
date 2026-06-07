@@ -144,6 +144,7 @@ export default function CrewsPage() {
       <DataContainer
         items={savedCrews}
         loading={loading}
+        skeletonVariant="crew"
         error={error?.message}
         emptyState={{ title: 'No Crews Yet', message: 'Create your first crew lineup to get started', actionLabel: 'Create Your First Crew', actionOnClick: () => { setEditingCrew(null); setShowCreateModal(true) } }}
         searchConfig={{

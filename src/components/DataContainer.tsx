@@ -1,6 +1,7 @@
+import { useState, useEffect } from 'react'
 import { SearchBar } from './SearchBar'
-import { LoadingState } from './LoadingState'
 import { ErrorBoundary } from './ErrorBoundary'
+import { SkeletonGrid } from './SkeletonGrid'
 import './DataContainer.css'
 import type { ReactNode } from 'react'
 
@@ -45,6 +46,7 @@ export interface ActionButton {
 export interface DataContainerProps<T extends DataItem> {
   items: Array<T>
   loading?: boolean
+  skeletonVariant?: 'crew' | 'club' | 'gallery' | 'generate'
   error?: string | null
   emptyState: EmptyStateConfig
   searchConfig: SearchConfig<T>
@@ -75,6 +77,7 @@ export interface DataContainerProps<T extends DataItem> {
 export function DataContainer<T extends DataItem>({
   items,
   loading = false,
+  skeletonVariant,
   error = null,
   emptyState,
   searchConfig,
@@ -96,11 +99,33 @@ export function DataContainer<T extends DataItem>({
   onRetry,
 }: DataContainerProps<T>) {
 
-  if (loading) {
+  // TEMP: force skeleton for 5s so we can compare layouts
+  const [forcedLoading, setForcedLoading] = useState(true)
+  useEffect(() => {
+    const t = setTimeout(() => setForcedLoading(false), 5000)
+    return () => clearTimeout(t)
+  }, [])
+
+  if (loading || forcedLoading) {
     return (
       <div className={`data-container ${className}`}>
         <div className="container">
-          <LoadingState message={`Loading ${emptyState.title.toLowerCase()}...`} />
+          <SearchBar
+            items={[]}
+            searchQuery=""
+            onSearchChange={() => {}}
+            onItemsFiltered={() => {}}
+            placeholder={searchConfig.placeholder}
+            filterFunction={searchConfig.filterFunction}
+            sortOptions={searchConfig.sortOptions}
+            selectedSort={sortBy}
+            onSortChange={onSortChange}
+            advancedFilters={searchConfig.advancedFilters}
+            showAdvancedFilters={false}
+            resultsCount={0}
+            actionButtons={actionButtons}
+          />
+          <SkeletonGrid variant={skeletonVariant ?? 'crew'} />
         </div>
       </div>
     )

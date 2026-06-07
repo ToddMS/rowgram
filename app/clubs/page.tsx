@@ -190,6 +190,7 @@ export default function ClubsPage() {
       <DataContainer
         items={clubs}
         loading={isLoading}
+        skeletonVariant="club"
         error=""
         emptyState={{ title: 'No Clubs Yet', message: 'Create your first club preset to get started', actionLabel: 'Create First Club', actionOnClick: () => setIsCreatingNew(true) }}
         searchConfig={{
