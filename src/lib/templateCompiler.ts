@@ -173,11 +173,16 @@ export class TemplateCompiler {
     // Replace single variables (both uppercase and lowercase versions)
     Object.entries(data).forEach(([key, value]) => {
       if (key !== 'CREW_MEMBERS' && key !== 'crewMembers') {
+        // Skip null/undefined — let processConditionalBlock clean up the block
+        if (value === null || value === undefined) return
+
+        const str = String(value)
+
         // Handle uppercase keys (e.g., RACE_NAME)
         const placeholder = `{{${key}}}`
         compiledHtml = compiledHtml.replace(
-          new RegExp(placeholder, 'g'),
-          String(value),
+          new RegExp(placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+          str,
         )
 
         // Handle lowercase keys (e.g., raceName)
@@ -185,14 +190,19 @@ export class TemplateCompiler {
         const lowerPlaceholder = `{{${lowerKey}}}`
         compiledHtml = compiledHtml.replace(
           new RegExp(lowerPlaceholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
-          String(value),
+          str,
         )
       }
     })
 
-    // Handle crew members array (both formats)
-    if (data.CREW_MEMBERS.length > 0) {
+    // Handle crew members — uppercase format ({{#CREW_MEMBERS}}, used by template2)
+    if (data.CREW_MEMBERS?.length > 0) {
       compiledHtml = this.compileCrewMembers(compiledHtml, data.CREW_MEMBERS)
+    }
+
+    // Handle crew members — lowercase format ({{#crewMembers}}, used by template1)
+    if (data.crewMembers?.length > 0) {
+      compiledHtml = this.compileCrewMembersNew(compiledHtml, data.crewMembers)
     }
     // Handle boat image with template-specific positioning
     compiledHtml = this.applyBoatImage(

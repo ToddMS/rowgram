@@ -125,6 +125,7 @@ export default function ClubsPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null)
   const [showBatchDeleteConfirm, setShowBatchDeleteConfirm] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [sortBy, setSortBy] = useState('name')
   const [filteredClubs, setFilteredClubs] = useState<Array<any>>([])
   const [selectedClubs, setSelectedClubs] = useState<Set<string>>(new Set())
   const newLogoInputRef = useRef<HTMLInputElement>(null)
@@ -228,8 +229,8 @@ export default function ClubsPage() {
         onSearchChange={setSearchTerm}
         filteredItems={filteredClubs}
         onItemsFiltered={setFilteredClubs}
-        sortBy="name"
-        onSortChange={() => {}}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
       />
 
       <ClubDialog

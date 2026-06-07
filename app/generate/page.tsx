@@ -36,6 +36,7 @@ function GenerateImagePageContent() {
 
   const utils = trpc.useUtils()
   const { data: crewsRaw, isLoading: crewsLoading } = trpc.crew.getAll.useQuery()
+  const { data: templatesRaw } = trpc.template.getAll.useQuery()
   const crews = crewsRaw as Array<{ id: string; name: string; clubName?: string | null; raceName?: string | null; raceDate?: string | null; boatName?: string | null; coachName?: string | null; raceCategory?: string | null; crewNames: string[]; boatCode: string; userId: string; clubId?: string | null; createdAt: Date | string; updatedAt: Date | string; club?: { id: string; name: string; primaryColor: string; secondaryColor: string; logoUrl: string | null } | null }> | undefined
 
   useEffect(() => {
@@ -45,6 +46,19 @@ function GenerateImagePageContent() {
       if (ids.length > 0) setSelectedCrewIds(ids)
     }
   }, [searchParams])
+
+  // Auto-select first crew and first template on load
+  useEffect(() => {
+    if (crews && crews.length > 0 && selectedCrewIds.length === 0 && !searchParams.get('crews')) {
+      setSelectedCrewIds([crews[0].id])
+    }
+  }, [crews])
+
+  useEffect(() => {
+    if (templatesRaw && templatesRaw.length > 0 && !selectedTemplateId) {
+      setSelectedTemplateId(templatesRaw[0].id)
+    }
+  }, [templatesRaw])
 
   const generateImageMutation = trpc.savedImage.generate.useMutation({
     onSuccess: () => {

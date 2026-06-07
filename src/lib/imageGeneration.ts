@@ -116,6 +116,11 @@ export class ImageGenerationService {
     const htmlContent = await this.loadCoverTemplate(template, coverData, finalColors)
     const imgBuffer = await htmlToBuffer(htmlContent)
 
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      const base64 = `data:image/png;base64,${imgBuffer.toString('base64')}`
+      return { imageUrl: base64, filename, width: 1080, height: 1080 }
+    }
+
     const blob = await put(`covers/${filename}`, imgBuffer, { access: 'public', contentType: 'image/png' })
     return { imageUrl: blob.url, filename, width: 1080, height: 1080 }
   }
@@ -135,6 +140,11 @@ export class ImageGenerationService {
 
     const htmlContent = await this.loadTemplate(template, crew, finalColors)
     const imgBuffer = await htmlToBuffer(htmlContent, browser)
+
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      const base64 = `data:image/png;base64,${imgBuffer.toString('base64')}`
+      return { imageUrl: base64, filename, width: 1080, height: 1080 }
+    }
 
     const blob = await put(`crew-images/${filename}`, imgBuffer, { access: 'public', contentType: 'image/png' })
     return { imageUrl: blob.url, filename, width: 1080, height: 1080 }

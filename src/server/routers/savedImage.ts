@@ -24,7 +24,18 @@ function createBoatFilename(boatName: string | null | undefined, fallbackFilenam
   return `${boatName.trim().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').toLowerCase()}.png`
 }
 
+async function resolveClub(crew: { club: any; clubName: string | null; clubId: string | null }, userId: string, inputClubId?: string) {
+  if (crew.club) return crew.club
+  if (inputClubId) return prisma.club.findUnique({ where: { id: inputClubId } })
+  if (crew.clubName) return prisma.club.findFirst({ where: { name: crew.clubName, userId } })
+  return null
+}
+
 async function fetchImageBuffer(imageUrl: string): Promise<Buffer> {
+  if (imageUrl.startsWith('data:')) {
+    const base64 = imageUrl.split(',')[1]
+    return Buffer.from(base64, 'base64')
+  }
   if (imageUrl.startsWith('http')) {
     const res = await fetch(imageUrl)
     if (!res.ok) throw new Error(`Failed to fetch image: ${res.statusText}`)
@@ -134,9 +145,8 @@ export const savedImageRouter = router({
         const validation = ImageGenerationService.validateGenerationInput(crew, template)
         if (!validation.valid) throw new Error(validation.error)
 
-        let selectedClub = null
-        if (input.clubId) selectedClub = await prisma.club.findUnique({ where: { id: input.clubId } })
-        const crewForGeneration = selectedClub ? { ...crew, club: selectedClub } : crew
+        const resolvedClub = await resolveClub(crew, ctx.user.id, input.clubId)
+        const crewForGeneration = { ...crew, club: resolvedClub }
 
         const generatedImage = await ImageGenerationService.generateCrewImage(
           crewForGeneration,
@@ -184,9 +194,8 @@ export const savedImageRouter = router({
         if (!crew) throw new Error('Crew not found')
         const template = await prisma.template.findUnique({ where: { id: input.templateId } })
         if (!template) throw new Error('Template not found')
-        let selectedClub = null
-        if (input.clubId) selectedClub = await prisma.club.findUnique({ where: { id: input.clubId } })
-        const crewForGeneration = selectedClub ? { ...crew, club: selectedClub } : crew
+        const resolvedClub = await resolveClub(crew, crew.userId, input.clubId)
+        const crewForGeneration = { ...crew, club: resolvedClub }
         const validation = ImageGenerationService.validateGenerationInput(crewForGeneration, template)
         if (!validation.valid) throw new Error(validation.error)
         const generatedImage = await ImageGenerationService.generateCrewImage(
@@ -234,7 +243,8 @@ export const savedImageRouter = router({
                 if (!crew) throw new Error('Crew not found')
                 const validation = ImageGenerationService.validateGenerationInput(crew, template)
                 if (!validation.valid) throw new Error(validation.error)
-                const crewForGeneration = selectedClub ? { ...crew, club: selectedClub } : crew
+                const resolvedClub = await resolveClub(crew, ctx.user.id, input.clubId)
+                const crewForGeneration = { ...crew, club: resolvedClub }
                 const generatedImage = await ImageGenerationService.generateCrewImage(
                   crewForGeneration, template,
                   input.colors?.primaryColor && input.colors?.secondaryColor
