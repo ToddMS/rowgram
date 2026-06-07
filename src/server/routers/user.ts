@@ -21,7 +21,7 @@ export const userRouter = router({
         include: {
           crews: {
             include: {
-              boatType: true,
+              
               savedImages: true,
             },
           },

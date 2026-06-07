@@ -36,7 +36,7 @@ function GenerateImagePageContent() {
 
   const utils = trpc.useUtils()
   const { data: crewsRaw, isLoading: crewsLoading } = trpc.crew.getAll.useQuery()
-  const crews = crewsRaw as Array<{ id: string; name: string; clubName?: string | null; raceName?: string | null; raceDate?: string | null; boatName?: string | null; coachName?: string | null; raceCategory?: string | null; crewNames: string[]; boatTypeId: string; userId: string; clubId?: string | null; createdAt: Date | string; updatedAt: Date | string; boatType: { id: string; name: string; code: string; seats: number }; club?: { id: string; name: string; primaryColor: string; secondaryColor: string; logoUrl: string | null } | null }> | undefined
+  const crews = crewsRaw as Array<{ id: string; name: string; clubName?: string | null; raceName?: string | null; raceDate?: string | null; boatName?: string | null; coachName?: string | null; raceCategory?: string | null; crewNames: string[]; boatCode: string; userId: string; clubId?: string | null; createdAt: Date | string; updatedAt: Date | string; club?: { id: string; name: string; primaryColor: string; secondaryColor: string; logoUrl: string | null } | null }> | undefined
 
   useEffect(() => {
     const crewsParam = searchParams.get('crews')
@@ -82,16 +82,14 @@ function GenerateImagePageContent() {
     const clubName = crew.club?.name.toLowerCase() || ''
     const raceName = crew.raceName?.toLowerCase() || ''
     const raceCategory = crew.raceCategory?.toLowerCase() || ''
-    const boatTypeCode = crew.boatType.code.toLowerCase() || ''
-    const boatTypeName = crew.boatType.name.toLowerCase() || ''
     const crewNames = crew.crewNames?.join(' ').toLowerCase() || ''
-    return crewName.includes(query) || clubName.includes(query) || raceName.includes(query) || raceCategory.includes(query) || boatTypeCode.includes(query) || boatTypeName.includes(query) || crewNames.includes(query)
+    return crewName.includes(query) || clubName.includes(query) || raceName.includes(query) || raceCategory.includes(query) || crew.boatCode?.toLowerCase().includes(query) || crewNames.includes(query)
   }
 
   const uniqueClubs = Array.from(new Set(crews?.map((c) => c.club?.name).filter(Boolean))).map((club) => ({ value: club!, label: club! }))
   const uniqueBoatClasses = (() => {
     const order = ['8+', '4+', '4x', '4-', '2x', '2-', '1x']
-    const available = Array.from(new Set(crews?.map((c) => c.boatType.code).filter(Boolean)))
+    const available = Array.from(new Set(crews?.map((c) => c.boatCode).filter(Boolean)))
     return order.filter((bc) => available.includes(bc)).map((bc) => ({ value: bc, label: bc }))
   })()
 
@@ -136,13 +134,13 @@ function GenerateImagePageContent() {
                 { value: 'recent', label: 'Recently Created', sortFn: (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime() },
                 { value: 'club', label: 'Club Name', sortFn: (a, b) => (a.club?.name || '').localeCompare(b.club?.name || '') },
                 { value: 'race', label: 'Race Name', sortFn: (a, b) => (a.raceName || '').localeCompare(b.raceName || '') },
-                { value: 'boat_class', label: 'Boat Class', sortFn: (a, b) => a.boatType.code.localeCompare(b.boatType.code) },
+                { value: 'boat_class', label: 'Boat Class', sortFn: (a, b) => a.boatCode.localeCompare(b.boatCode) },
               ]}
               selectedSort={sortBy}
               onSortChange={setSortBy}
               advancedFilters={[
                 { name: 'club', label: 'Club', options: [{ value: '', label: 'All Clubs' }, ...uniqueClubs], selectedValue: selectedClub, onValueChange: setSelectedClub, filterFn: (crew, value) => !value || crew.club?.name === value },
-                { name: 'boatClass', label: 'Boat Class', options: [{ value: '', label: 'All Boat Classes' }, ...uniqueBoatClasses], selectedValue: selectedBoatClass, onValueChange: setSelectedBoatClass, filterFn: (crew, value) => !value || crew.boatType.code === value },
+                { name: 'boatClass', label: 'Boat Class', options: [{ value: '', label: 'All Boat Classes' }, ...uniqueBoatClasses], selectedValue: selectedBoatClass, onValueChange: setSelectedBoatClass, filterFn: (crew, value) => !value || crew.boatCode === value },
               ]}
               showAdvancedFilters={showAdvancedFilters}
               onToggleAdvancedFilters={() => setShowAdvancedFilters(!showAdvancedFilters)}
@@ -179,7 +177,7 @@ function GenerateImagePageContent() {
                           setCrewError(false)
                         }}
                       >
-                        <span className="absolute top-2 right-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">{crew.boatType.code}</span>
+                        <span className="absolute top-2 right-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">{crew.boatCode}</span>
                         {crew.club && (
                           <div className="absolute bottom-2 right-2">
                             {crew.club.logoUrl ? <img src={crew.club.logoUrl} alt={`${crew.club.name} logo`} className="w-6 h-6 object-contain" /> : (
@@ -190,7 +188,7 @@ function GenerateImagePageContent() {
                             )}
                           </div>
                         )}
-                        <h3 className="font-medium text-gray-900 mb-2 text-base pr-12 -ml-1 -mt-1">{crew.boatType.code === '1x' && crew.crewNames?.length > 0 ? crew.crewNames[0] : crew.name}</h3>
+                        <h3 className="font-medium text-gray-900 mb-2 text-base pr-12 -ml-1 -mt-1">{crew.boatCode === '1x' && crew.crewNames?.length > 0 ? crew.crewNames[0] : crew.name}</h3>
                         <div className="space-y-1 text-sm text-gray-600 -ml-1">
                           <p className="truncate">Race: {crew.raceName || 'No race specified'}</p>
                           {crew.raceCategory && <p className="truncate">Category: {crew.raceCategory}</p>}

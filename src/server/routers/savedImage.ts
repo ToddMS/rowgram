@@ -38,7 +38,7 @@ async function fetchImageBuffer(imageUrl: string): Promise<Buffer> {
 export const savedImageRouter = router({
   getAll: publicProcedure.query(async () => {
     return await prisma.savedImage.findMany({
-      include: { crew: { include: { boatType: true, club: true } }, template: true, user: true },
+      include: { crew: { include: { club: true } }, template: true, user: true },
       orderBy: { createdAt: 'desc' },
     })
   }),
@@ -48,7 +48,7 @@ export const savedImageRouter = router({
     .query(async ({ input }) => {
       return await prisma.savedImage.findUnique({
         where: { id: input.id },
-        include: { crew: { include: { boatType: true, club: true } }, template: true, user: true },
+        include: { crew: { include: { club: true } }, template: true, user: true },
       })
     }),
 
@@ -57,7 +57,7 @@ export const savedImageRouter = router({
     .query(async ({ input }) => {
       return await prisma.savedImage.findMany({
         where: { userId: input.userId },
-        include: { crew: { include: { boatType: true, club: true } }, template: true },
+        include: { crew: { include: { club: true } }, template: true },
         orderBy: { createdAt: 'desc' },
       })
     }),
@@ -85,7 +85,7 @@ export const savedImageRouter = router({
     .mutation(async ({ input, ctx }) => {
       return await prisma.savedImage.create({
         data: { ...input, userId: ctx.user.id },
-        include: { crew: { include: { boatType: true } }, template: true, user: true },
+        include: { crew: { include: { club: true } }, template: true, user: true },
       })
     }),
 
@@ -103,7 +103,7 @@ export const savedImageRouter = router({
       return await prisma.savedImage.update({
         where: { id },
         data,
-        include: { crew: { include: { boatType: true } }, template: true, user: true },
+        include: { crew: { include: { club: true } }, template: true, user: true },
       })
     }),
 
@@ -125,7 +125,7 @@ export const savedImageRouter = router({
     }))
     .mutation(async ({ input, ctx }): Promise<{ id: string; imageUrl: string; filename: string }> => {
       try {
-        const crew = await prisma.crew.findUnique({ where: { id: input.crewId }, include: { boatType: true, club: true } })
+        const crew = await prisma.crew.findUnique({ where: { id: input.crewId }, include: { club: true } })
         if (!crew) throw new Error('Crew not found')
 
         const template = await prisma.template.findUnique({ where: { id: input.templateId } })
@@ -180,7 +180,7 @@ export const savedImageRouter = router({
     }))
     .mutation(async ({ input }) => {
       try {
-        const crew = await prisma.crew.findUnique({ where: { id: input.crewId }, include: { boatType: true, club: true } })
+        const crew = await prisma.crew.findUnique({ where: { id: input.crewId }, include: { club: true } })
         if (!crew) throw new Error('Crew not found')
         const template = await prisma.template.findUnique({ where: { id: input.templateId } })
         if (!template) throw new Error('Template not found')
@@ -230,7 +230,7 @@ export const savedImageRouter = router({
             const chunk = input.crewIds.slice(i, i + CONCURRENCY)
             const chunkResults = await Promise.allSettled(
               chunk.map(async (crewId) => {
-                const crew = await prisma.crew.findUnique({ where: { id: crewId }, include: { boatType: true, club: true } })
+                const crew = await prisma.crew.findUnique({ where: { id: crewId }, include: { club: true } })
                 if (!crew) throw new Error('Crew not found')
                 const validation = ImageGenerationService.validateGenerationInput(crew, template)
                 if (!validation.valid) throw new Error(validation.error)
@@ -256,7 +256,7 @@ export const savedImageRouter = router({
                       colors: input.colors || { primaryColor: crew.club?.primaryColor || '#15803d', secondaryColor: crew.club?.secondaryColor || '#f9a8d4' },
                     },
                   },
-                  include: { crew: { include: { boatType: true, club: true } }, template: true, user: { select: { id: true, name: true, email: true } } },
+                  include: { crew: { include: { club: true } }, template: true, user: { select: { id: true, name: true, email: true } } },
                 })
               }),
             )
@@ -283,7 +283,7 @@ export const savedImageRouter = router({
       try {
         const savedImage = await prisma.savedImage.findUnique({
           where: { id: input.savedImageId },
-          include: { crew: { include: { boatType: true, club: true } }, template: true, user: true },
+          include: { crew: { include: { club: true } }, template: true, user: true },
         })
         if (!savedImage) throw new Error('Saved image not found')
 
@@ -320,7 +320,7 @@ export const savedImageRouter = router({
       try {
         const savedImages = await prisma.savedImage.findMany({
           where: { id: { in: input.savedImageIds } },
-          include: { crew: { include: { boatType: true, club: true } }, template: true, user: true },
+          include: { crew: { include: { club: true } }, template: true, user: true },
         })
         if (savedImages.length === 0) throw new Error('No images found')
 

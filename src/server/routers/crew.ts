@@ -6,7 +6,7 @@ export const crewRouter = router({
   getAll: publicProcedure.query(async () => {
     try {
       return await prisma.crew.findMany({
-        include: { boatType: true, club: true },
+        include: { club: true },
       })
     } catch (error) {
       console.error('Error fetching crews:', error)
@@ -20,7 +20,6 @@ export const crewRouter = router({
       return await prisma.crew.findUnique({
         where: { id: input.id },
         include: {
-          boatType: true,
           user: true,
           club: true,
           savedImages: { include: { template: true } },
@@ -33,7 +32,7 @@ export const crewRouter = router({
     .query(async ({ input }) => {
       return await prisma.crew.findMany({
         where: { id: { in: input.ids } },
-        include: { boatType: true, user: true, club: true },
+        include: { user: true, club: true },
       })
     }),
 
@@ -43,7 +42,6 @@ export const crewRouter = router({
       return await prisma.crew.findMany({
         where: { userId: input.userId },
         include: {
-          boatType: true,
           club: true,
           savedImages: { include: { template: true } },
         },
@@ -62,7 +60,7 @@ export const crewRouter = router({
         coachName: z.string().optional(),
         raceCategory: z.string().optional(),
         crewNames: z.array(z.string()),
-        boatTypeId: z.string(),
+        boatCode: z.string(),
         userId: z.string().optional(),
       }),
     )
@@ -86,7 +84,7 @@ export const crewRouter = router({
         coachName: z.string().optional(),
         raceCategory: z.string().optional(),
         crewNames: z.array(z.string()).optional(),
-        boatTypeId: z.string().optional(),
+        boatCode: z.string().optional(),
       }),
     )
     .mutation(async ({ input }): Promise<{ id: string; name: string }> => {

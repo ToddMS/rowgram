@@ -9,8 +9,7 @@ import { CrewCard } from '@/components/CrewCard'
 import { ConfirmDeleteModal } from '@/components/ConfirmDeleteModal'
 import { CreateCrewModal } from '@/components/CreateCrewModal'
 import '@/routes/crews.css'
-
-const boatClassHasCox = (boatClass: string) => boatClass === '8+' || boatClass === '4+'
+import { getBoatType } from '@/lib/boat-types'
 
 export default function CrewsPage() {
   const router = useRouter()
@@ -30,7 +29,7 @@ export default function CrewsPage() {
   const { user } = useAuth()
   const utils = trpc.useUtils()
   const { data: crewsRaw = [], isLoading: loading, error, refetch: loadCrews } = trpc.crew.getAll.useQuery()
-  const crews = crewsRaw as Array<{ id: string; name: string; clubName?: string | null; raceName?: string | null; raceDate?: string | null; boatName?: string | null; coachName?: string | null; raceCategory?: string | null; crewNames: string[]; boatTypeId: string; userId: string; clubId?: string | null; createdAt: Date | string; updatedAt: Date | string; boatType: { id: string; name: string; code: string; seats: number }; club?: { id: string; name: string; primaryColor: string; secondaryColor: string; logoUrl: string | null } | null }>
+  const crews = crewsRaw as Array<{ id: string; name: string; clubName?: string | null; raceName?: string | null; raceDate?: string | null; boatName?: string | null; coachName?: string | null; raceCategory?: string | null; crewNames: string[]; boatCode: string; userId: string; clubId?: string | null; createdAt: Date | string; updatedAt: Date | string; club?: { id: string; name: string; primaryColor: string; secondaryColor: string; logoUrl: string | null } | null }>
   const deleteCrew = trpc.crew.delete.useMutation({
     onSuccess: () => {
       utils.crew.getAll.invalidate()
@@ -48,13 +47,14 @@ export default function CrewsPage() {
       if (totalRowers === 1) return 'S'
       return `${rowerIdx + 1}`
     }
-    const totalRowers = crew.boatType.seats
-    const hasCox = boatClassHasCox(crew.boatType.code)
+    const boatType = getBoatType(crew.boatCode)
+    const totalRowers = boatType?.seats ?? 0
+    const hasCox = boatType?.hasCox ?? false
     return {
       ...crew,
       boatClub: crew.club?.name || crew.clubName || 'No Club',
       boatName: crew.name,
-      boatClass: crew.boatType.code,
+      boatClass: crew.boatCode,
       crewMembers: crew.crewNames.map((name, idx) => ({ seat: getSeatLabel(idx, totalRowers, hasCox), name })),
     }
   })

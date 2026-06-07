@@ -17,7 +17,7 @@ export const clubRouter = router({
         where: { id: input.id },
         include: {
           user: true,
-          crews: { include: { boatType: true } },
+          crews: { include: { club: true } },
         },
       })
     }),

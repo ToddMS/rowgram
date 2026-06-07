@@ -26,6 +26,11 @@ export async function POST(req: Request) {
       .webp({ quality: 90 })
       .toBuffer()
 
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      const base64 = `data:image/webp;base64,${optimized.toString('base64')}`
+      return Response.json({ success: true, logoUrl: base64 })
+    }
+
     const filename = `club-logos/${uuidv4()}.webp`
     const blob = await put(filename, optimized, {
       access: 'public',

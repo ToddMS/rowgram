@@ -91,40 +91,26 @@ model Club {
   @@unique([userId, name])
 }
 
-model BoatType {
-  id       String @id @default(cuid())
-  name     String @unique // "Single Scull", "Eight"
-  code     String @unique // "1x", "8+"
-  seats    Int
-  category String         // "sculling", "sweep"
-  metadata Json?          // Position layouts, cox info
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  crews    Crew[]
-}
-
 model Crew {
-  id          String   @id @default(cuid())
-  name        String
-  clubName    String?  // Fallback club name if not using club preset
-  raceName    String?
-  raceDate    String?  // Race date for cover images (format: "March 15, 2024")
-  boatName    String?
-  coachName   String?
-  category    String?  // Optional category like "M1 Senior Men", "W2 Junior Women", etc.
-  raceCategory String? // Optional race category like "Heat 2", "Final H", "Semi-Final A", etc.
-  crewNames   String[] // Array of crew member names
-  boatTypeId  String
-  userId      String
-  clubId      String?  // Optional reference to club preset
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String
+  clubName     String?
+  raceName     String?
+  raceDate     String?
+  boatName     String?
+  coachName    String?
+  category     String?
+  raceCategory String?
+  crewNames    String[]
+  boatCode     String
+  userId       String
+  clubId       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relations
-  boatType    BoatType @relation(fields: [boatTypeId], references: [id])
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  club        Club?    @relation(fields: [clubId], references: [id])
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  club        Club?      @relation(fields: [clubId], references: [id])
   savedImages SavedImage[]
 }
 

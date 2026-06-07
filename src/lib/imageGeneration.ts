@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { put } from '@vercel/blob'
 import { TemplateCompiler } from './templateCompiler'
+import { getBoatType } from './boat-types'
 
 interface Crew {
   id: string
@@ -9,7 +10,7 @@ interface Crew {
   raceName?: string | null
   raceCategory?: string | null
   crewNames: Array<string>
-  boatType: { name: string; code: string }
+  boatCode: string
   club?: { name: string; primaryColor: string; secondaryColor: string } | null
 }
 
@@ -213,7 +214,7 @@ export class ImageGenerationService {
     const crewNames = crew.crewNames
     const clubName = crew.club?.name || 'Rowing Club'
     const crewName = crew.name || 'Crew'
-    const boatType = crew.boatType.name || 'Eight'
+    const boatType = getBoatType(crew.boatCode)?.name || 'Eight'
     const raceName = crew.raceName || 'Championship Race'
     const raceCategory = crew.raceCategory || null
 

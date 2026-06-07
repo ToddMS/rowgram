@@ -1,0 +1,486 @@
+/* ─── Overlay ─────────────────────────────────────────────────────────── */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+  animation: dialogOverlayIn 0.15s ease-out;
+}
+
+@keyframes dialogOverlayIn {
+  from { opacity: 0 }
+  to   { opacity: 1 }
+}
+
+/* ─── Dialog shell — fixed size, never resizes ─────────────────────────── */
+.dialog {
+  background: #ffffff;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+  animation: dialogIn 0.2s ease-out;
+}
+
+@keyframes dialogIn {
+  from { opacity: 0; transform: scale(0.96) translateY(-8px) }
+  to   { opacity: 1; transform: scale(1)    translateY(0)    }
+}
+
+/* ─── Header ───────────────────────────────────────────────────────────── */
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 64px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.dialog-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.dialog-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: #9CA3AF;
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.dialog-close:hover {
+  background: #F3F4F6;
+  color: #374151;
+}
+
+/* ─── Stepper ──────────────────────────────────────────────────────────── */
+.dialog-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  height: 58px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.dialog-step-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.dialog-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dialog-step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.dialog-step.inactive .dialog-step-circle {
+  border: 2px solid #D1D5DB;
+  color: #9CA3AF;
+  background: #fff;
+}
+
+.dialog-step.active .dialog-step-circle {
+  background: #3B82F6;
+  border: 2px solid #3B82F6;
+  color: #fff;
+}
+
+.dialog-step.completed .dialog-step-circle {
+  background: #3B82F6;
+  border: 2px solid #3B82F6;
+  color: #fff;
+}
+
+.dialog-step-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.dialog-step.inactive .dialog-step-label  { color: #9CA3AF }
+.dialog-step.active .dialog-step-label    { color: #111827 }
+.dialog-step.completed .dialog-step-label { color: #3B82F6 }
+
+.dialog-step-connector {
+  width: 40px;
+  height: 2px;
+  background: #E5E7EB;
+  margin: 0 8px;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.dialog-step-connector.completed { background: #3B82F6 }
+
+/* ─── Body — scrolls internally, never pushes the shell ───────────────── */
+.dialog-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  scrollbar-width: thin;
+  scrollbar-color: #E5E7EB transparent;
+}
+
+.dialog-body::-webkit-scrollbar       { width: 4px }
+.dialog-body::-webkit-scrollbar-track { background: transparent }
+.dialog-body::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 2px }
+
+/* ─── Footer ───────────────────────────────────────────────────────────── */
+.dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 24px;
+  height: 68px;
+  flex-shrink: 0;
+  border-top: 1px solid #F3F4F6;
+}
+
+.dialog-footer-back {
+  margin-right: auto;
+}
+
+/* ─── Buttons ──────────────────────────────────────────────────────────── */
+.dialog-btn {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+
+.dialog-btn-secondary {
+  background: #F3F4F6;
+  color: #374151;
+}
+
+.dialog-btn-secondary:hover { background: #E5E7EB }
+
+.dialog-btn-primary {
+  background: #3B82F6;
+  color: #fff;
+}
+
+.dialog-btn-primary:hover    { background: #2563EB }
+.dialog-btn-primary:disabled { opacity: 0.5; cursor: not-allowed }
+
+/* ─── Form grid ────────────────────────────────────────────────────────── */
+.dialog-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.dialog-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dialog-form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* ─── Labels — turn red on error, no extra DOM nodes ──────────────────── */
+.dialog-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #374151;
+  transition: color 0.15s;
+}
+
+.dialog-label.error { color: #EF4444 }
+
+/* ─── Inputs ───────────────────────────────────────────────────────────── */
+.dialog-input,
+.dialog-select {
+  width: 100%;
+  box-sizing: border-box;
+  height: 42px;
+  padding: 0 12px;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  color: #111827;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.dialog-input::placeholder { color: #9CA3AF }
+
+.dialog-input:focus,
+.dialog-select:focus {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.dialog-input.error,
+.dialog-select.error {
+  border-color: #EF4444;
+  box-shadow: none;
+}
+
+.dialog-input.error:focus,
+.dialog-select.error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+/* ─── Combobox ─────────────────────────────────────────────────────────── */
+.dialog-combobox {
+  position: relative;
+}
+
+.dialog-combobox-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  z-index: 200;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.dialog-combobox-option {
+  padding: 10px 12px;
+  font-size: 0.875rem;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.dialog-combobox-option:hover,
+.dialog-combobox-option.highlighted {
+  background: #EFF6FF;
+  color: #1D4ED8;
+}
+
+/* ─── Crew names (step 2) ──────────────────────────────────────────────── */
+.dialog-cox-row {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.dialog-crew-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.dialog-crew-grid.single {
+  grid-template-columns: 1fr;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.dialog-crew-grid.double {
+  grid-template-columns: 1fr 1fr;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.dialog-seat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6B7280;
+  margin-bottom: 4px;
+  transition: color 0.15s;
+}
+
+.dialog-seat-label.error { color: #EF4444 }
+
+/* ─── Review (step 3) ──────────────────────────────────────────────────── */
+.dialog-review-section-title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 8px;
+  margin-top: 20px;
+}
+
+.dialog-review-section-title:first-child { margin-top: 0 }
+
+.dialog-review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.dialog-review-item {
+  padding: 10px 12px;
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 8px;
+}
+
+.dialog-review-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.dialog-review-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.dialog-crew-members-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+/* ─── Color picker (club form) ─────────────────────────────────────────── */
+.dialog-color-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dialog-color-swatch {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  border: 1.5px solid #D1D5DB;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 3px;
+}
+
+/* ─── Logo upload (club form) ──────────────────────────────────────────── */
+.dialog-logo-area {
+  height: 108px;
+  border: 1.5px dashed #D1D5DB;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.dialog-logo-area:hover {
+  border-color: #3B82F6;
+  background: rgba(59, 130, 246, 0.02);
+}
+
+.dialog-logo-placeholder {
+  text-align: center;
+  color: #9CA3AF;
+  pointer-events: none;
+}
+
+.dialog-logo-placeholder p   { font-size: 0.875rem; margin: 0 0 2px }
+.dialog-logo-placeholder span { font-size: 0.75rem }
+
+.dialog-logo-preview {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.dialog-logo-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #EF4444;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.dialog-logo-remove:hover { background: #DC2626 }
+
+/* ─── Size variants ────────────────────────────────────────────────────── */
+.dialog--md {
+  width: 680px;
+  height: min(600px, calc(100vh - 48px));
+}
+
+.dialog--sm {
+  width: 440px;
+  height: auto;
+  max-height: min(560px, calc(100vh - 48px));
+}
+
+/* ─── Mobile ───────────────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .dialog {
+    width: calc(100vw - 24px);
+    height: calc(100vh - 40px);
+    border-radius: 12px;
+  }
+
+  .dialog-form-grid  { grid-template-columns: 1fr }
+  .dialog-crew-grid  { grid-template-columns: 1fr }
+  .dialog-review-grid { grid-template-columns: 1fr }
+
+  .dialog-crew-members-grid { grid-template-columns: 1fr 1fr }
+
+  .dialog-step-connector { width: 24px }
+  .dialog-step-label     { display: none }
+}

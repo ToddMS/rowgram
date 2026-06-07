@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/auth-context'
 import { DataContainer } from '@/components/DataContainer'
 import { ClubCard } from '@/components/ClubCard'
 import { ConfirmDeleteModal } from '@/components/ConfirmDeleteModal'
-import { Modal } from '@/components/Modal'
+import { Dialog } from '@/components/Dialog'
 import '@/routes/clubs.css'
 
 interface ClubFormData {
@@ -17,6 +17,104 @@ interface ClubFormData {
 }
 
 const defaultForm: ClubFormData = { name: '', primaryColor: '#2563eb', secondaryColor: '#1e40af', logoUrl: '' }
+
+const ClubDialog = ({
+  isOpen,
+  onClose,
+  form,
+  onChange,
+  onLogoClick,
+  onLogoDrop,
+  onLogoRemove,
+  onSubmit,
+  isPending,
+  logoInputRef,
+  title,
+}: {
+  isOpen: boolean
+  onClose: () => void
+  form: ClubFormData
+  onChange: (field: keyof ClubFormData, value: string) => void
+  onLogoClick: () => void
+  onLogoDrop: (e: React.DragEvent) => void
+  onLogoRemove: () => void
+  onSubmit: () => void
+  isPending: boolean
+  logoInputRef: React.RefObject<HTMLInputElement | null>
+  title: string
+}) => {
+  const [showValidation, setShowValidation] = useState(false)
+
+  const handleSubmit = () => {
+    if (!form.name.trim()) { setShowValidation(true); return }
+    onSubmit()
+  }
+
+  const handleClose = () => { setShowValidation(false); onClose() }
+
+  const footer = (
+    <>
+      <button className="dialog-btn dialog-btn-secondary" onClick={handleClose}>Cancel</button>
+      <button className="dialog-btn dialog-btn-primary" onClick={handleSubmit} disabled={isPending}>
+        {isPending ? 'Saving…' : title}
+      </button>
+    </>
+  )
+
+  return (
+    <Dialog isOpen={isOpen} onClose={handleClose} title={title} size="sm" footer={footer}>
+      <div className="dialog-form-grid" style={{ gridTemplateColumns: '1fr' }}>
+        <div className="dialog-form-group">
+          <label className={`dialog-label ${showValidation && !form.name.trim() ? 'error' : ''}`}>
+            Club Name *
+          </label>
+          <input
+            type="text"
+            value={form.name}
+            onChange={(e) => onChange('name', e.target.value)}
+            className={`dialog-input ${showValidation && !form.name.trim() ? 'error' : ''}`}
+            placeholder="Enter club name"
+            autoFocus
+          />
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className="dialog-form-group">
+            <label className="dialog-label">Primary Color</label>
+            <div className="dialog-color-row">
+              <input type="color" value={form.primaryColor} onChange={(e) => onChange('primaryColor', e.target.value)} className="dialog-color-swatch" />
+              <input type="text" value={form.primaryColor} onChange={(e) => onChange('primaryColor', e.target.value)} className="dialog-input" style={{ fontFamily: 'monospace', textTransform: 'uppercase' }} />
+            </div>
+          </div>
+          <div className="dialog-form-group">
+            <label className="dialog-label">Secondary Color</label>
+            <div className="dialog-color-row">
+              <input type="color" value={form.secondaryColor} onChange={(e) => onChange('secondaryColor', e.target.value)} className="dialog-color-swatch" />
+              <input type="text" value={form.secondaryColor} onChange={(e) => onChange('secondaryColor', e.target.value)} className="dialog-input" style={{ fontFamily: 'monospace', textTransform: 'uppercase' }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="dialog-form-group">
+          <label className="dialog-label">Club Logo (Optional)</label>
+          <div className="dialog-logo-area" onDragOver={(e) => e.preventDefault()} onDrop={onLogoDrop} onClick={onLogoClick}>
+            {form.logoUrl ? (
+              <>
+                <img src={form.logoUrl} alt="Club logo" className="dialog-logo-preview" />
+                <button className="dialog-logo-remove" onClick={(e) => { e.stopPropagation(); onLogoRemove() }}>✕</button>
+              </>
+            ) : (
+              <div className="dialog-logo-placeholder">
+                <p>Click or drag image here</p>
+                <span>Max 2MB</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </Dialog>
+  )
+}
 
 export default function ClubsPage() {
   const { user } = useAuth()
@@ -134,50 +232,19 @@ export default function ClubsPage() {
         onSortChange={() => {}}
       />
 
-      <Modal isOpen={isCreatingNew} onClose={() => { setIsCreatingNew(false); setNewClubForm(defaultForm) }} title="Create New Club" maxWidth="600px" className="club-modal">
-        <div className="club-form">
-          <div className="form-group">
-            <label htmlFor="club-name">Club Name *</label>
-            <input id="club-name" type="text" value={newClubForm.name} onChange={(e) => setNewClubForm((p) => ({ ...p, name: e.target.value }))} placeholder="Enter club name" className="form-input" />
-          </div>
-          <div className="form-row">
-            <div className="form-group">
-              <label>Primary Color *</label>
-              <div className="color-input-group">
-                <input type="color" value={newClubForm.primaryColor} onChange={(e) => setNewClubForm((p) => ({ ...p, primaryColor: e.target.value }))} className="color-input" />
-                <input type="text" value={newClubForm.primaryColor} onChange={(e) => setNewClubForm((p) => ({ ...p, primaryColor: e.target.value }))} placeholder="#000000" className="color-text-input" />
-              </div>
-            </div>
-            <div className="form-group">
-              <label>Secondary Color *</label>
-              <div className="color-input-group">
-                <input type="color" value={newClubForm.secondaryColor} onChange={(e) => setNewClubForm((p) => ({ ...p, secondaryColor: e.target.value }))} className="color-input" />
-                <input type="text" value={newClubForm.secondaryColor} onChange={(e) => setNewClubForm((p) => ({ ...p, secondaryColor: e.target.value }))} placeholder="#000000" className="color-text-input" />
-              </div>
-            </div>
-          </div>
-          <div className="form-group">
-            <label>Club Logo (Optional)</label>
-            <div className="logo-upload-area" onDragOver={(e) => e.preventDefault()} onDrop={(e) => handleDrop(e)} onClick={() => newLogoInputRef.current?.click()}>
-              {newClubForm.logoUrl ? (
-                <div className="logo-preview">
-                  <img src={newClubForm.logoUrl} alt="Club logo preview" />
-                  <button className="logo-remove-btn" onClick={(e) => { e.stopPropagation(); setNewClubForm((p) => ({ ...p, logoUrl: '' })) }}>✕</button>
-                </div>
-              ) : (
-                <div className="logo-upload-placeholder">
-                  <p>Click or drag image here</p>
-                  <span>Max 2MB</span>
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="form-actions">
-            <button type="button" className="btn btn-secondary" onClick={() => { setIsCreatingNew(false); setNewClubForm(defaultForm) }}>Cancel</button>
-            <button type="button" className="btn btn-primary" onClick={() => { if (!newClubForm.name.trim()) { alert('Club name is required'); return }; createMutation.mutate({ ...newClubForm, userId: user.id }) }} disabled={createMutation.isPending}>{createMutation.isPending ? 'Creating...' : 'Create Club'}</button>
-          </div>
-        </div>
-      </Modal>
+      <ClubDialog
+        isOpen={isCreatingNew}
+        onClose={() => { setIsCreatingNew(false); setNewClubForm(defaultForm) }}
+        form={newClubForm}
+        onChange={(field, value) => setNewClubForm((p) => ({ ...p, [field]: value }))}
+        onLogoClick={() => newLogoInputRef.current?.click()}
+        onLogoDrop={(e) => handleDrop(e)}
+        onLogoRemove={() => setNewClubForm((p) => ({ ...p, logoUrl: '' }))}
+        onSubmit={() => createMutation.mutate({ ...newClubForm, userId: user.id })}
+        isPending={createMutation.isPending}
+        logoInputRef={newLogoInputRef}
+        title="Create New Club"
+      />
 
       {isCreatingNew && <input ref={newLogoInputRef} type="file" accept="image/*" onChange={(e) => handleLogoFileSelect(e)} style={{ display: 'none' }} />}
       {Object.keys(editForm).map((clubId) => <input key={clubId} ref={(el) => { editLogoInputRefs.current[clubId] = el }} type="file" accept="image/*" onChange={(e) => handleLogoFileSelect(e, clubId)} style={{ display: 'none' }} />)}

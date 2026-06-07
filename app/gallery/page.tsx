@@ -29,12 +29,11 @@ interface SavedImage {
     boatName?: string | null
     coachName?: string | null
     crewNames: Array<string>
-    boatTypeId: string
+    boatCode: string
     userId: string
     clubId?: string | null
     createdAt: Date | string
     updatedAt: Date | string
-    boatType: { id: string; name: string; code: string; seats: number; category: string; metadata: any; createdAt: Date | string; updatedAt: Date | string }
     club?: { id: string; name: string; primaryColor: string; secondaryColor: string; logoUrl: string | null; createdAt: Date | string; updatedAt: Date | string; userId: string } | null
   }
   template?: { id: string; name: string; templateType: string; previewUrl: string; isActive: boolean; metadata: any; createdAt: Date | string; updatedAt: Date | string }
@@ -124,13 +123,13 @@ export default function GalleryPage() {
   }
 
   const uniqueClubs = Array.from(new Set(savedImages.map((img) => img.crew?.club?.name || img.crew?.clubName).filter((n): n is string => Boolean(n)))).map((c) => ({ value: c, label: c }))
-  const uniqueBoatTypes = Array.from(new Set(savedImages.map((img) => img.crew?.boatType.code).filter((c): c is string => Boolean(c)))).map((c) => ({ value: c, label: c }))
+  const uniqueBoatTypes = Array.from(new Set(savedImages.map((img) => img.crew?.boatCode).filter((c): c is string => Boolean(c)))).map((c) => ({ value: c, label: c }))
 
   const filterFunction = (image: SavedImage, query: string) => {
     const crewName = image.crew?.name.toLowerCase() || ''
     const clubName = (image.crew?.club?.name || image.crew?.clubName)?.toLowerCase() || ''
     const raceName = image.crew?.raceName?.toLowerCase() || ''
-    const boatType = image.crew?.boatType.name.toLowerCase() || ''
+    const boatType = image.crew?.boatCode?.toLowerCase() || ''
     const rowerNames = image.crew?.crewNames.join(' ').toLowerCase() || ''
     return crewName.includes(query) || clubName.includes(query) || raceName.includes(query) || boatType.includes(query) || rowerNames.includes(query)
   }
@@ -144,7 +143,7 @@ export default function GalleryPage() {
   ]
 
   const crewName = (img: SavedImage) => {
-    if (img.crew?.boatType.code === '1x') return img.crew.crewNames[0] || img.crew.name || 'this image'
+    if (img.crew?.boatCode === '1x') return img.crew.crewNames[0] || img.crew.name || 'this image'
     return img.crew?.name || 'this image'
   }
 
@@ -161,12 +160,12 @@ export default function GalleryPage() {
           sortOptions: [
             { value: 'recent', label: 'Latest', sortFn: (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() },
             { value: 'club', label: 'Club A→Z', sortFn: (a, b) => (a.crew?.club?.name || a.crew?.clubName || '').localeCompare(b.crew?.club?.name || b.crew?.clubName || '') },
-            { value: 'boat', label: 'Boat Type', sortFn: (a, b) => (a.crew?.boatType.code || '').localeCompare(b.crew?.boatType.code || '') },
+            { value: 'boat', label: 'Boat Type', sortFn: (a, b) => (a.crew?.boatCode || '').localeCompare(b.crew?.boatCode || '') },
             { value: 'name', label: 'Crew Name', sortFn: (a, b) => (a.crew?.name || '').localeCompare(b.crew?.name || '') },
           ],
           advancedFilters: [
             { name: 'club', label: 'Club', options: [{ value: '', label: 'All Clubs' }, ...uniqueClubs], selectedValue: selectedClub, onValueChange: setSelectedClub, filterFn: (image, value) => !value || (image.crew?.club?.name || image.crew?.clubName) === value },
-            { name: 'boatType', label: 'Boat', options: [{ value: '', label: 'All Boats' }, ...uniqueBoatTypes], selectedValue: selectedBoatType, onValueChange: setSelectedBoatType, filterFn: (image, value) => !value || image.crew?.boatType.code === value },
+            { name: 'boatType', label: 'Boat', options: [{ value: '', label: 'All Boats' }, ...uniqueBoatTypes], selectedValue: selectedBoatType, onValueChange: setSelectedBoatType, filterFn: (image, value) => !value || image.crew?.boatCode === value },
             { name: 'dateRange', label: 'Date', options: dateRangeOptions, selectedValue: dateRangeValue, onValueChange: (v) => { if (!v) { setDateRange({ start: '', end: '' }) } else { const [s, e] = v.split('|'); setDateRange({ start: s || '', end: e || '' }) } }, filterFn: (image, value) => { if (!value) return true; const [s, e] = value.split('|'); const d = new Date(image.createdAt); if (s && d < new Date(s)) return false; if (e && d > new Date(e)) return false; return true } },
           ],
         }}

@@ -20,21 +20,11 @@ interface SavedImage {
     boatName?: string | null
     coachName?: string | null
     crewNames: Array<string>
-    boatTypeId: string
+    boatCode: string
     userId: string
     clubId?: string | null
     createdAt: Date | string
     updatedAt: Date | string
-    boatType: {
-      id: string
-      name: string
-      code: string
-      seats: number
-      category: string
-      metadata: any
-      createdAt: Date | string
-      updatedAt: Date | string
-    }
     club?: {
       id: string
       name: string
@@ -92,12 +82,12 @@ export function ImageCard({
       <div className="image-info">
         <div className="image-header">
           <div className="image-title">
-            {image.crew?.boatType.code === '1x' && image.crew.crewNames.length > 0
+            {image.crew?.boatCode === '1x' && image.crew.crewNames.length > 0
               ? image.crew.crewNames[0]
               : image.crew?.name || 'Unknown Crew'
             }
           </div>
-          <span className="boat-type-badge">{image.crew?.boatType.code || 'Unknown'}</span>
+          <span className="boat-type-badge">{image.crew?.boatCode || 'Unknown'}</span>
         </div>
         <div className="image-subtitle">
           {(image.crew?.club?.name || image.crew?.clubName) || 'No Club'}

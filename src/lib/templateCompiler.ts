@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
+import { getBoatType } from './boat-types'
 
 export interface TemplateData {
   CLUB_NAME: string
@@ -663,8 +664,8 @@ export class TemplateCompiler {
 
     // Add regular crew members
     if (crew.crewNames && Array.isArray(crew.crewNames)) {
-      const boatSeats = crew.boatType?.seats || 8
-      const hasCox = crew.boatType?.code?.includes('+') || false
+      const boatSeats = getBoatType(crew.boatCode)?.seats ?? 8
+      const hasCox = getBoatType(crew.boatCode)?.hasCox ?? false
       // For coxed boats, rower seats are total seats minus cox seat
       const maxRowerSeat = hasCox ? boatSeats - 1 : boatSeats
 
@@ -703,7 +704,7 @@ export class TemplateCompiler {
     }
 
     // Get boat image information
-    const boatCode = crew.boatType?.code || '8+'
+    const boatCode = crew.boatCode || '8+'
     const boatImageInfo = this.getBoatImageInfo(boatCode)
 
     // Get club logo information
@@ -743,16 +744,16 @@ export class TemplateCompiler {
     return {
       CLUB_NAME: crew.club?.name || crew.clubName || 'Rowing Club',
       CREW_NAME: crew.name || 'Crew',
-      BOAT_TYPE: crew.boatType?.name || 'Eight',
+      BOAT_TYPE: getBoatType(crew.boatCode)?.name || 'Eight',
       BOAT_CODE: boatCode,
       SEATS:
-        crew.boatType?.seats ||
+        getBoatType(crew.boatCode)?.seats ||
         crewMembers.filter((m) => m.POSITION !== 'Coxswain').length ||
         8,
       RACE_NAME: crew.raceName || 'Championship Race',
       RACE_CATEGORY: crew.raceCategory || undefined,
       RACE_DATE: crew.raceDate || undefined,
-      BOAT_NAME: crew.boatName || `${crew.boatType?.name || 'Eight'} Shell`,
+      BOAT_NAME: crew.boatName || `${getBoatType(crew.boatCode)?.name || 'Eight'} Shell`,
       COACH_NAME: this.formatName(crew.coachName || crew.coach?.name || 'Head Coach'),
       CREW_MEMBERS: this.isTemplate2(template)
         ? abbreviatedCrewOrder
@@ -924,7 +925,7 @@ export class TemplateCompiler {
    */
   private static generateCrewCategory(crew: any, template?: any): string {
     const raceCategory = crew.raceCategory || null
-    const boatCode = crew.boatType?.code || '8+'
+    const boatCode = crew.boatCode || '8+'
     const boatName = crew.boatName || crew.name || null
     const templateId = template?.id
 
