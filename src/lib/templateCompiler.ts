@@ -201,8 +201,8 @@ export class TemplateCompiler {
     }
 
     // Handle crew members — lowercase format ({{#crewMembers}}, used by template1)
-    if (data.crewMembers?.length > 0) {
-      compiledHtml = this.compileCrewMembersNew(compiledHtml, data.crewMembers)
+    if ((data.crewMembers?.length ?? 0) > 0) {
+      compiledHtml = this.compileCrewMembersNew(compiledHtml, data.crewMembers!)
     }
     // Handle boat image with template-specific positioning
     compiledHtml = this.applyBoatImage(
