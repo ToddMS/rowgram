@@ -6,7 +6,6 @@ import { signOut } from 'next-auth/react'
 import { useState } from 'react'
 import { trpc } from '../lib/trpc-client'
 import { useAuth } from '../lib/auth-context'
-import './Button.css'
 
 const navItems = [
   { href: '/', label: 'Dashboard', key: 'dashboard' },

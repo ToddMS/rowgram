@@ -3,7 +3,6 @@ import { SearchBar } from './SearchBar'
 import { ErrorBoundary } from './ErrorBoundary'
 import { SkeletonGrid } from './SkeletonGrid'
 import './DataContainer.css'
-import './Button.css'
 import type { ReactNode } from 'react'
 
 export interface DataItem {

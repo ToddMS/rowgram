@@ -6,6 +6,7 @@ import { Toaster } from 'sonner'
 import { AppProviders } from './providers'
 import '@/styles/globals.css'
 import '@/dashboard.css'
+import '@/components/Button.css'
 
 export const metadata: Metadata = {
   title: 'RowGram - Professional Rowing Crew Images',

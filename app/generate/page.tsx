@@ -10,7 +10,6 @@ import { TemplateSelector } from '@/components/TemplateSelector'
 import { SearchBar } from '@/components/SearchBar'
 import { SkeletonGrid } from '@/components/SkeletonGrid'
 import '@/components/SearchBar.css'
-import '@/components/Button.css'
 import '@/routes/generate.css'
 
 const PENDING_GENERATION_KEY = 'rowgram_pending_generation'
@@ -18,6 +17,7 @@ const PENDING_GENERATION_KEY = 'rowgram_pending_generation'
 interface PendingGeneration {
   guestCrewIds: Array<string>
   templateId: string
+  colors: { primaryColor: string; secondaryColor: string }
 }
 
 const scrollbarStyles = `
@@ -36,6 +36,9 @@ function GenerateImagePageContent() {
 
   const [selectedCrewIds, setSelectedCrewIds] = useState<Array<string>>([])
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('')
+  const [primaryColor, setPrimaryColor] = useState('#2563eb')
+  const [secondaryColor, setSecondaryColor] = useState('#64748b')
+  const [colorSource, setColorSource] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationProgress, setGenerationProgress] = useState({ current: 0, total: 0 })
   const [crewError, setCrewError] = useState(false)
@@ -86,6 +89,19 @@ function GenerateImagePageContent() {
     }
   }, [templatesRaw])
 
+  // When crew selection changes, pull colors from the first selected crew's club
+  useEffect(() => {
+    if (selectedCrewIds.length === 0) return
+    const firstCrew = allCrews.find((c) => c.id === selectedCrewIds[0])
+    if (firstCrew && !('isGuest' in firstCrew) && firstCrew.club) {
+      setPrimaryColor(firstCrew.club.primaryColor)
+      setSecondaryColor(firstCrew.club.secondaryColor)
+      setColorSource(firstCrew.club.name)
+    } else {
+      setColorSource(null)
+    }
+  }, [selectedCrewIds, crewsRaw])
+
   const generateImageMutation = trpc.savedImage.generate.useMutation({
     onSuccess: () => {
       setIsGenerating(false)
@@ -117,13 +133,13 @@ function GenerateImagePageContent() {
     },
   })
 
-  const triggerGeneration = (crewIds: Array<string>, templateId: string) => {
+  const triggerGeneration = (crewIds: Array<string>, templateId: string, colors?: { primaryColor: string; secondaryColor: string }) => {
     setIsGenerating(true)
     if (crewIds.length === 1) {
-      generateImageMutation.mutate({ crewId: crewIds[0], templateId })
+      generateImageMutation.mutate({ crewId: crewIds[0], templateId, colors })
     } else {
       setGenerationProgress({ current: 0, total: crewIds.length })
-      generateBatchMutation.mutate({ crewIds, templateId })
+      generateBatchMutation.mutate({ crewIds, templateId, colors })
     }
   }
 
@@ -149,7 +165,7 @@ function GenerateImagePageContent() {
 
     localStorage.removeItem(PENDING_GENERATION_KEY)
     setSyncedCrewIds({})
-    triggerGeneration(mappedIds, pending.templateId)
+    triggerGeneration(mappedIds, pending.templateId, pending.colors)
   }, [user, syncedCrewIds])
 
   const filterFunction = (crew: any, query: string) => {
@@ -189,6 +205,7 @@ function GenerateImagePageContent() {
       const pending: PendingGeneration = {
         guestCrewIds: selectedCrewIds.filter((id) => id.startsWith('guest_')),
         templateId: selectedTemplateId,
+        colors: { primaryColor, secondaryColor },
       }
       try {
         localStorage.setItem(PENDING_GENERATION_KEY, JSON.stringify(pending))
@@ -200,7 +217,7 @@ function GenerateImagePageContent() {
       return
     }
 
-    triggerGeneration(selectedCrewIds, selectedTemplateId)
+    triggerGeneration(selectedCrewIds, selectedTemplateId, { primaryColor, secondaryColor })
   }
 
   return (
@@ -266,9 +283,6 @@ function GenerateImagePageContent() {
                         }}
                       >
                         <span className="absolute top-2 right-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">{crew.boatCode}</span>
-                        {crew.isGuest && (
-                          <span className="absolute top-2 left-2 bg-amber-100 text-amber-700 text-xs font-medium px-2 py-1 rounded">Unsaved</span>
-                        )}
                         {!crew.isGuest && crew.club && (
                           <div className="absolute bottom-2 right-2">
                             {crew.club.logoUrl ? <img src={crew.club.logoUrl} alt={`${crew.club.name} logo`} className="w-6 h-6 object-contain" /> : (
@@ -279,7 +293,12 @@ function GenerateImagePageContent() {
                             )}
                           </div>
                         )}
-                        <h3 className="font-medium text-gray-900 mb-2 text-base pr-12 -ml-1 -mt-1">{crew.boatCode === '1x' && crew.crewNames?.length > 0 ? crew.crewNames[0] : crew.name}</h3>
+                        <h3 className="font-medium text-gray-900 mb-2 text-base pr-12 -ml-1 -mt-1">
+                          {crew.isGuest && (
+                            <span className="inline-block bg-amber-100 text-amber-700 text-xs font-medium px-1.5 py-0.5 rounded mr-1.5 align-middle" style={{ verticalAlign: 'middle' }}>Unsaved</span>
+                          )}
+                          {crew.boatCode === '1x' && crew.crewNames?.length > 0 ? crew.crewNames[0] : crew.name}
+                        </h3>
                         <div className="space-y-1 text-sm text-gray-600 -ml-1">
                           <p className="truncate">Race: {crew.raceName || 'No race specified'}</p>
                           {crew.raceCategory && <p className="truncate">Category: {crew.raceCategory}</p>}
@@ -305,6 +324,63 @@ function GenerateImagePageContent() {
                 {templateError && <span className="text-red-600 text-sm font-medium animate-pulse">Please select a template</span>}
               </div>
               <TemplateSelector selectedTemplateId={selectedTemplateId} onTemplateSelect={(id) => { setSelectedTemplateId(id); setTemplateError(false) }} hideTitle={true} />
+            </section>
+
+            <section className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-semibold">Colours</h3>
+                  {colorSource ? (
+                    <p className="text-sm text-gray-500 mt-0.5">From <span className="font-medium text-gray-700">{colorSource}</span></p>
+                  ) : (
+                    <p className="text-sm text-gray-500 mt-0.5">No club preset — pick your colours</p>
+                  )}
+                </div>
+                {!colorSource && (
+                  <button
+                    onClick={() => { setPrimaryColor('#2563eb'); setSecondaryColor('#64748b') }}
+                    className="text-xs text-gray-400 hover:text-gray-600"
+                  >
+                    Reset to defaults
+                  </button>
+                )}
+              </div>
+              <div className="flex gap-6">
+                <div className="flex items-center gap-3">
+                  <label className="text-sm font-medium text-gray-600 w-20">Primary</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={primaryColor}
+                      onChange={(e) => { setPrimaryColor(e.target.value); setColorSource(null) }}
+                      style={{ width: '36px', height: '36px', padding: '2px', border: '1px solid #d1d5db', borderRadius: '6px', cursor: 'pointer' }}
+                    />
+                    <input
+                      type="text"
+                      value={primaryColor.toUpperCase()}
+                      onChange={(e) => { if (/^#[0-9A-Fa-f]{0,6}$/.test(e.target.value)) { setPrimaryColor(e.target.value); setColorSource(null) } }}
+                      style={{ width: '88px', padding: '0.375rem 0.5rem', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '0.8125rem', fontFamily: 'monospace' }}
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <label className="text-sm font-medium text-gray-600 w-20">Secondary</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={secondaryColor}
+                      onChange={(e) => { setSecondaryColor(e.target.value); setColorSource(null) }}
+                      style={{ width: '36px', height: '36px', padding: '2px', border: '1px solid #d1d5db', borderRadius: '6px', cursor: 'pointer' }}
+                    />
+                    <input
+                      type="text"
+                      value={secondaryColor.toUpperCase()}
+                      onChange={(e) => { if (/^#[0-9A-Fa-f]{0,6}$/.test(e.target.value)) { setSecondaryColor(e.target.value); setColorSource(null) } }}
+                      style={{ width: '88px', padding: '0.375rem 0.5rem', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '0.8125rem', fontFamily: 'monospace' }}
+                    />
+                  </div>
+                </div>
+              </div>
             </section>
 
             <div className="flex flex-col items-center gap-3 mt-6">
