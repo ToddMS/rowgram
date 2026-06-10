@@ -86,7 +86,14 @@ export function Navigation() {
               )}
             </div>
           ) : (
-            <button className="btn btn--primary btn--small" onClick={() => setShowAuthModal(true)}>Sign In</button>
+            <button
+              onClick={() => setShowAuthModal(true)}
+              style={{ background: '#2563eb', color: '#fff', border: '1px solid #2563eb', borderRadius: '6px', padding: '0.375rem 0.875rem', fontSize: '0.875rem', fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap', transition: 'background 0.15s' }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = '#1d4ed8')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = '#2563eb')}
+            >
+              Sign In
+            </button>
           )}
         </div>
       </div>
