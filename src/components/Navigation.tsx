@@ -2,8 +2,11 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { signOut } from 'next-auth/react'
 import { useState } from 'react'
+import { trpc } from '../lib/trpc-client'
 import { useAuth } from '../lib/auth-context'
+import './Button.css'
 
 const navItems = [
   { href: '/', label: 'Dashboard', key: 'dashboard' },
@@ -16,7 +19,15 @@ const navItems = [
 export function Navigation() {
   const pathname = usePathname()
   const { user, setUser, setShowAuthModal, isLoading } = useAuth()
+  const utils = trpc.useUtils()
   const [showDropdown, setShowDropdown] = useState(false)
+
+  const handleSignOut = async () => {
+    setUser(null)
+    setShowDropdown(false)
+    await signOut({ redirect: false })
+    await utils.invalidate()
+  }
 
   const isActiveRoute = (href: string) => {
     if (href === '/' && pathname === '/') return true
@@ -68,7 +79,7 @@ export function Navigation() {
                       <div style={{ fontSize: '0.875rem', fontWeight: '500', color: '#111827' }}>{user.name}</div>
                       <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{user.email}</div>
                     </div>
-                    <button onClick={() => { setUser(null); setShowDropdown(false) }} style={{ width: '100%', padding: '0.75rem 1rem', textAlign: 'left', background: 'none', border: 'none', fontSize: '0.875rem', color: '#dc2626', cursor: 'pointer' }}>
+                    <button onClick={handleSignOut} style={{ width: '100%', padding: '0.75rem 1rem', textAlign: 'left', background: 'none', border: 'none', fontSize: '0.875rem', color: '#dc2626', cursor: 'pointer' }}>
                       Sign Out
                     </button>
                   </div>
@@ -76,7 +87,7 @@ export function Navigation() {
               )}
             </div>
           ) : (
-            <button className="login-btn" onClick={() => setShowAuthModal(true)}>Sign In</button>
+            <button className="btn btn--primary btn--small" onClick={() => setShowAuthModal(true)}>Sign In</button>
           )}
         </div>
       </div>

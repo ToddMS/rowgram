@@ -47,8 +47,10 @@ async function fetchImageBuffer(imageUrl: string): Promise<Buffer> {
 }
 
 export const savedImageRouter = router({
-  getAll: publicProcedure.query(async () => {
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    if (!ctx.user?.id) return []
     return await prisma.savedImage.findMany({
+      where: { userId: ctx.user.id },
       include: { crew: { include: { club: true } }, template: true, user: true },
       orderBy: { createdAt: 'desc' },
     })

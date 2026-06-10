@@ -3,8 +3,10 @@ import { publicProcedure, protectedProcedure, router } from '../../lib/trpc'
 import { prisma } from '../../lib/prisma'
 
 export const clubRouter = router({
-  getAll: publicProcedure.query(async () => {
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    if (!ctx.user?.id) return []
     return await prisma.club.findMany({
+      where: { userId: ctx.user.id },
       include: { user: true, crews: true },
       orderBy: { name: 'asc' },
     })

@@ -1,15 +1,24 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { trpc } from '@/lib/trpc-client'
+import { useAuth } from '@/lib/auth-context'
+import { useGuest } from '@/lib/guest-context'
 import { TemplateSelector } from '@/components/TemplateSelector'
 import { SearchBar } from '@/components/SearchBar'
 import { SkeletonGrid } from '@/components/SkeletonGrid'
 import '@/components/SearchBar.css'
 import '@/components/Button.css'
 import '@/routes/generate.css'
+
+const PENDING_GENERATION_KEY = 'rowgram_pending_generation'
+
+interface PendingGeneration {
+  guestCrewIds: Array<string>
+  templateId: string
+}
 
 const scrollbarStyles = `
   .custom-scrollbar { scrollbar-width: thin; scrollbar-color: #cbd5e1 #f1f5f9; overflow-y: scroll !important; }
@@ -22,6 +31,9 @@ const scrollbarStyles = `
 function GenerateImagePageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { user, setShowAuthModal, setAuthModalMessage } = useAuth()
+  const { guestCrews, syncedCrewIds, setSyncedCrewIds } = useGuest()
+
   const [selectedCrewIds, setSelectedCrewIds] = useState<Array<string>>([])
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -36,9 +48,23 @@ function GenerateImagePageContent() {
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
   const utils = trpc.useUtils()
-  const { data: crewsRaw, isLoading: crewsLoading } = trpc.crew.getAll.useQuery()
+  const { data: crewsRaw, isLoading: crewsLoading } = trpc.crew.getAll.useQuery(undefined, { enabled: !!user })
   const { data: templatesRaw } = trpc.template.getAll.useQuery()
-  const crews = crewsRaw as Array<{ id: string; name: string; clubName?: string | null; raceName?: string | null; raceDate?: string | null; boatName?: string | null; coachName?: string | null; raceCategory?: string | null; crewNames: string[]; boatCode: string; userId: string; clubId?: string | null; createdAt: Date | string; updatedAt: Date | string; club?: { id: string; name: string; primaryColor: string; secondaryColor: string; logoUrl: string | null } | null }> | undefined
+  const serverCrews = crewsRaw as Array<{ id: string; name: string; clubName?: string | null; raceName?: string | null; raceDate?: string | null; boatName?: string | null; coachName?: string | null; raceCategory?: string | null; crewNames: Array<string>; boatCode: string; userId: string; clubId?: string | null; createdAt: Date | string; updatedAt: Date | string; club?: { id: string; name: string; primaryColor: string; secondaryColor: string; logoUrl: string | null } | null }> | undefined
+
+  const mappedGuestCrews = guestCrews.map((c) => ({
+    id: c.id,
+    name: c.name,
+    raceName: c.raceName,
+    raceCategory: c.raceCategory,
+    boatCode: c.boatCode,
+    crewNames: c.crewNames,
+    club: null as null,
+    createdAt: c.createdAt,
+    isGuest: true as const,
+  }))
+
+  const allCrews = [...mappedGuestCrews, ...(serverCrews ?? [])]
 
   useEffect(() => {
     const crewsParam = searchParams.get('crews')
@@ -48,12 +74,11 @@ function GenerateImagePageContent() {
     }
   }, [searchParams])
 
-  // Auto-select first crew and first template on load
   useEffect(() => {
-    if (crews && crews.length > 0 && selectedCrewIds.length === 0 && !searchParams.get('crews')) {
-      setSelectedCrewIds([crews[0].id])
+    if (allCrews.length > 0 && selectedCrewIds.length === 0 && !searchParams.get('crews')) {
+      setSelectedCrewIds([allCrews[0].id])
     }
-  }, [crews])
+  }, [crewsRaw, guestCrews.length])
 
   useEffect(() => {
     if (templatesRaw && templatesRaw.length > 0 && !selectedTemplateId) {
@@ -67,9 +92,9 @@ function GenerateImagePageContent() {
       utils.savedImage.getAll.invalidate()
       router.push('/gallery')
     },
-    onError: (error) => {
+    onError: (generateErr) => {
       setIsGenerating(false)
-      toast.error(`Failed to generate image: ${error.message}`)
+      toast.error(`Failed to generate image: ${generateErr.message}`)
     },
   })
 
@@ -85,12 +110,47 @@ function GenerateImagePageContent() {
         toast.error(`Failed to generate any images. ${data.errors.length} error${data.errors.length === 1 ? '' : 's'} occurred.`)
       }
     },
-    onError: (error) => {
+    onError: (generateErr) => {
       setIsGenerating(false)
       setGenerationProgress({ current: 0, total: 0 })
-      toast.error(`Failed to generate batch images: ${error.message}`)
+      toast.error(`Failed to generate batch images: ${generateErr.message}`)
     },
   })
+
+  const triggerGeneration = (crewIds: Array<string>, templateId: string) => {
+    setIsGenerating(true)
+    if (crewIds.length === 1) {
+      generateImageMutation.mutate({ crewId: crewIds[0], templateId })
+    } else {
+      setGenerationProgress({ current: 0, total: crewIds.length })
+      generateBatchMutation.mutate({ crewIds, templateId })
+    }
+  }
+
+  // After OAuth return + guest sync: map pending guest IDs to real server IDs and auto-generate
+  useEffect(() => {
+    if (!user || Object.keys(syncedCrewIds).length === 0) return
+
+    let pending: PendingGeneration | null = null
+    try {
+      const raw = localStorage.getItem(PENDING_GENERATION_KEY)
+      if (raw) pending = JSON.parse(raw) as PendingGeneration
+    } catch {
+      localStorage.removeItem(PENDING_GENERATION_KEY)
+    }
+
+    if (!pending) return
+
+    const mappedIds = pending.guestCrewIds.map((id) => syncedCrewIds[id]).filter(Boolean)
+    if (mappedIds.length === 0) {
+      localStorage.removeItem(PENDING_GENERATION_KEY)
+      return
+    }
+
+    localStorage.removeItem(PENDING_GENERATION_KEY)
+    setSyncedCrewIds({})
+    triggerGeneration(mappedIds, pending.templateId)
+  }, [user, syncedCrewIds])
 
   const filterFunction = (crew: any, query: string) => {
     const crewName = crew.name?.toLowerCase() || ''
@@ -101,10 +161,10 @@ function GenerateImagePageContent() {
     return crewName.includes(query) || clubName.includes(query) || raceName.includes(query) || raceCategory.includes(query) || crew.boatCode?.toLowerCase().includes(query) || crewNames.includes(query)
   }
 
-  const uniqueClubs = Array.from(new Set(crews?.map((c) => c.club?.name).filter(Boolean))).map((club) => ({ value: club!, label: club! }))
+  const uniqueClubs = Array.from(new Set(allCrews.map((c) => c.club?.name).filter(Boolean))).map((club) => ({ value: club!, label: club! }))
   const uniqueBoatClasses = (() => {
     const order = ['8+', '4+', '4x', '4-', '2x', '2-', '1x']
-    const available = Array.from(new Set(crews?.map((c) => c.boatCode).filter(Boolean)))
+    const available = Array.from(new Set(allCrews.map((c) => c.boatCode).filter(Boolean)))
     return order.filter((bc) => available.includes(bc)).map((bc) => ({ value: bc, label: bc }))
   })()
 
@@ -123,13 +183,24 @@ function GenerateImagePageContent() {
     }
     setCrewError(false)
     setTemplateError(false)
-    setIsGenerating(true)
-    if (selectedCrewIds.length === 1) {
-      generateImageMutation.mutate({ crewId: selectedCrewIds[0], templateId: selectedTemplateId })
-    } else {
-      setGenerationProgress({ current: 0, total: selectedCrewIds.length })
-      generateBatchMutation.mutate({ crewIds: selectedCrewIds, templateId: selectedTemplateId })
+
+    if (!user) {
+      // Save pending state to localStorage so it survives the OAuth redirect
+      const pending: PendingGeneration = {
+        guestCrewIds: selectedCrewIds.filter((id) => id.startsWith('guest_')),
+        templateId: selectedTemplateId,
+      }
+      try {
+        localStorage.setItem(PENDING_GENERATION_KEY, JSON.stringify(pending))
+      } catch {
+        // ignore storage errors
+      }
+      setAuthModalMessage('Create a free account to generate and save your crew image')
+      setShowAuthModal(true)
+      return
     }
+
+    triggerGeneration(selectedCrewIds, selectedTemplateId)
   }
 
   return (
@@ -139,7 +210,7 @@ function GenerateImagePageContent() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="space-y-6">
             <SearchBar
-              items={crews || []}
+              items={allCrews}
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
               onItemsFiltered={setFilteredCrews}
@@ -181,7 +252,7 @@ function GenerateImagePageContent() {
                 <div className="max-h-60 overflow-y-auto">
                   <SkeletonGrid variant="generate" />
                 </div>
-              ) : crews && crews.length > 0 && filteredCrews.length > 0 ? (
+              ) : allCrews.length > 0 && filteredCrews.length > 0 ? (
                 <div className="max-h-60 pr-4 custom-scrollbar">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredCrews.map((crew) => (
@@ -195,7 +266,10 @@ function GenerateImagePageContent() {
                         }}
                       >
                         <span className="absolute top-2 right-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">{crew.boatCode}</span>
-                        {crew.club && (
+                        {crew.isGuest && (
+                          <span className="absolute top-2 left-2 bg-amber-100 text-amber-700 text-xs font-medium px-2 py-1 rounded">Unsaved</span>
+                        )}
+                        {!crew.isGuest && crew.club && (
                           <div className="absolute bottom-2 right-2">
                             {crew.club.logoUrl ? <img src={crew.club.logoUrl} alt={`${crew.club.name} logo`} className="w-6 h-6 object-contain" /> : (
                               <div className="flex gap-1">
@@ -209,13 +283,13 @@ function GenerateImagePageContent() {
                         <div className="space-y-1 text-sm text-gray-600 -ml-1">
                           <p className="truncate">Race: {crew.raceName || 'No race specified'}</p>
                           {crew.raceCategory && <p className="truncate">Category: {crew.raceCategory}</p>}
-                          {crew.club && <p className="truncate">Club: {crew.club.name}</p>}
+                          {!crew.isGuest && crew.club && <p className="truncate">Club: {crew.club.name}</p>}
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-              ) : crews && crews.length > 0 ? (
+              ) : allCrews.length > 0 ? (
                 <div className="text-center py-8 text-gray-500"><p>No crews match your search criteria.</p><p className="text-sm mt-2">Try adjusting your search or filters.</p></div>
               ) : (
                 <div className="text-center py-8 text-gray-500">
@@ -233,7 +307,7 @@ function GenerateImagePageContent() {
               <TemplateSelector selectedTemplateId={selectedTemplateId} onTemplateSelect={(id) => { setSelectedTemplateId(id); setTemplateError(false) }} hideTitle={true} />
             </section>
 
-            <div className="flex justify-center mt-6">
+            <div className="flex flex-col items-center gap-3 mt-6">
               <button onClick={handleGenerateClick} disabled={isGenerating} className={`px-8 py-3 rounded-lg font-medium transition-colors ${isGenerating ? 'bg-gray-400 text-gray-600 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>
                 {isGenerating ? (
                   <div className="flex items-center gap-2">
@@ -242,6 +316,9 @@ function GenerateImagePageContent() {
                   </div>
                 ) : selectedCrewIds.length > 1 ? `Generate ${selectedCrewIds.length} Images` : selectedCrewIds.length === 1 ? 'Generate Image' : 'Generate Images'}
               </button>
+              {!user && (
+                <p className="text-sm text-gray-500">A free account is required to generate and save images.</p>
+              )}
             </div>
           </div>
         </div>

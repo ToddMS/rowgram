@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { trpc } from '../lib/trpc-client'
 import { useAuth } from '../lib/auth-context'
+import { useGuest } from '../lib/guest-context'
 import { Dialog } from './Dialog'
 import { BOAT_TYPES, getBoatType } from '../lib/boat-types'
 
@@ -20,6 +21,7 @@ const STEPS = [
 
 export function CreateCrewModal({ isOpen, onClose, onSuccess, editingCrew }: CreateCrewModalProps) {
   const { user } = useAuth()
+  const { addGuestCrew, updateGuestCrew } = useGuest()
 
   const [activeStep, setActiveStep] = useState(0)
   const [boatClass, setBoatClass] = useState('')
@@ -168,7 +170,6 @@ export function CreateCrewModal({ isOpen, onClose, onSuccess, editingCrew }: Cre
   }
 
   const handleSaveCrew = async () => {
-    if (!user) { alert('Please sign in to save your crew'); return }
     setSaving(true)
     try {
       if (!getBoatType(boatClass)) throw new Error(`Unknown boat class: ${boatClass}`)
@@ -177,6 +178,36 @@ export function CreateCrewModal({ isOpen, onClose, onSuccess, editingCrew }: Cre
         ...(boatClassHasCox(boatClass) ? [coxName] : []),
         ...crewNames,
       ]
+
+      if (!user || editingCrew?.isGuest) {
+        if (editingCrew?.isGuest) {
+          updateGuestCrew(editingCrew.id, {
+            name: boatName,
+            clubName: clubName || undefined,
+            raceName: raceName || undefined,
+            raceDate: raceDate.trim() || undefined,
+            boatCode: boatClass,
+            crewNames: allCrewNames,
+            coachName: coachName.trim() || undefined,
+            raceCategory: raceCategory.trim() || undefined,
+          })
+        } else {
+          addGuestCrew({
+            name: boatName,
+            clubName: clubName || undefined,
+            clubId: selectedClubId || undefined,
+            raceName: raceName || undefined,
+            raceDate: raceDate.trim() || undefined,
+            boatCode: boatClass,
+            crewNames: allCrewNames,
+            coachName: coachName.trim() || undefined,
+            raceCategory: raceCategory.trim() || undefined,
+          })
+        }
+        onSuccess()
+        handleClose()
+        return
+      }
 
       if (isEditing) {
         await updateCrewMutation.mutateAsync({

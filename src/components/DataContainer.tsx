@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+
 import { SearchBar } from './SearchBar'
 import { ErrorBoundary } from './ErrorBoundary'
 import { SkeletonGrid } from './SkeletonGrid'
 import './DataContainer.css'
+import './Button.css'
 import type { ReactNode } from 'react'
 
 export interface DataItem {
@@ -99,14 +100,7 @@ export function DataContainer<T extends DataItem>({
   onRetry,
 }: DataContainerProps<T>) {
 
-  // TEMP: force skeleton for 5s so we can compare layouts
-  const [forcedLoading, setForcedLoading] = useState(true)
-  useEffect(() => {
-    const t = setTimeout(() => setForcedLoading(false), 5000)
-    return () => clearTimeout(t)
-  }, [])
-
-  if (loading || forcedLoading) {
+  if (loading) {
     return (
       <div className={`data-container ${className}`}>
         <div className="container">
@@ -145,7 +139,7 @@ export function DataContainer<T extends DataItem>({
           </div>
           {onRetry && (
             <div style={{ textAlign: 'center' }}>
-              <button className="btn btn-primary" onClick={onRetry}>
+              <button className="btn btn--primary btn--medium" onClick={onRetry}>
                 Retry Loading {emptyState.title}
               </button>
             </div>
@@ -164,11 +158,11 @@ export function DataContainer<T extends DataItem>({
             <p>{emptyState.message}</p>
             {emptyState.actionLabel && (
               emptyState.actionHref ? (
-                <a href={emptyState.actionHref} className="btn btn-primary">
+                <a href={emptyState.actionHref} className="btn btn--primary btn--medium">
                   {emptyState.actionLabel}
                 </a>
               ) : emptyState.actionOnClick ? (
-                <button className="btn btn-primary" onClick={emptyState.actionOnClick}>
+                <button className="btn btn--primary btn--medium" onClick={emptyState.actionOnClick}>
                   {emptyState.actionLabel}
                 </button>
               ) : null
@@ -219,7 +213,7 @@ export function DataContainer<T extends DataItem>({
                   <h3>No {emptyState.title.toLowerCase()} found</h3>
                   <p>No {emptyState.title.toLowerCase()} match "{searchQuery}"</p>
                   <button
-                    className="btn btn-secondary"
+                    className="btn btn--secondary btn--medium"
                     onClick={() => onSearchChange('')}
                   >
                     Clear Search
@@ -231,11 +225,11 @@ export function DataContainer<T extends DataItem>({
                   <p>{emptyState.message}</p>
                   {emptyState.actionLabel && (
                     emptyState.actionHref ? (
-                      <a href={emptyState.actionHref} className="btn btn-primary">
+                      <a href={emptyState.actionHref} className="btn btn--primary btn--medium">
                         {emptyState.actionLabel}
                       </a>
                     ) : emptyState.actionOnClick ? (
-                      <button className="btn btn-primary" onClick={emptyState.actionOnClick}>
+                      <button className="btn btn--primary btn--medium" onClick={emptyState.actionOnClick}>
                         {emptyState.actionLabel}
                       </button>
                     ) : null

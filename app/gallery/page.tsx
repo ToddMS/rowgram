@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc-client'
+import { useAuth } from '@/lib/auth-context'
 import { DataContainer } from '@/components/DataContainer'
 import { ImageCard } from '@/components/ImageCard'
 import { BatchDownloadModal } from '@/components/BatchDownloadModal'
@@ -53,8 +54,9 @@ export default function GalleryPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<SavedImage | null>(null)
   const [showBatchDeleteConfirm, setShowBatchDeleteConfirm] = useState(false)
 
+  const { user } = useAuth()
   const utils = trpc.useUtils()
-  const { data: savedImagesRaw = [], isLoading: loading } = trpc.savedImage.getAll.useQuery()
+  const { data: savedImagesRaw = [], isLoading: loading } = trpc.savedImage.getAll.useQuery(undefined, { enabled: !!user })
   const savedImages = savedImagesRaw as unknown as Array<SavedImage>
 
   const deleteImageMutation = trpc.savedImage.delete.useMutation({ onSuccess: () => utils.savedImage.getAll.invalidate() })

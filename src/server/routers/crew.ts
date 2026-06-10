@@ -3,9 +3,11 @@ import { publicProcedure, protectedProcedure, router } from '../../lib/trpc'
 import { prisma } from '../../lib/prisma'
 
 export const crewRouter = router({
-  getAll: publicProcedure.query(async () => {
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    if (!ctx.user?.id) return []
     try {
       return await prisma.crew.findMany({
+        where: { userId: ctx.user.id },
         include: { club: true },
       })
     } catch (error) {

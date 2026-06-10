@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 import { trpc } from '@/lib/trpc-client'
 import { useAuth } from '@/lib/auth-context'
+import { useGuest } from '@/lib/guest-context'
 import { DataContainer } from '@/components/DataContainer'
 import { ClubCard } from '@/components/ClubCard'
 import { ConfirmDeleteModal } from '@/components/ConfirmDeleteModal'
@@ -117,7 +118,8 @@ const ClubDialog = ({
 }
 
 export default function ClubsPage() {
-  const { user } = useAuth()
+  const { user, setShowAuthModal } = useAuth()
+  const { guestClubs, addGuestClub, updateGuestClub, removeGuestClub } = useGuest()
   const [isCreatingNew, setIsCreatingNew] = useState(false)
   const [editingClubId, setEditingClubId] = useState<string | null>(null)
   const [newClubForm, setNewClubForm] = useState<ClubFormData>(defaultForm)
@@ -132,7 +134,12 @@ export default function ClubsPage() {
   const editLogoInputRefs = useRef<Record<string, HTMLInputElement | null>>({})
 
   const utils = trpc.useUtils()
-  const { data: clubs = [], isLoading } = trpc.club.getAll.useQuery()
+  const { data: serverClubs = [], isLoading } = trpc.club.getAll.useQuery(undefined, { enabled: !!user })
+
+  const allClubs = [
+    ...guestClubs.map((c) => ({ ...c, logoUrl: c.logoUrl ?? null })),
+    ...serverClubs,
+  ]
 
   const invalidate = () => { utils.club.getAll.invalidate(); utils.crew.getAll.invalidate() }
 
@@ -172,23 +179,75 @@ export default function ClubsPage() {
 
   const filterFunction = (club: any, query: string) => club.name.toLowerCase().includes(query)
 
-  if (!user) {
-    return (
-      <div className="club-presets-container">
-        <div className="container">
-          <div className="empty-state">
-            <h2>Clubs</h2>
-            <p>Sign in to manage your club color presets</p>
-          </div>
-        </div>
-      </div>
-    )
+  const handleCreateSubmit = () => {
+    if (!user) {
+      addGuestClub({
+        name: newClubForm.name,
+        primaryColor: newClubForm.primaryColor,
+        secondaryColor: newClubForm.secondaryColor,
+        ...(newClubForm.logoUrl ? { logoUrl: newClubForm.logoUrl } : {}),
+      })
+      setIsCreatingNew(false)
+      setNewClubForm(defaultForm)
+    } else {
+      createMutation.mutate({ ...newClubForm, userId: user.id })
+    }
+  }
+
+  const handleSaveEdit = (club: any) => {
+    const d = editForm[club.id]
+    if (!d.name.trim()) { alert('Club name is required'); return }
+    if (club.isGuest) {
+      updateGuestClub(club.id, {
+        name: d.name,
+        primaryColor: d.primaryColor,
+        secondaryColor: d.secondaryColor,
+        ...(d.logoUrl ? { logoUrl: d.logoUrl } : {}),
+      })
+      setEditingClubId(null)
+      setEditForm((prev) => { const next = { ...prev }; delete next[club.id]; return next })
+    } else {
+      updateMutation.mutate({ id: club.id, ...d, logoUrl: d.logoUrl || '' })
+    }
+  }
+
+  const handleDeleteClub = (id: string) => {
+    const isGuest = guestClubs.some((c) => c.id === id)
+    if (isGuest) {
+      removeGuestClub(id)
+      setShowDeleteConfirm(null)
+    } else {
+      deleteMutation.mutate({ id })
+    }
+  }
+
+  const handleBulkDelete = () => {
+    const guestIds = Array.from(selectedClubs).filter((id) => guestClubs.some((c) => c.id === id))
+    const serverIds = Array.from(selectedClubs).filter((id) => !guestClubs.some((c) => c.id === id))
+    guestIds.forEach((id) => removeGuestClub(id))
+    if (serverIds.length > 0) {
+      bulkDeleteMutation.mutate({ ids: serverIds })
+    } else {
+      setSelectedClubs(new Set())
+      setShowBatchDeleteConfirm(false)
+    }
   }
 
   return (
     <>
+      {!user && guestClubs.length > 0 && (
+        <div style={{ background: '#eff6ff', borderBottom: '1px solid #bfdbfe', padding: '10px 24px', fontSize: '0.875rem', color: '#1d4ed8', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span>Your clubs are saved on this device only.</span>
+          <button
+            onClick={() => setShowAuthModal(true)}
+            style={{ background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer', textDecoration: 'underline', fontSize: 'inherit', padding: 0 }}
+          >
+            Sign in to save them permanently
+          </button>
+        </div>
+      )}
       <DataContainer
-        items={clubs}
+        items={allClubs}
         loading={isLoading}
         skeletonVariant="club"
         error=""
@@ -209,7 +268,7 @@ export default function ClubsPage() {
             isEditing={editingClubId === club.id}
             editData={{ ...editForm[club.id], id: club.id }}
             onEdit={(c) => { setEditingClubId(c.id); setEditForm((prev) => ({ ...prev, [c.id]: { name: c.name, primaryColor: c.primaryColor, secondaryColor: c.secondaryColor, logoUrl: c.logoUrl || '' } })) }}
-            onSave={(c) => { const d = editForm[c.id]; if (!d.name.trim()) { alert('Club name is required'); return }; updateMutation.mutate({ id: c.id, ...d, logoUrl: d.logoUrl || '' }) }}
+            onSave={handleSaveEdit}
             onCancel={(clubId) => { setEditingClubId(null); setEditForm((prev) => { const n = { ...prev }; delete n[clubId]; return n }) }}
             onDelete={(c) => setShowDeleteConfirm(c.id)}
             onEditFormChange={(clubId, field, value) => setEditForm((prev) => ({ ...prev, [clubId]: { ...prev[clubId], [field]: value } }))}
@@ -242,8 +301,8 @@ export default function ClubsPage() {
         onLogoClick={() => newLogoInputRef.current?.click()}
         onLogoDrop={(e) => handleDrop(e)}
         onLogoRemove={() => setNewClubForm((p) => ({ ...p, logoUrl: '' }))}
-        onSubmit={() => createMutation.mutate({ ...newClubForm, userId: user.id })}
-        isPending={createMutation.isPending}
+        onSubmit={handleCreateSubmit}
+        isPending={user ? createMutation.isPending : false}
         logoInputRef={newLogoInputRef}
         title="Create New Club"
       />
@@ -251,8 +310,8 @@ export default function ClubsPage() {
       {isCreatingNew && <input ref={newLogoInputRef} type="file" accept="image/*" onChange={(e) => handleLogoFileSelect(e)} style={{ display: 'none' }} />}
       {Object.keys(editForm).map((clubId) => <input key={clubId} ref={(el) => { editLogoInputRefs.current[clubId] = el }} type="file" accept="image/*" onChange={(e) => handleLogoFileSelect(e, clubId)} style={{ display: 'none' }} />)}
 
-      <ConfirmDeleteModal isOpen={!!showDeleteConfirm} onClose={() => setShowDeleteConfirm(null)} onConfirm={() => deleteMutation.mutate({ id: showDeleteConfirm! })} title="Delete Club" message={`Are you sure you want to delete "${filteredClubs.find((c) => c.id === showDeleteConfirm)?.name}"?`} confirmButtonText="Delete Club" />
-      <ConfirmDeleteModal isOpen={showBatchDeleteConfirm} onClose={() => setShowBatchDeleteConfirm(false)} onConfirm={() => bulkDeleteMutation.mutate({ ids: Array.from(selectedClubs) })} title={selectedClubs.size === 1 ? 'Delete Club' : 'Delete Clubs'} message={selectedClubs.size === 1 ? `Are you sure you want to delete "${filteredClubs.find((c) => selectedClubs.has(c.id))?.name}"?` : `Are you sure you want to delete ${selectedClubs.size} clubs?`} confirmButtonText={selectedClubs.size === 1 ? 'Delete Club' : 'Delete Clubs'} />
+      <ConfirmDeleteModal isOpen={!!showDeleteConfirm} onClose={() => setShowDeleteConfirm(null)} onConfirm={() => handleDeleteClub(showDeleteConfirm!)} title="Delete Club" message={`Are you sure you want to delete "${filteredClubs.find((c) => c.id === showDeleteConfirm)?.name || allClubs.find((c) => c.id === showDeleteConfirm)?.name}"?`} confirmButtonText="Delete Club" />
+      <ConfirmDeleteModal isOpen={showBatchDeleteConfirm} onClose={() => setShowBatchDeleteConfirm(false)} onConfirm={handleBulkDelete} title={selectedClubs.size === 1 ? 'Delete Club' : 'Delete Clubs'} message={selectedClubs.size === 1 ? `Are you sure you want to delete "${filteredClubs.find((c) => selectedClubs.has(c.id))?.name}"?` : `Are you sure you want to delete ${selectedClubs.size} clubs?`} confirmButtonText={selectedClubs.size === 1 ? 'Delete Club' : 'Delete Clubs'} />
     </>
   )
 }
