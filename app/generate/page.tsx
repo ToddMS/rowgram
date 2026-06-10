@@ -17,7 +17,8 @@ const PENDING_GENERATION_KEY = 'rowgram_pending_generation'
 interface PendingGeneration {
   guestCrewIds: Array<string>
   templateId: string
-  colors: { primaryColor: string; secondaryColor: string }
+  colors?: { primaryColor: string; secondaryColor: string }
+  crewColors?: Array<{ crewId: string; primaryColor: string; secondaryColor: string }>
 }
 
 const scrollbarStyles = `
@@ -36,9 +37,10 @@ function GenerateImagePageContent() {
 
   const [selectedCrewIds, setSelectedCrewIds] = useState<Array<string>>([])
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('')
-  const [primaryColor, setPrimaryColor] = useState('#2563eb')
-  const [secondaryColor, setSecondaryColor] = useState('#64748b')
-  const [colorSource, setColorSource] = useState<string | null>(null)
+  const [colorMode, setColorMode] = useState<'auto' | 'override'>('auto')
+  const [overridePrimary, setOverridePrimary] = useState('#2563eb')
+  const [overrideSecondary, setOverrideSecondary] = useState('#64748b')
+  const [swappedCrewIds, setSwappedCrewIds] = useState<Set<string>>(new Set())
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationProgress, setGenerationProgress] = useState({ current: 0, total: 0 })
   const [crewError, setCrewError] = useState(false)
@@ -89,18 +91,27 @@ function GenerateImagePageContent() {
     }
   }, [templatesRaw])
 
-  // When crew selection changes, pull colors from the first selected crew's club
-  useEffect(() => {
-    if (selectedCrewIds.length === 0) return
-    const firstCrew = allCrews.find((c) => c.id === selectedCrewIds[0])
-    if (firstCrew && !('isGuest' in firstCrew) && firstCrew.club) {
-      setPrimaryColor(firstCrew.club.primaryColor)
-      setSecondaryColor(firstCrew.club.secondaryColor)
-      setColorSource(firstCrew.club.name)
-    } else {
-      setColorSource(null)
+  const getCrewBaseColors = (crew: any) => {
+    if (!('isGuest' in crew) && crew.club) {
+      return { primary: crew.club.primaryColor, secondary: crew.club.secondaryColor }
     }
-  }, [selectedCrewIds, crewsRaw])
+    return { primary: '#2563eb', secondary: '#64748b' }
+  }
+
+  const getEffectiveCrewColors = (crew: any) => {
+    const base = getCrewBaseColors(crew)
+    return swappedCrewIds.has(crew.id)
+      ? { primaryColor: base.secondary, secondaryColor: base.primary }
+      : { primaryColor: base.primary, secondaryColor: base.secondary }
+  }
+
+  const toggleSwap = (crewId: string) => {
+    setSwappedCrewIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(crewId)) next.delete(crewId); else next.add(crewId)
+      return next
+    })
+  }
 
   const generateImageMutation = trpc.savedImage.generate.useMutation({
     onSuccess: () => {
@@ -133,13 +144,29 @@ function GenerateImagePageContent() {
     },
   })
 
-  const triggerGeneration = (crewIds: Array<string>, templateId: string, colors?: { primaryColor: string; secondaryColor: string }) => {
+  const buildColorArgs = (crewIds: Array<string>) => {
+    if (colorMode === 'override') {
+      return { colors: { primaryColor: overridePrimary, secondaryColor: overrideSecondary }, crewColors: undefined }
+    }
+    const overrides = crewIds
+      .filter((id) => swappedCrewIds.has(id))
+      .map((crewId) => {
+        const crew = allCrews.find((c) => c.id === crewId)
+        const base = crew ? getCrewBaseColors(crew) : { primary: '#2563eb', secondary: '#64748b' }
+        return { crewId, primaryColor: base.secondary, secondaryColor: base.primary }
+      })
+    return { colors: undefined, crewColors: overrides.length > 0 ? overrides : undefined }
+  }
+
+  const triggerGeneration = (crewIds: Array<string>, templateId: string, savedColorArgs?: { colors?: { primaryColor: string; secondaryColor: string }; crewColors?: Array<{ crewId: string; primaryColor: string; secondaryColor: string }> }) => {
     setIsGenerating(true)
+    const colorArgs = savedColorArgs ?? buildColorArgs(crewIds)
     if (crewIds.length === 1) {
-      generateImageMutation.mutate({ crewId: crewIds[0], templateId, colors })
+      const singleColors = colorArgs.colors ?? colorArgs.crewColors?.[0] ? { primaryColor: colorArgs.crewColors![0].primaryColor, secondaryColor: colorArgs.crewColors![0].secondaryColor } : undefined
+      generateImageMutation.mutate({ crewId: crewIds[0], templateId, colors: singleColors })
     } else {
       setGenerationProgress({ current: 0, total: crewIds.length })
-      generateBatchMutation.mutate({ crewIds, templateId, colors })
+      generateBatchMutation.mutate({ crewIds, templateId, ...colorArgs })
     }
   }
 
@@ -165,7 +192,7 @@ function GenerateImagePageContent() {
 
     localStorage.removeItem(PENDING_GENERATION_KEY)
     setSyncedCrewIds({})
-    triggerGeneration(mappedIds, pending.templateId, pending.colors)
+    triggerGeneration(mappedIds, pending.templateId, { colors: pending.colors, crewColors: pending.crewColors })
   }, [user, syncedCrewIds])
 
   const filterFunction = (crew: any, query: string) => {
@@ -202,10 +229,12 @@ function GenerateImagePageContent() {
 
     if (!user) {
       // Save pending state to localStorage so it survives the OAuth redirect
+      const colorArgs = buildColorArgs(selectedCrewIds)
       const pending: PendingGeneration = {
         guestCrewIds: selectedCrewIds.filter((id) => id.startsWith('guest_')),
         templateId: selectedTemplateId,
-        colors: { primaryColor, secondaryColor },
+        colors: colorArgs.colors,
+        crewColors: colorArgs.crewColors,
       }
       try {
         localStorage.setItem(PENDING_GENERATION_KEY, JSON.stringify(pending))
@@ -217,7 +246,7 @@ function GenerateImagePageContent() {
       return
     }
 
-    triggerGeneration(selectedCrewIds, selectedTemplateId, { primaryColor, secondaryColor })
+    triggerGeneration(selectedCrewIds, selectedTemplateId)
   }
 
   return (
@@ -328,71 +357,81 @@ function GenerateImagePageContent() {
 
             <section className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Colours</h3>
+                <div style={{ display: 'flex', border: '1px solid #d1d5db', borderRadius: '6px', overflow: 'hidden' }}>
+                  <button onClick={() => setColorMode('auto')} style={{ padding: '0.3125rem 0.75rem', fontSize: '0.8125rem', fontWeight: 500, background: colorMode === 'auto' ? '#2563eb' : 'white', color: colorMode === 'auto' ? 'white' : '#374151', border: 'none', cursor: 'pointer', transition: 'background 0.15s' }}>Auto</button>
+                  <button onClick={() => setColorMode('override')} style={{ padding: '0.3125rem 0.75rem', fontSize: '0.8125rem', fontWeight: 500, background: colorMode === 'override' ? '#2563eb' : 'white', color: colorMode === 'override' ? 'white' : '#374151', border: 'none', borderLeft: '1px solid #d1d5db', cursor: 'pointer', transition: 'background 0.15s' }}>Override all</button>
+                </div>
+              </div>
+
+              {colorMode === 'auto' ? (
                 <div>
-                  <h3 className="text-lg font-semibold">Colours</h3>
-                  {colorSource ? (
-                    <p className="text-sm text-gray-500 mt-0.5">From <span className="font-medium text-gray-700">{colorSource}</span></p>
+                  {selectedCrewIds.length === 0 ? (
+                    <p className="text-sm text-gray-400">Select crews above to see their colours</p>
                   ) : (
-                    <p className="text-sm text-gray-500 mt-0.5">No club preset — pick your colours</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      {selectedCrewIds.map((crewId) => {
+                        const crew = allCrews.find((c) => c.id === crewId)
+                        if (!crew) return null
+                        const effective = getEffectiveCrewColors(crew)
+                        const isSwapped = swappedCrewIds.has(crewId)
+                        const hasClub = !('isGuest' in crew) && (crew as any).club
+                        return (
+                          <div key={crewId} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 0', borderBottom: '1px solid #f3f4f6' }}>
+                            <span style={{ flex: 1, fontSize: '0.875rem', fontWeight: 500, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {crew.boatCode === '1x' && crew.crewNames?.length > 0 ? crew.crewNames[0] : crew.name}
+                            </span>
+                            <span style={{ fontSize: '0.75rem', color: '#9ca3af', flexShrink: 0 }}>
+                              {hasClub ? (crew as any).club.name : 'No club'}
+                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                              <div style={{ width: '18px', height: '18px', borderRadius: '4px', background: effective.primaryColor, border: '1px solid #e5e7eb' }} />
+                              <button
+                                onClick={() => toggleSwap(crewId)}
+                                title="Swap colours"
+                                style={{ padding: '3px', border: `1px solid ${isSwapped ? '#93c5fd' : '#d1d5db'}`, borderRadius: '4px', background: isSwapped ? '#eff6ff' : '#f9fafb', cursor: 'pointer', display: 'flex', alignItems: 'center', color: isSwapped ? '#2563eb' : '#9ca3af', transition: 'all 0.15s' }}
+                              >
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'rotate(90deg)' }}>
+                                  <path d="M7 16V4m0 0L3 8m4-4l4 4" /><path d="M17 8v12m0 0l4-4m-4 4l-4-4" />
+                                </svg>
+                              </button>
+                              <div style={{ width: '18px', height: '18px', borderRadius: '4px', background: effective.secondaryColor, border: '1px solid #e5e7eb' }} />
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
                   )}
                 </div>
-                {!colorSource && (
+              ) : (
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3">
+                    <label className="text-sm font-medium text-gray-600 w-20">Primary</label>
+                    <div className="flex items-center gap-2">
+                      <input type="color" value={overridePrimary} onChange={(e) => setOverridePrimary(e.target.value)} style={{ width: '36px', height: '36px', padding: '2px', border: '1px solid #d1d5db', borderRadius: '6px', cursor: 'pointer' }} />
+                      <input type="text" value={overridePrimary.toUpperCase()} onChange={(e) => { if (/^#[0-9A-Fa-f]{0,6}$/.test(e.target.value)) setOverridePrimary(e.target.value) }} style={{ width: '88px', padding: '0.375rem 0.5rem', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '0.8125rem', fontFamily: 'monospace' }} />
+                    </div>
+                  </div>
                   <button
-                    onClick={() => { setPrimaryColor('#2563eb'); setSecondaryColor('#64748b') }}
-                    className="text-xs text-gray-400 hover:text-gray-600"
+                    onClick={() => { const t = overridePrimary; setOverridePrimary(overrideSecondary); setOverrideSecondary(t) }}
+                    title="Swap colours"
+                    style={{ padding: '0.375rem', border: '1px solid #d1d5db', borderRadius: '6px', background: '#f9fafb', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#6b7280', flexShrink: 0 }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = '#f1f5f9')}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = '#f9fafb')}
                   >
-                    Reset to defaults
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'rotate(90deg)' }}>
+                      <path d="M7 16V4m0 0L3 8m4-4l4 4" /><path d="M17 8v12m0 0l4-4m-4 4l-4-4" />
+                    </svg>
                   </button>
-                )}
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-3">
-                  <label className="text-sm font-medium text-gray-600 w-20">Primary</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={primaryColor}
-                      onChange={(e) => { setPrimaryColor(e.target.value); setColorSource(null) }}
-                      style={{ width: '36px', height: '36px', padding: '2px', border: '1px solid #d1d5db', borderRadius: '6px', cursor: 'pointer' }}
-                    />
-                    <input
-                      type="text"
-                      value={primaryColor.toUpperCase()}
-                      onChange={(e) => { if (/^#[0-9A-Fa-f]{0,6}$/.test(e.target.value)) { setPrimaryColor(e.target.value); setColorSource(null) } }}
-                      style={{ width: '88px', padding: '0.375rem 0.5rem', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '0.8125rem', fontFamily: 'monospace' }}
-                    />
+                  <div className="flex items-center gap-3">
+                    <label className="text-sm font-medium text-gray-600 w-20">Secondary</label>
+                    <div className="flex items-center gap-2">
+                      <input type="color" value={overrideSecondary} onChange={(e) => setOverrideSecondary(e.target.value)} style={{ width: '36px', height: '36px', padding: '2px', border: '1px solid #d1d5db', borderRadius: '6px', cursor: 'pointer' }} />
+                      <input type="text" value={overrideSecondary.toUpperCase()} onChange={(e) => { if (/^#[0-9A-Fa-f]{0,6}$/.test(e.target.value)) setOverrideSecondary(e.target.value) }} style={{ width: '88px', padding: '0.375rem 0.5rem', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '0.8125rem', fontFamily: 'monospace' }} />
+                    </div>
                   </div>
                 </div>
-                <button
-                  onClick={() => { const tmp = primaryColor; setPrimaryColor(secondaryColor); setSecondaryColor(tmp); setColorSource(null) }}
-                  title="Swap colours"
-                  style={{ padding: '0.375rem', border: '1px solid #d1d5db', borderRadius: '6px', background: '#f9fafb', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#6b7280', flexShrink: 0 }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = '#f1f5f9')}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = '#f9fafb')}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M7 16V4m0 0L3 8m4-4l4 4" />
-                    <path d="M17 8v12m0 0l4-4m-4 4l-4-4" />
-                  </svg>
-                </button>
-                <div className="flex items-center gap-3">
-                  <label className="text-sm font-medium text-gray-600 w-20">Secondary</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={secondaryColor}
-                      onChange={(e) => { setSecondaryColor(e.target.value); setColorSource(null) }}
-                      style={{ width: '36px', height: '36px', padding: '2px', border: '1px solid #d1d5db', borderRadius: '6px', cursor: 'pointer' }}
-                    />
-                    <input
-                      type="text"
-                      value={secondaryColor.toUpperCase()}
-                      onChange={(e) => { if (/^#[0-9A-Fa-f]{0,6}$/.test(e.target.value)) { setSecondaryColor(e.target.value); setColorSource(null) } }}
-                      style={{ width: '88px', padding: '0.375rem 0.5rem', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '0.8125rem', fontFamily: 'monospace' }}
-                    />
-                  </div>
-                </div>
-              </div>
+              )}
             </section>
 
             <div className="flex flex-col items-center gap-3 mt-6">

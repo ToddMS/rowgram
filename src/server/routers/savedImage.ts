@@ -222,6 +222,11 @@ export const savedImageRouter = router({
         primaryColor: z.string().regex(/^#[0-9A-F]{6}$/i).optional(),
         secondaryColor: z.string().regex(/^#[0-9A-F]{6}$/i).optional(),
       }).optional(),
+      crewColors: z.array(z.object({
+        crewId: z.string(),
+        primaryColor: z.string().regex(/^#[0-9A-F]{6}$/i),
+        secondaryColor: z.string().regex(/^#[0-9A-F]{6}$/i),
+      })).optional(),
     }))
     .mutation(async ({ input, ctx }): Promise<{ successful: number; failed: number; errors: Array<string>; total: number }> => {
       try {
@@ -230,6 +235,10 @@ export const savedImageRouter = router({
 
         let selectedClub = null
         if (input.clubId) selectedClub = await prisma.club.findUnique({ where: { id: input.clubId } })
+
+        const perCrewColorMap = new Map(
+          (input.crewColors ?? []).map((c) => [c.crewId, { primaryColor: c.primaryColor, secondaryColor: c.secondaryColor }])
+        )
 
         const results: Array<any> = []
         const errors: Array<{ crewId: string; error: string }> = []
@@ -247,11 +256,14 @@ export const savedImageRouter = router({
                 if (!validation.valid) throw new Error(validation.error)
                 const resolvedClub = await resolveClub(crew, ctx.user.id, input.clubId)
                 const crewForGeneration = { ...crew, club: resolvedClub }
+                const effectiveColors =
+                  perCrewColorMap.get(crewId) ??
+                  (input.colors?.primaryColor && input.colors?.secondaryColor
+                    ? { primaryColor: input.colors.primaryColor, secondaryColor: input.colors.secondaryColor }
+                    : undefined)
                 const generatedImage = await ImageGenerationService.generateCrewImage(
                   crewForGeneration, template,
-                  input.colors?.primaryColor && input.colors?.secondaryColor
-                    ? { primaryColor: input.colors.primaryColor, secondaryColor: input.colors.secondaryColor }
-                    : undefined,
+                  effectiveColors,
                   browser,
                 )
                 return await prisma.savedImage.create({
@@ -265,7 +277,7 @@ export const savedImageRouter = router({
                       width: generatedImage.width,
                       height: generatedImage.height,
                       generatedAt: new Date().toISOString(),
-                      colors: input.colors || { primaryColor: crew.club?.primaryColor || '#15803d', secondaryColor: crew.club?.secondaryColor || '#f9a8d4' },
+                      colors: effectiveColors ?? { primaryColor: crew.club?.primaryColor || '#15803d', secondaryColor: crew.club?.secondaryColor || '#f9a8d4' },
                     },
                   },
                   include: { crew: { include: { club: true } }, template: true, user: { select: { id: true, name: true, email: true } } },

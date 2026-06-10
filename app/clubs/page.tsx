@@ -19,6 +19,13 @@ interface ClubFormData {
 
 const defaultForm: ClubFormData = { name: '', primaryColor: '#2563eb', secondaryColor: '#1e40af', logoUrl: '' }
 
+const SwapIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'rotate(90deg)' }}>
+    <path d="M7 16V4m0 0L3 8m4-4l4 4" />
+    <path d="M17 8v12m0 0l4-4m-4 4l-4-4" />
+  </svg>
+)
+
 const ClubDialog = ({
   isOpen,
   onClose,
@@ -53,6 +60,12 @@ const ClubDialog = ({
 
   const handleClose = () => { setShowValidation(false); onClose() }
 
+  const handleSwap = () => {
+    const tmp = form.primaryColor
+    onChange('primaryColor', form.secondaryColor)
+    onChange('secondaryColor', tmp)
+  }
+
   const footer = (
     <>
       <button className="dialog-btn dialog-btn-secondary" onClick={handleClose}>Cancel</button>
@@ -79,19 +92,26 @@ const ClubDialog = ({
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-          <div className="dialog-form-group">
-            <label className="dialog-label">Primary Color</label>
-            <div className="dialog-color-row">
+        <div className="dialog-form-group">
+          <label className="dialog-label">Colours</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="dialog-color-row" style={{ flex: 1 }}>
               <input type="color" value={form.primaryColor} onChange={(e) => onChange('primaryColor', e.target.value)} className="dialog-color-swatch" />
-              <input type="text" value={form.primaryColor} onChange={(e) => onChange('primaryColor', e.target.value)} className="dialog-input" style={{ fontFamily: 'monospace', textTransform: 'uppercase' }} />
+              <input type="text" value={form.primaryColor} onChange={(e) => onChange('primaryColor', e.target.value)} className="dialog-input" style={{ fontFamily: 'monospace', textTransform: 'uppercase' }} placeholder="Primary" />
             </div>
-          </div>
-          <div className="dialog-form-group">
-            <label className="dialog-label">Secondary Color</label>
-            <div className="dialog-color-row">
+            <button
+              type="button"
+              onClick={handleSwap}
+              title="Swap colours"
+              style={{ padding: '0.375rem', border: '1px solid #d1d5db', borderRadius: '6px', background: '#f9fafb', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#6b7280', flexShrink: 0 }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = '#f1f5f9')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = '#f9fafb')}
+            >
+              <SwapIcon />
+            </button>
+            <div className="dialog-color-row" style={{ flex: 1 }}>
               <input type="color" value={form.secondaryColor} onChange={(e) => onChange('secondaryColor', e.target.value)} className="dialog-color-swatch" />
-              <input type="text" value={form.secondaryColor} onChange={(e) => onChange('secondaryColor', e.target.value)} className="dialog-input" style={{ fontFamily: 'monospace', textTransform: 'uppercase' }} />
+              <input type="text" value={form.secondaryColor} onChange={(e) => onChange('secondaryColor', e.target.value)} className="dialog-input" style={{ fontFamily: 'monospace', textTransform: 'uppercase' }} placeholder="Secondary" />
             </div>
           </div>
         </div>
@@ -120,18 +140,18 @@ const ClubDialog = ({
 export default function ClubsPage() {
   const { user, setShowAuthModal } = useAuth()
   const { guestClubs, addGuestClub, updateGuestClub, removeGuestClub } = useGuest()
-  const [isCreatingNew, setIsCreatingNew] = useState(false)
-  const [editingClubId, setEditingClubId] = useState<string | null>(null)
-  const [newClubForm, setNewClubForm] = useState<ClubFormData>(defaultForm)
-  const [editForm, setEditForm] = useState<Record<string, ClubFormData>>({})
+  const [dialogState, setDialogState] = useState<{ open: boolean; editingId: string | null; form: ClubFormData }>({
+    open: false,
+    editingId: null,
+    form: defaultForm,
+  })
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null)
   const [showBatchDeleteConfirm, setShowBatchDeleteConfirm] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState('name')
   const [filteredClubs, setFilteredClubs] = useState<Array<any>>([])
   const [selectedClubs, setSelectedClubs] = useState<Set<string>>(new Set())
-  const newLogoInputRef = useRef<HTMLInputElement>(null)
-  const editLogoInputRefs = useRef<Record<string, HTMLInputElement | null>>({})
+  const logoInputRef = useRef<HTMLInputElement>(null)
 
   const utils = trpc.useUtils()
   const { data: serverClubs = [], isLoading } = trpc.club.getAll.useQuery(undefined, { enabled: !!user })
@@ -143,77 +163,67 @@ export default function ClubsPage() {
 
   const invalidate = () => { utils.club.getAll.invalidate(); utils.crew.getAll.invalidate() }
 
-  const createMutation = trpc.club.create.useMutation({ onSuccess: () => { setIsCreatingNew(false); setNewClubForm(defaultForm); invalidate() } })
-  const updateMutation = trpc.club.update.useMutation({ onSuccess: () => { setEditingClubId(null); setEditForm({}); invalidate() } })
+  const createMutation = trpc.club.create.useMutation({ onSuccess: () => { closeDialog(); invalidate() } })
+  const updateMutation = trpc.club.update.useMutation({ onSuccess: () => { closeDialog(); invalidate() } })
   const deleteMutation = trpc.club.delete.useMutation({ onSuccess: () => { setShowDeleteConfirm(null); invalidate() } })
   const bulkDeleteMutation = trpc.club.bulkDelete.useMutation({ onSuccess: () => { setSelectedClubs(new Set()); setShowBatchDeleteConfirm(false); invalidate() } })
 
-  const handleLogoUpload = async (file: File, clubId?: string) => {
+  const openCreate = () => setDialogState({ open: true, editingId: null, form: defaultForm })
+  const openEdit = (club: any) => setDialogState({
+    open: true,
+    editingId: club.id,
+    form: { name: club.name, primaryColor: club.primaryColor, secondaryColor: club.secondaryColor, logoUrl: club.logoUrl || '' },
+  })
+  const closeDialog = () => setDialogState({ open: false, editingId: null, form: defaultForm })
+  const handleFormChange = (field: keyof ClubFormData, value: string) => setDialogState((prev) => ({ ...prev, form: { ...prev.form, [field]: value } }))
+
+  const handleLogoUpload = async (file: File) => {
     const formData = new FormData()
     formData.append('logo', file)
     const res = await fetch('/api/upload/club-logo', { method: 'POST', body: formData })
     const result = await res.json()
     if (!res.ok) throw new Error(result.error || 'Upload failed')
-    if (clubId) {
-      setEditForm((prev) => ({ ...prev, [clubId]: { ...prev[clubId], logoUrl: result.logoUrl } }))
-    } else {
-      setNewClubForm((prev) => ({ ...prev, logoUrl: result.logoUrl }))
-    }
+    handleFormChange('logoUrl', result.logoUrl)
   }
 
-  const handleLogoFileSelect = async (e: React.ChangeEvent<HTMLInputElement>, clubId?: string) => {
+  const handleLogoFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
     if (!file.type.startsWith('image/')) { alert('Please select an image file'); return }
     if (file.size > 2 * 1024 * 1024) { alert('File size must be less than 2MB'); return }
-    await handleLogoUpload(file, clubId)
+    await handleLogoUpload(file)
   }
 
-  const handleDrop = async (e: React.DragEvent, clubId?: string) => {
+  const handleLogoDrop = async (e: React.DragEvent) => {
     e.preventDefault()
     const imageFile = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith('image/'))
     if (!imageFile) { alert('Please drop an image file'); return }
     if (imageFile.size > 2 * 1024 * 1024) { alert('File size must be less than 2MB'); return }
-    await handleLogoUpload(imageFile, clubId)
+    await handleLogoUpload(imageFile)
   }
 
-  const filterFunction = (club: any, query: string) => club.name.toLowerCase().includes(query)
-
-  const handleCreateSubmit = () => {
-    if (!user) {
-      addGuestClub({
-        name: newClubForm.name,
-        primaryColor: newClubForm.primaryColor,
-        secondaryColor: newClubForm.secondaryColor,
-        ...(newClubForm.logoUrl ? { logoUrl: newClubForm.logoUrl } : {}),
-      })
-      setIsCreatingNew(false)
-      setNewClubForm(defaultForm)
+  const handleSubmit = () => {
+    const { form, editingId } = dialogState
+    if (editingId) {
+      const isGuest = guestClubs.some((c) => c.id === editingId)
+      if (isGuest) {
+        updateGuestClub(editingId, { name: form.name, primaryColor: form.primaryColor, secondaryColor: form.secondaryColor, ...(form.logoUrl ? { logoUrl: form.logoUrl } : {}) })
+        closeDialog()
+      } else {
+        updateMutation.mutate({ id: editingId, name: form.name, primaryColor: form.primaryColor, secondaryColor: form.secondaryColor, logoUrl: form.logoUrl || '' })
+      }
     } else {
-      createMutation.mutate({ ...newClubForm, userId: user.id })
-    }
-  }
-
-  const handleSaveEdit = (club: any) => {
-    const d = editForm[club.id]
-    if (!d.name.trim()) { alert('Club name is required'); return }
-    if (club.isGuest) {
-      updateGuestClub(club.id, {
-        name: d.name,
-        primaryColor: d.primaryColor,
-        secondaryColor: d.secondaryColor,
-        ...(d.logoUrl ? { logoUrl: d.logoUrl } : {}),
-      })
-      setEditingClubId(null)
-      setEditForm((prev) => { const next = { ...prev }; delete next[club.id]; return next })
-    } else {
-      updateMutation.mutate({ id: club.id, ...d, logoUrl: d.logoUrl || '' })
+      if (!user) {
+        addGuestClub({ name: form.name, primaryColor: form.primaryColor, secondaryColor: form.secondaryColor, ...(form.logoUrl ? { logoUrl: form.logoUrl } : {}) })
+        closeDialog()
+      } else {
+        createMutation.mutate({ name: form.name, primaryColor: form.primaryColor, secondaryColor: form.secondaryColor, logoUrl: form.logoUrl || '', userId: user.id })
+      }
     }
   }
 
   const handleDeleteClub = (id: string) => {
-    const isGuest = guestClubs.some((c) => c.id === id)
-    if (isGuest) {
+    if (guestClubs.some((c) => c.id === id)) {
       removeGuestClub(id)
       setShowDeleteConfirm(null)
     } else {
@@ -233,6 +243,10 @@ export default function ClubsPage() {
     }
   }
 
+  const filterFunction = (club: any, query: string) => club.name.toLowerCase().includes(query)
+
+  const isPending = createMutation.isPending || updateMutation.isPending
+
   return (
     <>
       {!user && guestClubs.length > 0 && (
@@ -251,7 +265,7 @@ export default function ClubsPage() {
         loading={isLoading}
         skeletonVariant="club"
         error=""
-        emptyState={{ title: 'No Clubs Yet', message: 'Create your first club preset to get started', actionLabel: 'Create First Club', actionOnClick: () => setIsCreatingNew(true) }}
+        emptyState={{ title: 'No Clubs Yet', message: 'Create your first club preset to get started', actionLabel: 'Create First Club', actionOnClick: openCreate }}
         searchConfig={{
           placeholder: 'Search clubs...',
           filterFunction,
@@ -265,15 +279,14 @@ export default function ClubsPage() {
             club={club}
             isSelected={isSelected}
             onSelect={onSelect}
-            isEditing={editingClubId === club.id}
-            editData={{ ...editForm[club.id], id: club.id }}
-            onEdit={(c) => { setEditingClubId(c.id); setEditForm((prev) => ({ ...prev, [c.id]: { name: c.name, primaryColor: c.primaryColor, secondaryColor: c.secondaryColor, logoUrl: c.logoUrl || '' } })) }}
-            onSave={handleSaveEdit}
-            onCancel={(clubId) => { setEditingClubId(null); setEditForm((prev) => { const n = { ...prev }; delete n[clubId]; return n }) }}
+            isEditing={false}
+            onEdit={openEdit}
+            onSave={() => {}}
+            onCancel={() => {}}
             onDelete={(c) => setShowDeleteConfirm(c.id)}
-            onEditFormChange={(clubId, field, value) => setEditForm((prev) => ({ ...prev, [clubId]: { ...prev[clubId], [field]: value } }))}
-            onLogoClick={(clubId) => clubId ? editLogoInputRefs.current[clubId]?.click() : newLogoInputRef.current?.click()}
-            onLogoRemove={(clubId) => clubId ? setEditForm((prev) => ({ ...prev, [clubId]: { ...prev[clubId], logoUrl: '' } })) : setNewClubForm((prev) => ({ ...prev, logoUrl: '' }))}
+            onEditFormChange={() => {}}
+            onLogoClick={() => {}}
+            onLogoRemove={() => {}}
           />
         )}
         className="club-presets-container"
@@ -283,7 +296,7 @@ export default function ClubsPage() {
         onSelectAll={() => setSelectedClubs(selectedClubs.size === filteredClubs.length ? new Set() : new Set(filteredClubs.map((c) => c.id)))}
         actionButtons={[
           ...(selectedClubs.size > 0 ? [{ label: 'Delete Selected', onClick: () => setShowBatchDeleteConfirm(true), variant: 'crew-danger' as const }] : []),
-          { label: 'Create New Club', onClick: () => setIsCreatingNew(true), variant: 'primary' as const, disabled: isCreatingNew },
+          { label: 'Create New Club', onClick: openCreate, variant: 'primary' as const },
         ]}
         searchQuery={searchTerm}
         onSearchChange={setSearchTerm}
@@ -294,23 +307,22 @@ export default function ClubsPage() {
       />
 
       <ClubDialog
-        isOpen={isCreatingNew}
-        onClose={() => { setIsCreatingNew(false); setNewClubForm(defaultForm) }}
-        form={newClubForm}
-        onChange={(field, value) => setNewClubForm((p) => ({ ...p, [field]: value }))}
-        onLogoClick={() => newLogoInputRef.current?.click()}
-        onLogoDrop={(e) => handleDrop(e)}
-        onLogoRemove={() => setNewClubForm((p) => ({ ...p, logoUrl: '' }))}
-        onSubmit={handleCreateSubmit}
-        isPending={user ? createMutation.isPending : false}
-        logoInputRef={newLogoInputRef}
-        title="Create New Club"
+        isOpen={dialogState.open}
+        onClose={closeDialog}
+        form={dialogState.form}
+        onChange={handleFormChange}
+        onLogoClick={() => logoInputRef.current?.click()}
+        onLogoDrop={handleLogoDrop}
+        onLogoRemove={() => handleFormChange('logoUrl', '')}
+        onSubmit={handleSubmit}
+        isPending={user ? isPending : false}
+        logoInputRef={logoInputRef}
+        title={dialogState.editingId ? 'Edit Club' : 'Create New Club'}
       />
 
-      {isCreatingNew && <input ref={newLogoInputRef} type="file" accept="image/*" onChange={(e) => handleLogoFileSelect(e)} style={{ display: 'none' }} />}
-      {Object.keys(editForm).map((clubId) => <input key={clubId} ref={(el) => { editLogoInputRefs.current[clubId] = el }} type="file" accept="image/*" onChange={(e) => handleLogoFileSelect(e, clubId)} style={{ display: 'none' }} />)}
+      <input ref={logoInputRef} type="file" accept="image/*" onChange={handleLogoFileSelect} style={{ display: 'none' }} />
 
-      <ConfirmDeleteModal isOpen={!!showDeleteConfirm} onClose={() => setShowDeleteConfirm(null)} onConfirm={() => handleDeleteClub(showDeleteConfirm!)} title="Delete Club" message={`Are you sure you want to delete "${filteredClubs.find((c) => c.id === showDeleteConfirm)?.name || allClubs.find((c) => c.id === showDeleteConfirm)?.name}"?`} confirmButtonText="Delete Club" />
+      <ConfirmDeleteModal isOpen={!!showDeleteConfirm} onClose={() => setShowDeleteConfirm(null)} onConfirm={() => handleDeleteClub(showDeleteConfirm!)} title="Delete Club" message={`Are you sure you want to delete "${allClubs.find((c) => c.id === showDeleteConfirm)?.name}"?`} confirmButtonText="Delete Club" />
       <ConfirmDeleteModal isOpen={showBatchDeleteConfirm} onClose={() => setShowBatchDeleteConfirm(false)} onConfirm={handleBulkDelete} title={selectedClubs.size === 1 ? 'Delete Club' : 'Delete Clubs'} message={selectedClubs.size === 1 ? `Are you sure you want to delete "${filteredClubs.find((c) => selectedClubs.has(c.id))?.name}"?` : `Are you sure you want to delete ${selectedClubs.size} clubs?`} confirmButtonText={selectedClubs.size === 1 ? 'Delete Club' : 'Delete Clubs'} />
     </>
   )
