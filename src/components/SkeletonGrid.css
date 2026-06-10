@@ -38,7 +38,24 @@
 }
 
 .skeleton-generate-card {
-  background: #fff;
-  border: 1px solid #E5E7EB;
+  background: #F9FAFB;
+  border: 2px solid #E5E7EB;
   border-radius: 10px;
+  padding: 12px;
+  position: relative;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.generate-crew-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.generate-template-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
 }

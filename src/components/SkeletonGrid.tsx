@@ -1,6 +1,7 @@
+import type { JSX } from 'react'
 import './SkeletonGrid.css'
 
-type Variant = 'crew' | 'club' | 'gallery' | 'generate'
+type Variant = 'crew' | 'club' | 'gallery' | 'generate' | 'generate-template'
 
 function S({ w, h, r, style }: { w?: string | number; h?: number; r?: number; style?: React.CSSProperties }) {
   return (
@@ -81,7 +82,7 @@ function ClubCardSkeleton() {
   )
 }
 
-// Gallery card: square image | title + badge | subtitle | date | buttons
+// Gallery card: square image | title + badge | subtitle | buttons
 function GalleryCardSkeleton() {
   return (
     <div className="skeleton-gallery-card">
@@ -101,32 +102,50 @@ function GalleryCardSkeleton() {
   )
 }
 
-// Generate card: badge top-right | name | race | club
+// Generate crew card: name (with right clearance) | Race | Category | Club lines | badge top-right | color dots bottom-right
 function GenerateCardSkeleton() {
   return (
-    <div className="skeleton-generate-card" style={{ position: 'relative', padding: 14, display: 'flex', flexDirection: 'column', gap: 9 }}>
-      <div style={{ position: 'absolute', top: 10, right: 10 }}>
-        <S w={30} h={20} r={4} />
+    <div className="skeleton-generate-card">
+      <S h={18} w="60%" style={{ marginRight: 44, marginBottom: 10 }} />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+        <S h={12} w="82%" />
+        <S h={12} w="52%" />
+        <S h={12} w="68%" />
       </div>
-      <S h={16} w="55%" />
-      <S h={12} w="80%" />
-      <S h={12} w="62%" />
+      {/* badge top-right */}
+      <div style={{ position: 'absolute', top: 10, right: 10 }}>
+        <S w={28} h={20} r={4} />
+      </div>
+      {/* color dots bottom-right */}
+      <div style={{ position: 'absolute', bottom: 10, right: 10, display: 'flex', gap: 4 }}>
+        <S w={12} h={12} r={50} />
+        <S w={12} h={12} r={50} />
+      </div>
     </div>
   )
 }
 
+// Generate template card: square preview image
+function GenerateTemplateCardSkeleton() {
+  return (
+    <div className="skeleton-block" style={{ aspectRatio: '1/1', borderRadius: 8 }} />
+  )
+}
+
 const CARD_MAP: Record<Variant, () => JSX.Element> = {
-  crew:     CrewCardSkeleton,
-  club:     ClubCardSkeleton,
-  gallery:  GalleryCardSkeleton,
-  generate: GenerateCardSkeleton,
+  crew:               CrewCardSkeleton,
+  club:               ClubCardSkeleton,
+  gallery:            GalleryCardSkeleton,
+  generate:           GenerateCardSkeleton,
+  'generate-template': GenerateTemplateCardSkeleton,
 }
 
 const COUNT_MAP: Record<Variant, number> = {
-  crew:     8,
-  club:     6,
-  gallery:  6,
-  generate: 5,
+  crew:               8,
+  club:               6,
+  gallery:            6,
+  generate:           6,
+  'generate-template': 5,
 }
 
 interface SkeletonGridProps {
@@ -136,10 +155,11 @@ interface SkeletonGridProps {
 }
 
 const GRID_CLASS_MAP: Record<Variant, string> = {
-  crew:     'data-grid',
-  club:     'data-grid clubs-grid',
-  gallery:  'data-grid gallery-grid',
-  generate: 'data-grid',
+  crew:               'data-grid',
+  club:               'data-grid clubs-grid',
+  gallery:            'data-grid gallery-grid',
+  generate:           'generate-crew-skeleton-grid',
+  'generate-template': 'generate-template-skeleton-grid',
 }
 
 export function SkeletonGrid({ variant, count, className = '' }: SkeletonGridProps) {

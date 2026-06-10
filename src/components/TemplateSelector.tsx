@@ -1,5 +1,6 @@
 import React from 'react'
 import { trpc } from '../lib/trpc-client'
+import { SkeletonGrid } from './SkeletonGrid'
 import '../routes/generate.css'
 
 interface TemplateSelectorProps {
@@ -20,14 +21,7 @@ export function TemplateSelector({
   if (isLoading) {
     return (
       <div className={`${className}`}>
-        <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-32 mb-4"></div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="aspect-square bg-gray-200 rounded-lg"></div>
-            ))}
-          </div>
-        </div>
+        <SkeletonGrid variant="generate-template" count={5} />
       </div>
     )
   }

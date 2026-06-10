@@ -337,6 +337,10 @@ export class TemplateCompiler {
         let memberHtml = template
         memberHtml = memberHtml.replace(/\{\{name\}\}/g, this.formatName(member.name))
         memberHtml = memberHtml.replace(/\{\{badge\}\}/g, member.badge)
+        memberHtml = memberHtml.replace(
+          /\{\{positionStyle\}\}/g,
+          member.style ? `style="${member.style}"` : '',
+        )
         memberHtml = memberHtml.replace(/\{\{style\}\}/g, member.style)
         return memberHtml
       })

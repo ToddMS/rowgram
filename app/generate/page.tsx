@@ -178,7 +178,9 @@ function GenerateImagePageContent() {
               </div>
 
               {crewsLoading ? (
-                <SkeletonGrid variant="generate" />
+                <div className="max-h-60 overflow-y-auto">
+                  <SkeletonGrid variant="generate" />
+                </div>
               ) : crews && crews.length > 0 && filteredCrews.length > 0 ? (
                 <div className="max-h-60 pr-4 custom-scrollbar">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
