@@ -345,7 +345,7 @@ function GenerateImagePageContent() {
                   </button>
                 )}
               </div>
-              <div className="flex gap-6">
+              <div className="flex items-center gap-3">
                 <div className="flex items-center gap-3">
                   <label className="text-sm font-medium text-gray-600 w-20">Primary</label>
                   <div className="flex items-center gap-2">
@@ -363,6 +363,18 @@ function GenerateImagePageContent() {
                     />
                   </div>
                 </div>
+                <button
+                  onClick={() => { const tmp = primaryColor; setPrimaryColor(secondaryColor); setSecondaryColor(tmp); setColorSource(null) }}
+                  title="Swap colours"
+                  style={{ padding: '0.375rem', border: '1px solid #d1d5db', borderRadius: '6px', background: '#f9fafb', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#6b7280', flexShrink: 0 }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = '#f1f5f9')}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = '#f9fafb')}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M7 16V4m0 0L3 8m4-4l4 4" />
+                    <path d="M17 8v12m0 0l4-4m-4 4l-4-4" />
+                  </svg>
+                </button>
                 <div className="flex items-center gap-3">
                   <label className="text-sm font-medium text-gray-600 w-20">Secondary</label>
                   <div className="flex items-center gap-2">
