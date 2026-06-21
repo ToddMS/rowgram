@@ -1,0 +1,124 @@
+/* Template 20 — Regatta course: each rower in their own lane, buoys & lane ropes */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { width: 1080px; height: 1080px; overflow: hidden; }
+body { font-family: 'Inter', sans-serif; }
+
+.canvas {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background: #ffffff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Header ---- */
+.head {
+  flex-shrink: 0;
+  height: 196px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 56px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.titles { flex: 1; }
+.eyebrow {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.race-name {
+  margin-top: 6px;
+  font-size: 54px;
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -1.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.category {
+  margin-top: 6px;
+  font-size: 23px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+.club-logo { width: 100px; height: 100px; object-fit: contain; flex-shrink: 0; }
+
+/* ---- Lanes ---- */
+.lanes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.lane {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 0 56px;
+  border-top: 3px dashed rgba(9, 78, 42, 0.28); /* PRIMARY COLOR PLACEHOLDER (lane rope) */
+}
+.lane:first-child { border-top: none; }
+.lane:nth-child(even) {
+  background: rgba(249, 168, 212, 0.18); /* SECONDARY COLOR PLACEHOLDER (water tint) */
+}
+.buoy {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 28px;
+  font-weight: 800;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: #ffffff;
+}
+.lane:nth-child(even) .buoy {
+  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
+}
+.name {
+  font-size: 34px;
+  font-weight: 700;
+  color: #161616;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- Footer ---- */
+.foot {
+  flex-shrink: 0;
+  height: 104px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 56px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  border-top: 8px solid #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.coach-label {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.coach-name { font-size: 28px; font-weight: 700; color: #ffffff; }
+.code-chip {
+  margin-left: auto;
+  padding: 8px 22px;
+  border-radius: 6px;
+  font-size: 24px;
+  font-weight: 800;
+  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
+}

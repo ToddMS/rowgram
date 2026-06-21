@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template6.css">
+  <title>RowGram — Template 5</title>
+</head>
+<body>
+  <div class="canvas">
+
+    <!-- Left rail: secondary colour, vertical race name, logo -->
+    <aside class="rail">
+      <h1 class="race-name">{{RACE_NAME}}</h1>
+      
+      {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+      
+    </aside>
+
+    <!-- Right panel on primary -->
+    <span class="eyebrow">Crew Announcement</span>
+    <span class="code-chip">{{BOAT_TYPE}} {{BOAT_CODE}}</span>
+    <p class="category">{{crewCategory}}</p>
+
+    <!-- Ghost boat code behind the list -->
+    <span class="ghost-code">{{BOAT_CODE}}</span>
+
+    <!-- Crew list, stroke -> bow -->
+    <section class="crew-list">
+      
+      {{#crewMembers}}
+      <div class="crew-row">
+        <span class="seat">{{badge}}</span>
+        <span class="name">{{name}}</span>
+      </div>
+      {{/crewMembers}}
+      
+    </section>
+
+    <!-- Footer strip -->
+    <div class="footer-divider"></div>
+
+    
+    {{#BOAT_IMAGE_AVAILABLE}}
+
+    
+    <div class="boat-container">{{BOAT_IMAGE}}</div>
+
+    
+    {{/BOAT_IMAGE_AVAILABLE}}
+    
+
+    <div class="coach">
+      <span class="coach-label">Coach</span>
+      <span class="coach-name">{{COACH_NAME}}</span>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,155 @@
+/* Template 17 — Lineup card: top-down boat centred, names radiating out to each oar */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { width: 1080px; height: 1080px; overflow: hidden; }
+body { font-family: 'Inter', sans-serif; }
+
+.canvas {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/* ---- Top ---- */
+.top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1080px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding: 0 56px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.club-logo {
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.titles { flex: 1; }
+.eyebrow {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.race-name {
+  margin-top: 6px;
+  font-size: 52px;
+  font-weight: 900;
+  line-height: 0.96;
+  letter-spacing: -1.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.category {
+  margin-top: 6px;
+  font-size: 23px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
+}
+.code-chip {
+  flex-shrink: 0;
+  align-self: center;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-size: 34px;
+  font-weight: 800;
+  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
+}
+
+/* ---- Boat, centred ---- */
+.boat-container {
+  position: absolute;
+  top: 268px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 500px;
+}
+.boat-container img { height: 500px; width: auto; }
+
+/* ---- Radiating crew names (fixed stroke->bow->cox order) ---- */
+.crew-row {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 360px;
+}
+.seat {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 26px;
+  font-weight: 800;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: #ffffff;
+  box-shadow: 0 0 0 5px rgba(249, 168, 212, 0.55); /* SECONDARY COLOR PLACEHOLDER (ring) */
+}
+.name {
+  font-size: 31px;
+  font-weight: 700;
+  color: #161616;
+  white-space: nowrap;
+}
+
+/* right side: stroke, 7, 6, 5 */
+.crew-row:nth-child(1) { top: 314px; left: 660px; }
+.crew-row:nth-child(2) { top: 414px; left: 660px; }
+.crew-row:nth-child(3) { top: 514px; left: 660px; }
+.crew-row:nth-child(4) { top: 614px; left: 660px; }
+
+/* left side: 4, 3, 2, bow — mirrored (name then badge, badge toward boat) */
+.crew-row:nth-child(5),
+.crew-row:nth-child(6),
+.crew-row:nth-child(7),
+.crew-row:nth-child(8) {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  text-align: right;
+  left: auto;
+  right: 660px;
+}
+.crew-row:nth-child(5) { top: 314px; }
+.crew-row:nth-child(6) { top: 414px; }
+.crew-row:nth-child(7) { top: 514px; }
+.crew-row:nth-child(8) { top: 614px; }
+
+/* cox: centred below the boat */
+.crew-row:nth-child(9) {
+  top: 792px;
+  left: 50%;
+  width: auto;
+  transform: translateX(-50%);
+  justify-content: center;
+}
+.crew-row:nth-child(9) .seat {
+  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
+  box-shadow: 0 0 0 5px rgba(9, 78, 42, 0.18); /* PRIMARY COLOR PLACEHOLDER (ring) */
+}
+
+/* ---- Coach ---- */
+.coach {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 50px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  font-style: italic;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}

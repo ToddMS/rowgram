@@ -1,587 +1,259 @@
 # CLAUDE.md - RowGram Development Guide
 
-> **⚡ Modern TanStack Start Project Setup**
->
-> This is a production-ready rowing crew image generator built with the latest TanStack ecosystem for maximum type safety, performance, and developer experience.
+> Rowing crew image generator built with Next.js 15 App Router, tRPC, Prisma, and NextAuth.
 
-## 🚀 Quick Start Commands
+## Quick Start Commands
 
 ```bash
 # Development
 npm run dev              # Start dev server (localhost:3000)
-npm run build           # Production build
-npm run preview         # Preview production build
+npm run build           # prisma generate + next build
+npm run start           # Start production server
 
 # Quality Assurance
-npm run lint            # ESLint checking
+npm run lint            # Next.js ESLint
+npm run lint:fix        # Auto-fix ESLint issues
 npm run format          # Prettier formatting
 npm run typecheck       # TypeScript checking
-npm run test            # Run test suite
+npm run test            # Run test suite (vitest)
+npm run check           # format + lint:fix + typecheck
 
 # Database
-npx prisma generate     # Generate Prisma client
-npx prisma dev          # Start local Postgres + run migrations
-npx prisma studio       # Database admin UI
-npx prisma migrate dev  # Create & apply migrations
+npm run db:generate     # Generate Prisma client
+npm run db:push         # Push schema without migration
+npm run db:migrate      # Create & apply migration
+npm run db:studio       # Prisma Studio UI
+npm run db:seed         # Seed database
+npm run db:reset        # Reset database (destructive)
 
-# Production Deployment
-npm run deploy          # Deploy to production
+# Other
+npm run analyze         # Bundle size analysis
 ```
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ### Core Stack
-- **Framework**: TanStack Start (Full-stack React with SSR)
+- **Framework**: Next.js 15 App Router
 - **Database**: PostgreSQL + Prisma ORM
-- **API**: tRPC for end-to-end type safety
-- **UI**: React 19 + Tailwind CSS v4
-- **State**: TanStack Query + TanStack Router
-- **Auth**: NextAuth.js integration
+- **API**: tRPC v11 (`@trpc/next`)
+- **Auth**: NextAuth.js v4 with Google OAuth + Prisma adapter
+- **UI**: React 19 + Tailwind CSS v4 + lucide-react
+- **Storage**: Vercel Blob (images, club logos)
+- **Image Generation**: Puppeteer + `@sparticuz/chromium` (server-side)
+- **State/Data**: TanStack Query v5
+- **Toasts**: Sonner
 - **Testing**: Vitest + Testing Library
 
 ### Project Structure
+
 ```
+app/                        # Next.js App Router
+├── layout.tsx              # Root layout
+├── page.tsx                # Home page
+├── providers.tsx           # Client providers (tRPC, Query)
+├── crews/page.tsx
+├── clubs/page.tsx
+├── gallery/page.tsx
+├── generate/page.tsx
+├── signup/page.tsx
+└── api/
+    ├── auth/[...nextauth]/route.ts
+    ├── trpc/[trpc]/route.ts
+    └── upload/club-logo/route.ts
+
 src/
-├── app/                     # App configuration & root providers
-│   ├── router.tsx          # Router configuration
-│   └── providers.tsx       # Context providers setup
 ├── components/             # Reusable UI components
-│   ├── ui/                 # Base design system components
-│   └── forms/              # Form-specific components
-├── features/              # Domain-specific feature modules
-│   ├── crews/             # Crew management
-│   ├── clubs/             # Club presets
-│   ├── gallery/           # Image gallery
-│   └── auth/              # Authentication
-├── lib/                   # Shared utilities & integrations
-│   ├── db.ts              # Prisma client
-│   ├── trpc.ts            # tRPC client setup
-│   └── utils.ts           # Helper functions
-├── server/                # Backend API & server functions
-│   ├── routers/           # tRPC routers
-│   └── middleware/        # Server middleware
-├── styles/                # Organized styling
-│   ├── globals.css        # Base styles
-│   └── components.css     # Component-specific styles
-└── types/                 # TypeScript definitions
+│   ├── Navigation.tsx
+│   ├── AuthModal.tsx
+│   ├── CreateCrewModal.tsx
+│   ├── BatchDownloadModal.tsx
+│   ├── ConfirmDeleteModal.tsx
+│   ├── TemplateSelector.tsx
+│   ├── ImageCard.tsx, CrewCard.tsx, ClubCard.tsx
+│   ├── SearchBar.tsx, Modal.tsx, Dialog.tsx, Button.tsx
+│   ├── DataContainer.tsx, LoadingState.tsx, ErrorBoundary.tsx
+│   ├── SkeletonGrid.tsx, CornerBorder.tsx, ClientOnly.tsx
+│   └── ImageUpload.tsx
+├── lib/
+│   ├── prisma.ts           # Prisma client singleton
+│   ├── db.ts               # DB utilities
+│   ├── trpc.ts             # tRPC server init
+│   ├── trpc-client.ts      # tRPC client
+│   ├── auth-options.ts     # NextAuth config
+│   ├── auth-context.tsx    # Auth React context
+│   ├── guest-context.tsx   # Guest mode context (localStorage)
+│   ├── session.ts          # Session helpers
+│   ├── imageGeneration.ts  # Puppeteer image generation
+│   ├── templateCompiler.ts # HTML template rendering
+│   ├── boat-types.ts       # Boat type definitions
+│   └── utils.ts
+├── server/routers/
+│   ├── _app.ts             # Root tRPC router
+│   ├── crew.ts
+│   ├── club.ts
+│   ├── template.ts
+│   ├── savedImage.ts
+│   ├── user.ts
+│   └── simple.ts
+├── styles/globals.css
+└── types/
+    ├── index.ts
+    └── next-auth.d.ts      # NextAuth type augmentation
+
+public/
+├── templates/
+│   ├── template1/          # Diagonal Professional
+│   └── template2/          # Corner Brackets
+└── boat-images/            # SVG boat illustrations
 ```
 
-## 📋 Development Guidelines
+## Environment Variables
 
-### Code Style & Conventions
-- **TypeScript**: Strict mode enabled, prefer explicit types
-- **Components**: Functional components with hooks only
-- **File Naming**: kebab-case for files, PascalCase for components
-- **Import Order**: External → Internal → Relative imports
-- **Error Handling**: Proper error boundaries and loading states
-
-### Code Quality Standards
-
-#### TypeScript Best Practices
-```typescript
-// ✅ GOOD - Explicit types, no any
-interface CrewMember {
-  name: string
-  position: string
-}
-
-// ❌ BAD - Implicit any, no types
-const handleData = (data) => {
-  // any type usage
-}
-
-// ✅ GOOD - Proper array types
-const crews: Array<Crew> = []
-
-// ❌ BAD - Shorthand array syntax (ESLint rule)
-const crews: Crew[] = []
-
-// ✅ GOOD - Type-only imports
-import type { User } from '@prisma/client'
-import { prisma } from '../lib/prisma'
-
-// ❌ BAD - Mixed imports
-import { User, prisma } from '@prisma/client'
-```
-
-#### ESLint Rule Compliance
-```typescript
-// ✅ GOOD - No unnecessary optional chaining
-if (user.name) {
-  console.log(user.name)
-}
-
-// ❌ BAD - Unnecessary optional chain on non-nullish value
-if (user?.name) { // user is already defined
-  console.log(user?.name)
-}
-
-// ✅ GOOD - Proper async/await usage
-const handleSubmit = async () => {
-  await api.submit(data)
-}
-
-// ❌ BAD - Async function without await
-const handleSubmit = async () => {
-  api.submit(data) // Not awaiting
-}
-
-// ✅ GOOD - No variable shadowing
-const error = 'top level error'
-try {
-  // code
-} catch (apiError) { // Different name
-  console.log(apiError)
-}
-
-// ❌ BAD - Variable shadowing
-const error = 'top level error'
-try {
-  // code
-} catch (error) { // Shadows outer 'error'
-  console.log(error)
-}
-```
-
-#### Import Organization
-```typescript
-// ✅ GOOD - Sorted imports, type-only imports
-import type { Club, User } from '@prisma/client'
-import type { ButtonHTMLAttributes } from 'react'
-
-import { useState } from 'react'
-import { router, publicProcedure } from '../lib/trpc'
-
-// ❌ BAD - Unsorted imports, inline type specifiers
-import { useState, type ButtonHTMLAttributes } from 'react'
-import { publicProcedure, router } from '../lib/trpc'
-```
-
-#### Database & API Patterns
-```typescript
-// ✅ GOOD - Proper type safety, error handling
-const crew = await prisma.crew.findUnique({
-  where: { id: crewId },
-  include: { boatType: true, club: true }
-})
-
-if (!crew) {
-  throw new Error('Crew not found')
-}
-
-// Handle crew with proper typing
-
-// ❌ BAD - No null checks, loose typing
-const crew = await prisma.crew.findUnique({ where: { id: crewId } })
-// Directly using crew without null check
-```
-
-### Quality Assurance Commands
-```bash
-# Before committing - run all checks
-npm run lint          # ESLint (must pass)
-npm run typecheck     # TypeScript (must pass)
-npm run format        # Prettier formatting
-npm run test          # Unit tests (must pass)
-npm run build         # Production build (must pass)
-
-# Fix auto-fixable linting issues
-npm run lint -- --fix
-```
-
-### Common ESLint Issues & Fixes
-
-1. **Unnecessary Optional Chaining** (`@typescript-eslint/no-unnecessary-condition`)
-   ```typescript
-   // Fix: Remove optional chaining when value is guaranteed non-null
-   user.name instead of user?.name
-   ```
-
-2. **Array Type Syntax** (`@typescript-eslint/array-type`)
-   ```typescript
-   // Fix: Use Array<T> instead of T[]
-   Array<string> instead of string[]
-   ```
-
-3. **Import Sorting** (`sort-imports`, `import/order`)
-   ```typescript
-   // Fix: Sort imports alphabetically, separate by type
-   ```
-
-4. **Variable Shadowing** (`no-shadow`)
-   ```typescript
-   // Fix: Use different variable names in nested scopes
-   ```
-
-5. **Async Without Await** (`@typescript-eslint/require-await`)
-   ```typescript
-   // Fix: Remove async if no await, or add proper await
-   ```
-
-### Pre-commit Checklist
-- [ ] `npm run lint` passes with 0 errors
-- [ ] `npm run typecheck` passes with 0 errors
-- [ ] `npm run build` succeeds
-- [ ] All tests pass (`npm run test`)
-- [ ] No unused imports or variables
-- [ ] Proper error handling implemented
-- [ ] Database queries include proper null checks
-
-### Documentation & AI Assistance
-- **Library Documentation**: Always use Context7 MCP for up-to-date library documentation when working with external dependencies
-- **Before adding dependencies**: Check Context7 for current best practices, API changes, and usage examples
-- **When troubleshooting**: Consult Context7 for the latest documentation on framework features, hooks, and patterns
-
-### Git Workflow
-```bash
-# Feature development
-git checkout -b feature/crew-management
-git add .
-git commit -m "feat: add crew management functionality"
-git push origin feature/crew-management
-
-# Production deployment
-git checkout main
-git pull origin main
-git push origin main  # Triggers deployment
-```
-
-## 🔧 Configuration Files
-
-### Environment Variables
-Create `.env.local` for development:
+`.env.local` for development:
 ```env
-# Database
+# Database (use directUrl for connection pooling)
 DATABASE_URL="postgresql://user:pass@localhost:5432/rowgram"
+DIRECT_URL="postgresql://user:pass@localhost:5432/rowgram"
 
 # Auth
 NEXTAUTH_SECRET="your-secret-key"
 NEXTAUTH_URL="http://localhost:3000"
 
-# Google OAuth (optional)
+# Google OAuth
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
+
+# Vercel Blob
+BLOB_READ_WRITE_TOKEN="your-blob-token"
 ```
 
-For production, use `.env.production`:
-```env
-DATABASE_URL="your-production-db-url"
-NEXTAUTH_URL="https://yourdomain.com"
+## Key Features
+
+### Guest Mode
+Unauthenticated users can create crews and clubs stored in localStorage via `GuestContext`. Auth is gated at the image generation step. On sign-in, guest data syncs to the database.
+
+### Image Generation
+Server-side: Puppeteer + `@sparticuz/chromium` renders HTML templates to PNG at 1080×1080px. The pipeline lives in `src/lib/imageGeneration.ts`. Generated images are stored in Vercel Blob.
+
+### Template System
+Templates are HTML/CSS files in `public/templates/templateX/`. The compiler in `src/lib/templateCompiler.ts` replaces Handlebars-like placeholders with crew data and club colors.
+
+### Club Logo Upload
+`POST /api/upload/club-logo` handles multipart uploads via `multer` and stores to Vercel Blob.
+
+### Batch Download
+`BatchDownloadModal` uses `jszip` to package multiple generated images into a zip file for download.
+
+## Database Schema
+
+```
+User → Crews (one-to-many)
+User → Clubs (one-to-many)
+User → SavedImages (one-to-many)
+Crew → Club (many-to-one, optional)
+Crew → SavedImages (one-to-many)
+SavedImage → Template (many-to-one)
 ```
 
-## 🎯 Feature Development Patterns
+Models: `User`, `Account`, `Session`, `VerificationToken`, `Club`, `Crew`, `Template`, `SavedImage`
+
+## tRPC Routers
+
+| Router | Procedures |
+|--------|-----------|
+| `crew` | CRUD for user crews |
+| `club` | CRUD for club presets |
+| `template` | List/get templates |
+| `savedImage` | Save, list, delete generated images |
+| `user` | User profile management |
+| `simple` | Health check / basic queries |
+
+## Development Guidelines
+
+### Code Style
+- **TypeScript**: Strict mode, explicit types, no `any`
+- **Components**: Functional + hooks only
+- **File naming**: kebab-case files, PascalCase components
+- **Arrays**: Use `Array<T>` not `T[]` (ESLint rule)
+- **Imports**: Type-only imports with `import type`
+
+### Common ESLint Rules
+```typescript
+// Array types
+const crews: Array<Crew> = []         // ✅
+const crews: Crew[] = []              // ❌
+
+// Optional chaining — only when value may be null/undefined
+user.name                             // ✅ (user is defined)
+user?.name                            // ❌ (unnecessary)
+
+// No variable shadowing
+} catch (apiError) { ... }            // ✅
+} catch (error) { ... }               // ❌ (if error exists in outer scope)
+
+// Async must await
+const fn = async () => { await x() } // ✅
+const fn = async () => { x() }       // ❌
+```
+
+### Pre-commit Checklist
+- [ ] `npm run lint` — 0 errors
+- [ ] `npm run typecheck` — 0 errors
+- [ ] `npm run build` — succeeds
+- [ ] `npm run test` — all pass
+- [ ] Null checks on all Prisma `findUnique` / `findFirst` results
 
 ### Adding a New Feature
-1. Create feature directory in `src/features/`
-2. Implement tRPC router in `src/server/routers/`
-3. Create UI components in feature directory
-4. Add routes in `src/routes/`
-5. Write tests and documentation
+1. Add tRPC router in `src/server/routers/` and register in `_app.ts`
+2. Create components in `src/components/`
+3. Add page in `app/`
+4. Wire up with `trpc.<router>.<procedure>.useQuery/useMutation`
 
-### tRPC API Pattern
-```typescript
-// server/routers/crew.ts
-export const crewRouter = createTRPCRouter({
-  create: protectedProcedure
-    .input(createCrewSchema)
-    .mutation(async ({ input, ctx }) => {
-      return await ctx.db.crew.create({
-        data: { ...input, userId: ctx.user.id },
-      })
-    }),
-
-  getAll: protectedProcedure
-    .query(async ({ ctx }) => {
-      return await ctx.db.crew.findMany({
-        where: { userId: ctx.user.id },
-        include: { boatType: true, club: true },
-      })
-    }),
-})
-```
-
-### Component Pattern
-```typescript
-// components/CrewForm.tsx
-interface CrewFormProps {
-  crew?: Crew
-  onSuccess: () => void
-}
-
-export function CrewForm({ crew, onSuccess }: CrewFormProps) {
-  const createCrew = trpc.crew.create.useMutation()
-
-  const handleSubmit = async (data: CrewFormData) => {
-    try {
-      await createCrew.mutateAsync(data)
-      onSuccess()
-    } catch (error) {
-      // Handle error
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      {/* Form implementation */}
-    </form>
-  )
-}
-```
-
-## 🚀 Production Deployment
-
-### Hosting Options
-- **Recommended**: Vercel (Zero-config deployment)
-- **Alternative**: Netlify, Railway, Docker
-
-### Deployment Checklist
-- [ ] Environment variables configured
-- [ ] Database migrations applied
-- [ ] Build succeeds (`npm run build`)
-- [ ] Tests pass (`npm run test`)
-- [ ] Type checking passes (`npm run typecheck`)
-- [ ] Performance optimized
-- [ ] Error monitoring configured
-
-### Performance Optimization
-- Route-based code splitting (automatic)
-- Image optimization with Next/Image
-- Database query optimization
-- Caching strategies with TanStack Query
-- Bundle analysis with `npm run analyze`
-
-## 📊 Database Schema
-
-### Core Models
-- **User**: Authentication & user data
-- **Club**: Club presets with branding
-- **Crew**: Rowing crew information
-- **BoatType**: Boat configurations (1x, 2x, 4x, 8+, etc.)
-- **Template**: Image generation templates
-- **SavedImage**: Generated image records
-
-### Relationships
-```prisma
-// Key relationships
-User -> Crews (one-to-many)
-User -> Clubs (one-to-many)
-Crew -> Club (many-to-one, optional)
-Crew -> BoatType (many-to-one)
-Crew -> SavedImages (one-to-many)
-```
-
-## 🛡️ Security & Best Practices
-
-### Authentication
-- Session-based auth with NextAuth.js
-- Protected routes with middleware
-- CSRF protection enabled
-- Secure cookie configuration
-
-### Data Validation
-- Input validation with Zod schemas
-- Server-side validation for all endpoints
-- Sanitization of user inputs
-- Rate limiting on API routes
-
-### Error Handling
-- Global error boundary
-- Graceful fallbacks for failed requests
-- User-friendly error messages
-- Error logging and monitoring
-
-## 🔍 Debugging & Monitoring
-
-### Development Tools
-- TanStack Query Devtools (data fetching)
-- TanStack Router Devtools (routing)
-- Prisma Studio (database)
-- React DevTools
-- Network debugging
-
-### Production Monitoring
-- Error tracking (Sentry recommended)
-- Performance monitoring
-- Database query monitoring
-- User analytics
-
-## 📚 Key Dependencies
-
-### Core Framework
-- `@tanstack/react-start`: Full-stack React framework
-- `@tanstack/react-router`: Type-safe routing
-- `@tanstack/react-query`: Data fetching & caching
-- `@trpc/server` + `@trpc/client`: End-to-end type safety
-
-### Database & Auth
-- `prisma`: Database ORM
-- `@auth/prisma-adapter`: Auth integration
-- `@prisma/client`: Database client
-
-### UI & Styling
-- `react` + `react-dom`: React 19
-- `tailwindcss`: Utility-first CSS
-- `lucide-react`: Icon library
-
-### Development
-- `typescript`: Type checking
-- `eslint` + `prettier`: Code quality
-- `vitest`: Testing framework
-
-## 🎨 Design System
-
-### Colors
-- Primary: Blue (#3B82F6)
-- Secondary: Slate (#64748B)
-- Success: Green (#10B981)
-- Warning: Yellow (#F59E0B)
-- Error: Red (#EF4444)
-
-### Typography
-- Font: Inter (system font fallback)
-- Headings: font-semibold to font-bold
-- Body: font-normal
-- Captions: font-medium
-
-## 🖼️ Template Development Guide
-
-### Template Structure
-Templates are located in `/public/templates/templateX/` with:
-- `templateX.html` - HTML structure with Handlebars-like placeholders
-- `templateX.css` - Styling with color placeholders for club customization
+## Template Development Guide
 
 ### Template Variables
-All templates use these standard placeholders:
-- `{{RACE_NAME}}` - Race/event name
-- `{{CREW_NAME}}` - Crew name
-- `{{BOAT_TYPE}}` - Boat type (e.g., "Eight")
-- `{{BOAT_CODE}}` - Boat code (e.g., "8+")
-- `{{crewCategory}}` - Generated category string (e.g., "M1 Senior Men | Open Club 8+")
-- `{{#BOAT_IMAGE_AVAILABLE}}{{BOAT_IMAGE}}{{/BOAT_IMAGE_AVAILABLE}}` - Conditional boat image
-- `{{#clubLogo}}<img src="{{clubLogo}}" />{{/clubLogo}}` - Conditional club logo
-- `{{#crewMembers}}` - Crew members array with positioning data
+- `{{RACE_NAME}}` — race/event name
+- `{{CREW_NAME}}` — crew name
+- `{{BOAT_TYPE}}` — e.g. "Eight"
+- `{{BOAT_CODE}}` — e.g. "8+"
+- `{{crewCategory}}` — e.g. "M1 Senior Men | Open Club 8+"
+- `{{#BOAT_IMAGE_AVAILABLE}}{{BOAT_IMAGE}}{{/BOAT_IMAGE_AVAILABLE}}` — conditional boat SVG
+- `{{#clubLogo}}<img src="{{clubLogo}}" />{{/clubLogo}}` — conditional club logo
+- `{{#crewMembers}}` — crew members array
 
-### Color System
-Templates use placeholder colors that get replaced by club colors:
-- `#094e2a` → Primary color (green)
-- `#f3bfd4` → Secondary color (pink)
-- `#15803d` → Primary color variant
-- `#f9a8d4` → Secondary color variant
+### Color Placeholders (replaced by club colors at render time)
+- `#094e2a` / `#15803d` → primary color
+- `#f3bfd4` / `#f9a8d4` → secondary color
 
 ### Boat Image System
-Boats are dynamically loaded as base64 SVGs:
-- Template uses `{{#BOAT_IMAGE_AVAILABLE}}` conditional
-- `{{BOAT_IMAGE}}` gets replaced with `<img class="boat-image" src="data:image/svg+xml;base64,..." />`
-- Boat types: `8+`, `4+`, `4-`, `2-` map to corresponding SVG files in `/public/boat-images/`
+`{{BOAT_IMAGE}}` is replaced with `<img src="data:image/svg+xml;base64,..." />`.
+SVG files for `8+`, `4+`, `4-`, `2-` live in `/public/boat-images/`.
 
-### Template Examples
+### Existing Templates
+- **Template 1** (`/public/templates/template1/`): Diagonal split background, boat centered, position badges
+- **Template 2** (`/public/templates/template2/`): Corner L-brackets, boat left, content right
 
-#### Template 1: Diagonal Professional
-- **Layout**: Diagonal split background, boat centered, position badges around boat
-- **Key Features**: SVG diagonal background, crew positioning system, club logo bottom-right
-- **Files**: `/public/templates/template1/`
+### Adding a New Template
+1. Create `/public/templates/templateX/templateX.html` + `templateX.css`
+2. Use 1080×1080px fixed dimensions, Inter font, absolute positioning
+3. Use color placeholder values listed above
+4. Add a `Template` record in the database
+5. Test with multiple boat types and crew sizes
 
-#### Template 2: Corner Brackets
-- **Layout**: Corner L-brackets, boat on left, content on right, race title top-center
-- **Key Features**: Four corner brackets (alternating colors), boat left-positioned, centered race title
-- **Files**: `/public/templates/template2/`
+## Deployment
 
-### Adding New Templates
+Three hosting configs exist in the repo — pick one:
 
-1. **Create template directory**: `/public/templates/templateX/`
-2. **HTML Structure** (`templateX.html`):
-   ```html
-   <!doctype html>
-   <html lang="en">
-     <head>
-       <meta charset="UTF-8" />
-       <title>Template Name</title>
-       <link rel="stylesheet" href="templateX.css" />
-     </head>
-     <body>
-       <div class="template-container">
-         <!-- Background elements -->
+| Platform | Config file | Notes |
+|----------|------------|-------|
+| **Vercel** | `vercel.json` | Recommended; Blob storage is native |
+| **Railway** | `railway.json`, `nixpacks.toml` | See `RAILWAY_DEPLOYMENT.md` |
+| **Netlify** | `netlify.toml` | |
+| **Docker** | `Dockerfile`, `docker-compose.yml` | Self-hosted |
 
-         <!-- Race title -->
-         <h1 class="race-name">{{RACE_NAME}}</h1>
-
-         <!-- Boat image -->
-         {{#BOAT_IMAGE_AVAILABLE}}
-         <div class="boat-container">
-           {{BOAT_IMAGE}}
-         </div>
-         {{/BOAT_IMAGE_AVAILABLE}}
-
-         <!-- Crew data -->
-         <div class="crew-info">{{crewCategory}}</div>
-
-         <!-- Club logo -->
-         {{#clubLogo}}
-         <div class="club-logo">
-           <img src="{{clubLogo}}" alt="Club Logo" />
-         </div>
-         {{/clubLogo}}
-       </div>
-     </body>
-   </html>
-   ```
-
-3. **CSS Styling** (`templateX.css`):
-   ```css
-   * {
-     box-sizing: border-box;
-     margin: 0;
-     padding: 0;
-   }
-
-   body {
-     font-family: 'Inter', Arial, sans-serif;
-     width: 1080px;
-     height: 1080px;
-     overflow: hidden;
-   }
-
-   .template-container {
-     position: absolute;
-     width: 1080px;
-     height: 1080px;
-   }
-
-   /* Use placeholder colors that get replaced */
-   .race-name {
-     color: #094e2a; /* Primary color placeholder */
-   }
-   ```
-
-4. **Database Entry**: Add template record to database with proper metadata
-5. **Test Generation**: Verify template works with different crew configurations
-
-### Template Best Practices
-- **Dimensions**: Always use 1080px × 1080px for consistency
-- **Font**: Use Inter font family with proper fallbacks
-- **Colors**: Use placeholder colors that get replaced by club colors
-- **Positioning**: Use absolute positioning for precise layout control
-- **Z-index**: Layer elements properly (background: 1, boat: 15, content: 10-20)
-- **Responsive text**: Handle long names with ellipsis and max-width
-- **Image handling**: Use conditional blocks for optional elements (boat, logo)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Follow code style guidelines
-4. Add tests for new functionality
-5. Ensure all checks pass
-6. Submit pull request
-
-## 📞 Support
-
-- **Issues**: GitHub Issues
-- **Questions**: GitHub Discussions
-- **Documentation**: `/docs` directory
-
----
-
-> **🎯 Goal**: Create professional rowing crew images with modern web technologies
->
-> **🏁 Status**: Production-ready with comprehensive feature set
+### Deployment Checklist
+- [ ] All env vars set on host
+- [ ] `DATABASE_URL` + `DIRECT_URL` configured
+- [ ] `BLOB_READ_WRITE_TOKEN` set
+- [ ] `npm run build` passes locally
+- [ ] Database migrations applied (`npm run db:migrate`)

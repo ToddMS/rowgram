@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template8.css">
+  <title>RowGram — Template 7</title>
+</head>
+<body>
+  <div class="canvas">
+
+    <header class="header">
+      <span class="eyebrow">Crew Lineup</span>
+      <h1 class="race-name">{{RACE_NAME}}</h1>
+      <p class="category">{{crewCategory}}</p>
+    </header>
+
+    
+    {{#BOAT_IMAGE_AVAILABLE}}
+
+    
+    <div class="boat-container">{{BOAT_IMAGE}}</div>
+
+    
+    {{/BOAT_IMAGE_AVAILABLE}}
+    
+
+    <!-- One painted club blade per rower -->
+    <section class="crew-list">
+      
+      {{#crewMembers}}
+      <div class="crew-row">
+        <span class="blade"></span>
+        <span class="shaft"></span>
+        <span class="seat">{{badge}}</span>
+        <span class="name">{{name}}</span>
+      </div>
+      {{/crewMembers}}
+      
+    </section>
+
+    <footer class="footer">
+      <div class="footer-rule"></div>
+      <div class="coach">
+        <span class="coach-label">Coach</span>
+        <span class="coach-name">{{COACH_NAME}}</span>
+      </div>
+      <span class="code-chip">{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</span>
+      
+      {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+      
+    </footer>
+
+  </div>
+</body>
+</html>

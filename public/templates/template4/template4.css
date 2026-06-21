@@ -1,0 +1,162 @@
+/* Template 4 — Horizontal colour bands: green race / pink boat / white crew / green footer */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 1080px;
+  height: 1080px;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #ffffff;
+}
+
+.canvas {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Band 1: race info on primary ---- */
+.band-top {
+  height: 232px;
+  padding: 40px 64px 0;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.eyebrow {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.band-top .race-name {
+  margin-top: 12px;
+  font-size: 72px;
+  line-height: 0.95;
+  font-weight: 900;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.band-top .category {
+  margin-top: 14px;
+  font-size: 27px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ---- Band 2: boat on secondary ---- */
+.band-boat {
+  height: 250px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  padding: 0 64px;
+  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.code-block {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+.big-code {
+  font-size: 130px;
+  font-weight: 900;
+  letter-spacing: -4px;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.band-boat .boat-type {
+  margin-top: 4px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.band-boat .boat-container {
+  margin-left: auto;
+  height: 200px;
+  display: flex;
+  align-items: center;
+}
+.band-boat .boat-container img {
+  height: 200px;
+  width: auto;
+  transform: rotate(90deg);
+}
+
+/* ---- Band 3: crew grid on white ---- */
+.band-names {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(5, 1fr);
+  grid-auto-flow: column;
+  column-gap: 56px;
+  align-content: center;
+  padding: 24px 64px;
+}
+.crew-cell {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.crew-cell .seat {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 26px;
+  font-weight: 800;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: #ffffff;
+}
+.crew-cell .name {
+  font-size: 32px;
+  font-weight: 600;
+  color: #161616;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- Band 4: footer on primary ---- */
+.band-footer {
+  height: 132px;
+  display: flex;
+  align-items: center;
+  padding: 0 64px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  border-top: 8px solid #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.band-footer .coach {
+  display: flex;
+  flex-direction: column;
+}
+.band-footer .coach-label {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.band-footer .coach-name {
+  font-size: 30px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.band-footer .club-logo {
+  margin-left: auto;
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+}

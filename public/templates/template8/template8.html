@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template9.css">
+  <title>RowGram — Template 8</title>
+</head>
+<body>
+  <div class="canvas">
+
+    <div class="pinstripes"></div>
+
+    <!-- The ticket -->
+    <div class="ticket">
+
+      <!-- Main section -->
+      <div class="ticket-main">
+        <span class="eyebrow">Official Race Entry</span>
+        <h1 class="race-name">{{RACE_NAME}}</h1>
+        <p class="category">{{crewCategory}}</p>
+
+        <section class="crew-list">
+          
+          {{#crewMembers}}
+      <div class="crew-row">
+            <span class="seat">{{badge}}</span>
+            <span class="name">{{name}}</span>
+          </div>
+      {{/crewMembers}}
+          
+        </section>
+
+        
+        {{#BOAT_IMAGE_AVAILABLE}}
+
+        
+        <div class="boat-container">{{BOAT_IMAGE}}</div>
+
+        
+        {{/BOAT_IMAGE_AVAILABLE}}
+        
+      </div>
+
+      <!-- Perforation -->
+      <div class="perforation"></div>
+      <div class="notch notch-top"></div>
+      <div class="notch notch-bottom"></div>
+
+      <!-- Stub -->
+      <div class="ticket-stub">
+        <span class="big-code">{{BOAT_CODE}}</span>
+        <span class="boat-type">{{BOAT_TYPE}}</span>
+        
+        {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+        
+        <div class="coach">
+          <span class="coach-label">Coach</span>
+          <span class="coach-name">{{COACH_NAME}}</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</body>
+</html>

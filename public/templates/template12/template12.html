@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template12.css">
+  <title>RowGram — Template 12</title>
+</head>
+<body>
+  <div class="canvas">
+    <div class="stripes"></div>
+
+    
+    {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+    
+    <span class="code-chip">{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</span>
+
+    <!-- Grosgrain ribbon -->
+    <div class="ribbon"></div>
+
+    <!-- The badge -->
+    <div class="badge">
+      <span class="eyelet"></span>
+
+      <span class="eyebrow">Official Crew Badge</span>
+      <h1 class="race-name">{{RACE_NAME}}</h1>
+      <p class="category">{{crewCategory}}</p>
+      <div class="rule"></div>
+
+      <section class="crew-list">
+        
+        {{#crewMembers}}
+      <div class="crew-row">
+          <span class="seat">{{badge}}</span>
+          <span class="name">{{name}}</span>
+        </div>
+      {{/crewMembers}}
+        
+      </section>
+
+      <p class="coach"><span class="coach-label">Coach</span> {{COACH_NAME}}</p>
+    </div>
+  </div>
+</body>
+</html>

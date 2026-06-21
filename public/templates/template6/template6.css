@@ -1,0 +1,154 @@
+/* Template 7 — Certificate: double frame, edge ribbons, ornament, dotted leaders */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { width: 1080px; height: 1080px; overflow: hidden; }
+body { font-family: 'Inter', sans-serif; }
+
+.canvas {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background: #ffffff;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* ---- Edge ribbons ---- */
+.ribbon {
+  position: absolute;
+  top: 0;
+  width: 26px;
+  height: 1080px;
+}
+.ribbon-left { left: 0; background: #094e2a; }   /* PRIMARY COLOR PLACEHOLDER */
+.ribbon-right { right: 0; background: #f9a8d4; }  /* SECONDARY COLOR PLACEHOLDER */
+
+/* ---- Certificate frame (double) ---- */
+.frame {
+  position: absolute;
+  inset: 60px;
+  border: 4px solid #094e2a;        /* PRIMARY COLOR PLACEHOLDER */
+  outline: 2px solid #f9a8d4;        /* SECONDARY COLOR PLACEHOLDER */
+  outline-offset: 10px;
+  pointer-events: none;
+}
+
+.club-logo {
+  position: absolute;
+  top: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 124px;
+  height: 124px;
+  object-fit: contain;
+}
+
+.eyebrow {
+  position: absolute;
+  top: 240px;
+  left: 0;
+  right: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.race-name {
+  position: absolute;
+  top: 282px;
+  left: 120px;
+  right: 120px;
+  font-size: 70px;
+  font-weight: 900;
+  line-height: 0.96;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+
+.ornament {
+  position: absolute;
+  top: 410px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ornament-line {
+  width: 120px;
+  height: 2px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.ornament-diamond {
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+
+.category {
+  position: absolute;
+  top: 452px;
+  left: 0;
+  right: 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #161616;
+}
+.boat-line {
+  position: absolute;
+  top: 490px;
+  left: 0;
+  right: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+
+/* ---- Crew list with dotted leaders ---- */
+.crew-list {
+  position: absolute;
+  top: 556px;
+  left: 200px;
+  right: 200px;
+}
+.crew-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+}
+.seat {
+  flex-shrink: 0;
+  width: 38px;
+  text-align: center;
+  font-size: 26px;
+  font-weight: 800;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.leader {
+  flex: 1;
+  border-bottom: 2px dotted rgba(9, 78, 42, 0.35); /* PRIMARY COLOR PLACEHOLDER (tint) */
+  height: 0;
+}
+.crew-row .name {
+  flex-shrink: 0;
+  font-size: 30px;
+  font-weight: 600;
+  color: #161616;
+}
+
+.coach {
+  position: absolute;
+  bottom: 96px;
+  left: 0;
+  right: 0;
+  font-size: 24px;
+  font-weight: 600;
+  font-style: italic;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}

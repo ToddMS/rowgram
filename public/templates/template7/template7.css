@@ -1,0 +1,139 @@
+/* Template 8 — One painted club blade per rower, beside the boat */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { width: 1080px; height: 1080px; overflow: hidden; }
+body { font-family: 'Inter', sans-serif; }
+
+.canvas {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.header {
+  position: absolute;
+  top: 64px;
+  left: 64px;
+  right: 360px;
+}
+.eyebrow {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.race-name {
+  margin-top: 10px;
+  font-size: 62px;
+  font-weight: 900;
+  line-height: 0.94;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.category {
+  margin-top: 14px;
+  font-size: 26px;
+  font-weight: 600;
+  color: #161616;
+}
+
+/* ---- Boat, top right ---- */
+.boat-container {
+  position: absolute;
+  top: 56px;
+  right: 70px;
+  height: 240px;
+}
+.boat-container img {
+  height: 240px;
+  width: auto;
+}
+
+/* ---- Crew list: each row an oar ---- */
+.crew-list {
+  position: absolute;
+  top: 330px;
+  left: 64px;
+  right: 64px;
+  bottom: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.crew-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 56px;
+}
+.blade {
+  flex-shrink: 0;
+  width: 58px;
+  height: 46px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  clip-path: polygon(0 50%, 30% 0, 100% 8%, 100% 92%, 30% 100%);
+}
+.crew-row:nth-child(even) .blade { background: #f9a8d4; } /* SECONDARY COLOR PLACEHOLDER */
+.shaft {
+  flex-shrink: 0;
+  width: 70px;
+  height: 9px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.crew-row:nth-child(even) .shaft { background: #f9a8d4; } /* SECONDARY COLOR PLACEHOLDER */
+.seat {
+  flex-shrink: 0;
+  width: 46px;
+  margin: 0 22px 0 14px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.name {
+  font-size: 33px;
+  font-weight: 600;
+  color: #161616;
+}
+
+/* ---- Footer ---- */
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1080px;
+  height: 124px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 0 64px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.footer-rule { display: none; }
+.coach { display: flex; flex-direction: column; }
+.coach-label {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.coach-name { font-size: 30px; font-weight: 700; color: #ffffff; }
+.code-chip {
+  margin-left: auto;
+  padding: 8px 22px;
+  border-radius: 6px;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
+}
+.club-logo { width: 92px; height: 92px; object-fit: contain; }

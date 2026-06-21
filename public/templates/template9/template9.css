@@ -1,0 +1,140 @@
+/* Template 10 — Runner's race bib: pinned card, boat code as the big number */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { width: 1080px; height: 1080px; overflow: hidden; }
+body { font-family: 'Inter', sans-serif; }
+
+.canvas {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  overflow: hidden;
+}
+.dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(249, 168, 212, 0.18) 3px, transparent 3px); /* SECONDARY COLOR PLACEHOLDER (tint) */
+  background-size: 40px 40px;
+}
+
+/* ---- Bib card ---- */
+.bib {
+  position: absolute;
+  top: 72px;
+  left: 100px;
+  width: 880px;
+  height: 936px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 56px 64px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+}
+.pin {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f9a8d4, #094e2a); /* SECONDARY + PRIMARY COLOR PLACEHOLDER */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+.pin-tl { top: 26px; left: 26px; }
+.pin-tr { top: 26px; right: 26px; }
+.pin-bl { bottom: 26px; left: 26px; }
+.pin-br { bottom: 26px; right: 26px; }
+
+.bib .club-logo {
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+}
+.bib .race-name {
+  margin-top: 110px;
+  text-align: center;
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.big-code {
+  display: block;
+  text-align: center;
+  font-size: 150px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -6px;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.boat-type {
+  display: block;
+  text-align: center;
+  margin-top: 4px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #161616;
+}
+.rule {
+  margin: 24px auto 0;
+  width: 100%;
+  height: 6px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+
+/* ---- Crew list ---- */
+.crew-list {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(5, auto);
+  grid-auto-flow: column;
+  column-gap: 40px;
+}
+.crew-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+}
+.seat {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 23px;
+  font-weight: 800;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: #ffffff;
+}
+.name {
+  font-size: 29px;
+  font-weight: 600;
+  color: #161616;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.coach {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 44px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.coach-label {
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}

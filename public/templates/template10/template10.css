@@ -1,0 +1,126 @@
+/* Template 11 — Instant-photo wall: one taped polaroid per rower */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { width: 1080px; height: 1080px; overflow: hidden; }
+body { font-family: 'Inter', sans-serif; }
+
+.canvas {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  overflow: hidden;
+}
+.stripes {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.10) 0,
+    rgba(0, 0, 0, 0.10) 2px,
+    transparent 2px,
+    transparent 60px
+  );
+}
+
+/* ---- Header ---- */
+.header {
+  position: absolute;
+  top: 56px;
+  left: 64px;
+  right: 64px;
+  text-align: center;
+}
+.race-name {
+  font-size: 62px;
+  font-weight: 900;
+  line-height: 0.96;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.header .category {
+  margin-top: 10px;
+  font-size: 25px;
+  font-weight: 600;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.header .code { color: #ffffff; }
+
+/* ---- Wall of photos ---- */
+.wall {
+  position: absolute;
+  top: 224px;
+  left: 60px;
+  right: 60px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px 36px;
+}
+.card {
+  width: 280px;
+  padding: 14px 14px 20px;
+  background: #fdfdfb;
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.28);
+}
+.card:nth-child(3n+1) { transform: rotate(-2.5deg); }
+.card:nth-child(3n+2) { transform: rotate(1.5deg); }
+.card:nth-child(3n)   { transform: rotate(-1deg); }
+.photo {
+  position: relative;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.card:nth-child(even) .photo { background: #f9a8d4; } /* SECONDARY COLOR PLACEHOLDER */
+.photo .seat {
+  font-size: 72px;
+  font-weight: 900;
+  color: #ffffff;
+}
+.card:nth-child(even) .photo .seat { color: #094e2a; } /* PRIMARY COLOR PLACEHOLDER */
+.card .name {
+  display: block;
+  margin-top: 14px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #161616;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- Footer ---- */
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 40px;
+  width: 1080px;
+  text-align: center;
+}
+.footer .coach-label {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.footer .coach-name {
+  display: block;
+  margin-top: 4px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.club-logo {
+  position: absolute;
+  bottom: 40px;
+  right: 56px;
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+}

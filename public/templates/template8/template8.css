@@ -1,0 +1,173 @@
+/* Template 9 — Race-entry ticket with tear-off stub and perforation */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { width: 1080px; height: 1080px; overflow: hidden; }
+body { font-family: 'Inter', sans-serif; }
+
+.canvas {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  overflow: hidden;
+}
+.pinstripes {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(249, 168, 212, 0.10) 0,            /* SECONDARY COLOR PLACEHOLDER (tint) */
+    rgba(249, 168, 212, 0.10) 14px,
+    transparent 14px,
+    transparent 34px
+  );
+}
+
+/* ---- Ticket ---- */
+.ticket {
+  position: absolute;
+  top: 90px;
+  left: 90px;
+  width: 900px;
+  height: 900px;
+  display: flex;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.28);
+}
+.ticket-main {
+  position: relative;
+  flex: 1;
+  padding: 56px 60px;
+}
+.ticket-main .eyebrow {
+  display: block;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.ticket-main .race-name {
+  margin-top: 10px;
+  font-size: 60px;
+  font-weight: 900;
+  line-height: 0.94;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.ticket-main .category {
+  margin-top: 12px;
+  font-size: 25px;
+  font-weight: 600;
+  color: #161616;
+}
+.crew-list {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(5, auto);
+  grid-auto-flow: column;
+  column-gap: 40px;
+}
+.crew-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(9, 78, 42, 0.13); /* PRIMARY COLOR PLACEHOLDER (tint) */
+}
+.seat {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 23px;
+  font-weight: 800;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: #ffffff;
+}
+.crew-row .name {
+  font-size: 29px;
+  font-weight: 600;
+  color: #161616;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.boat-container {
+  position: absolute;
+  left: 60px;
+  bottom: 40px;
+  height: 90px;
+}
+.boat-container img { height: 90px; width: auto; transform: rotate(90deg); }
+
+/* ---- Perforation + stub ---- */
+.perforation {
+  width: 0;
+  border-left: 3px dashed rgba(255, 255, 255, 0.7);
+  align-self: stretch;
+}
+.notch {
+  position: absolute;
+  left: 596px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  z-index: 2;
+}
+.notch-top { top: -18px; }
+.notch-bottom { bottom: -18px; }
+
+.ticket-stub {
+  position: relative;
+  width: 282px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 40px 24px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.big-code {
+  font-size: 120px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -4px;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.boat-type {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.club-logo {
+  margin-top: 28px;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+.ticket-stub .coach {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ticket-stub .coach-label {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.ticket-stub .coach-name { font-size: 26px; font-weight: 700; color: #ffffff; }

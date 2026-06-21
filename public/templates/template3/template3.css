@@ -1,0 +1,163 @@
+/* Template 3 — Editorial / typographic: giant race name, pink rule, 2-col crew, green mastheads */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 1080px;
+  height: 1080px;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #ffffff;
+}
+
+.canvas {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/* ---- Masthead ---- */
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 96px;
+  padding: 0 64px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.masthead-label {
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.masthead-code {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 8px 22px;
+  border-radius: 6px;
+  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
+}
+
+/* ---- Headline ---- */
+.race-name {
+  padding: 52px 64px 0;
+  font-size: 94px;
+  line-height: 0.92;
+  font-weight: 900;
+  letter-spacing: -3px;
+  text-transform: uppercase;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.rule {
+  height: 14px;
+  margin: 28px 64px 0;
+  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.category {
+  padding: 22px 64px 0;
+  font-size: 30px;
+  font-weight: 600;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+
+/* ---- Crew list (2 columns, stroke -> bow, column-major) ---- */
+.crew-list {
+  position: absolute;
+  top: 430px;
+  left: 64px;
+  right: 64px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(5, 1fr);
+  grid-auto-flow: column;
+  column-gap: 56px;
+}
+.crew-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(9, 78, 42, 0.14); /* PRIMARY COLOR PLACEHOLDER (tint) */
+}
+.seat {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 26px;
+  font-weight: 800;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: #ffffff;
+}
+.name {
+  font-size: 32px;
+  font-weight: 600;
+  color: #161616;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- Footer band ---- */
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1080px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  padding: 0 64px;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.coach {
+  display: flex;
+  flex-direction: column;
+}
+.coach-label {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.coach-name {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.boat-container {
+  margin-left: auto;
+  height: 110px;
+  display: flex;
+  align-items: center;
+}
+.boat-container img {
+  height: 110px;
+  width: auto;
+  filter: invert(1); /* injected boat is black; flip to read on dark band */
+}
+.boat-type {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.club-logo {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+}

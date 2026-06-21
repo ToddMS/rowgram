@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template4.css">
+  <title>RowGram — Template 4</title>
+</head>
+<body>
+  <div class="canvas">
+
+    <!-- Band 1: race info on primary -->
+    <section class="band-top">
+      <span class="eyebrow">Crew Lineup</span>
+      <h1 class="race-name">{{RACE_NAME}}</h1>
+      <p class="category">{{crewCategory}}</p>
+    </section>
+
+    <!-- Band 2: boat on secondary -->
+    <section class="band-boat">
+      <div class="code-block">
+        <span class="big-code">{{BOAT_CODE}}</span>
+        <span class="boat-type">{{BOAT_TYPE}}</span>
+      </div>
+      
+      {{#BOAT_IMAGE_AVAILABLE}}
+      
+      <div class="boat-container">{{BOAT_IMAGE}}</div>
+      
+      {{/BOAT_IMAGE_AVAILABLE}}
+      
+    </section>
+
+    <!-- Band 3: crew grid on white -->
+    <section class="band-names">
+      
+      {{#crewMembers}}
+      <div class="crew-cell">
+        <span class="seat">{{badge}}</span>
+        <span class="name">{{name}}</span>
+      </div>
+      {{/crewMembers}}
+      
+    </section>
+
+    <!-- Band 4: footer on primary -->
+    <footer class="band-footer">
+      <div class="coach">
+        <span class="coach-label">Coach</span>
+        <span class="coach-name">{{COACH_NAME}}</span>
+      </div>
+      
+      {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+      
+    </footer>
+
+  </div>
+</body>
+</html>

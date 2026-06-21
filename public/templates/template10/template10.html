@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template11.css">
+  <title>RowGram — Template 10</title>
+</head>
+<body>
+  <div class="canvas">
+
+    <div class="stripes"></div>
+
+    <header class="header">
+      <h1 class="race-name">{{RACE_NAME}}</h1>
+      <p class="category">{{crewCategory}} <span class="code">&middot; {{BOAT_TYPE}} {{BOAT_CODE}}</span></p>
+    </header>
+
+    <!-- One taped instant photo per crew member -->
+    <section class="wall">
+      
+      {{#crewMembers}}
+      <div class="card">
+        <div class="photo"><span class="seat">{{badge}}</span></div>
+        <span class="name">{{name}}</span>
+      </div>
+      {{/crewMembers}}
+      
+    </section>
+
+    <footer class="footer">
+      <span class="coach-label">Coach</span>
+      <span class="coach-name">{{COACH_NAME}}</span>
+    </footer>
+
+    
+    {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+    
+
+  </div>
+</body>
+</html>

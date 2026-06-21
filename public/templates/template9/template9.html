@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template10.css">
+  <title>RowGram — Template 9</title>
+</head>
+<body>
+  <div class="canvas">
+
+    <div class="dots"></div>
+
+    <!-- The bib, pinned at all four corners -->
+    <div class="bib">
+
+      <span class="pin pin-tl"></span>
+      <span class="pin pin-tr"></span>
+      <span class="pin pin-bl"></span>
+      <span class="pin pin-br"></span>
+
+      
+      {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+      
+
+      <h1 class="race-name">{{RACE_NAME}}</h1>
+
+      <!-- The "race number" is the boat code -->
+      <span class="big-code">{{BOAT_CODE}}</span>
+      <span class="boat-type">{{BOAT_TYPE}} &middot; {{crewCategory}}</span>
+
+      <div class="rule"></div>
+
+      <section class="crew-list">
+        
+        {{#crewMembers}}
+      <div class="crew-row">
+          <span class="seat">{{badge}}</span>
+          <span class="name">{{name}}</span>
+        </div>
+      {{/crewMembers}}
+        
+      </section>
+
+      <p class="coach"><span class="coach-label">Coach</span> {{COACH_NAME}}</p>
+
+    </div>
+
+  </div>
+</body>
+</html>

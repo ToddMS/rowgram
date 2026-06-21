@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template18.css">
+  <title>RowGram — Template 14</title>
+</head>
+<body>
+  <div class="canvas">
+    <div class="pitch"></div>
+
+    <header class="header">
+      <div class="titles">
+        <span class="eyebrow">Starting Formation</span>
+        <h1 class="race-name">{{RACE_NAME}}</h1>
+        <p class="category">{{crewCategory}}</p>
+      </div>
+      {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+    </header>
+
+    <div class="spine"></div>
+
+    <section class="crew-list">
+      {{#crewMembers}}
+      <div class="crew-row"><span class="seat">{{badge}}</span><span class="name">{{name}}</span></div>
+      {{/crewMembers}}
+    </section>
+
+    <footer class="footer">
+      <span class="coach-label">Coach</span>
+      <span class="coach-name">{{COACH_NAME}}</span>
+      <span class="code-chip">{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</span>
+    </footer>
+
+  </div>
+</body>
+</html>

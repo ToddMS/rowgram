@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template7.css">
+  <title>RowGram — Template 6</title>
+</head>
+<body>
+  <div class="canvas">
+
+    <!-- Club-ribbon trim, both edges -->
+    <div class="ribbon ribbon-left"></div>
+    <div class="ribbon ribbon-right"></div>
+
+    <!-- Certificate-style double frame -->
+    <div class="frame"></div>
+
+    
+    {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+    
+
+    <span class="eyebrow">Race Day &middot; Crew Announcement</span>
+
+    <h1 class="race-name">{{RACE_NAME}}</h1>
+
+    <div class="ornament">
+      <span class="ornament-line"></span>
+      <span class="ornament-diamond"></span>
+      <span class="ornament-line"></span>
+    </div>
+
+    <p class="category">{{crewCategory}}</p>
+    <p class="boat-line">{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</p>
+
+    <section class="crew-list">
+      
+      {{#crewMembers}}
+      <div class="crew-row">
+        <span class="seat">{{badge}}</span>
+        <span class="leader"></span>
+        <span class="name">{{name}}</span>
+      </div>
+      {{/crewMembers}}
+      
+    </section>
+
+    <p class="coach">Coached by {{COACH_NAME}}</p>
+
+  </div>
+</body>
+</html>

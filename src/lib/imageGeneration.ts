@@ -171,8 +171,11 @@ export class ImageGenerationService {
       const templateMap: Record<string, string> = {
         'Diagonal Professional': 'templates/template1',
         'Corner Brackets Modern': 'templates/template2',
-        'Template 1': 'templates/template1',
-        'Template 2': 'templates/template2',
+      }
+      // Auto-resolve "Template N" names to their directory
+      const numberedMatch = template.name.match(/^Template (\d+)$/)
+      if (numberedMatch) {
+        templateMap[template.name] = `templates/template${numberedMatch[1]}`
       }
       const templateDir = templateMap[template.name] || 'templates/template1'
       templateName = path.basename(templateDir)
