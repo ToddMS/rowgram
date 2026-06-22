@@ -342,7 +342,9 @@ function GenerateImagePageContent() {
                 </div>
                 {templateError && <span className="text-red-600 text-sm font-medium animate-pulse">Please select at least one template</span>}
               </div>
-              <TemplateSelector selectedTemplateIds={selectedTemplateIds} onTemplateSelect={(ids) => { setSelectedTemplateIds(ids); setTemplateError(false) }} hideTitle={true} />
+              <div className="max-h-80 pr-4 custom-scrollbar">
+                <TemplateSelector selectedTemplateIds={selectedTemplateIds} onTemplateSelect={(ids) => { setSelectedTemplateIds(ids); setTemplateError(false) }} hideTitle={true} />
+              </div>
             </section>
 
             <section className="bg-white rounded-lg shadow p-6">
