@@ -71,7 +71,7 @@ body {
 /* ---- Cox row (left-aligned, above crew grid) ---- */
 .cox-row {
   position: absolute;
-  top: 405px;
+  top: 440px;
   left: 64px;
   right: 64px;
   display: flex;
@@ -85,7 +85,7 @@ body {
 /* ---- Crew list (2 columns of 4, stroke -> bow, column-major) ---- */
 .crew-list {
   position: absolute;
-  top: 487px;
+  top: 522px;
   left: 64px;
   right: 64px;
   display: grid;
