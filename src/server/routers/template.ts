@@ -4,9 +4,13 @@ import { prisma } from '../../lib/prisma'
 
 export const templateRouter = router({
   getAll: publicProcedure.query(async () => {
-    return await prisma.template.findMany({
+    const templates = await prisma.template.findMany({
       where: { isActive: true },
-      orderBy: { createdAt: 'asc' },
+    })
+    return templates.sort((a, b) => {
+      const numA = parseInt(a.name.replace(/\D/g, ''), 10) || 0
+      const numB = parseInt(b.name.replace(/\D/g, ''), 10) || 0
+      return numA - numB
     })
   }),
 

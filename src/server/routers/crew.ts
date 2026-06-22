@@ -80,6 +80,7 @@ export const crewRouter = router({
         id: z.string(),
         name: z.string().optional(),
         clubName: z.string().optional(),
+        clubId: z.string().optional(),
         raceName: z.string().optional(),
         raceDate: z.string().optional(),
         boatName: z.string().optional(),
@@ -104,4 +105,5 @@ export const crewRouter = router({
       await prisma.crew.delete({ where: { id: input.id } })
       return { id: input.id }
     }),
+
 })

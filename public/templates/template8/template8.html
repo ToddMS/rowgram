@@ -5,7 +5,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="template9.css">
+  <link rel="stylesheet" href="template8.css">
   <title>RowGram — Template 8</title>
 </head>
 <body>
@@ -22,26 +22,24 @@
         <h1 class="race-name">{{RACE_NAME}}</h1>
         <p class="category">{{crewCategory}}</p>
 
-        <section class="crew-list">
-          
-          {{#crewMembers}}
-      <div class="crew-row">
-            <span class="seat">{{badge}}</span>
-            <span class="name">{{name}}</span>
+        <div class="crew-section">
+          {{#hasCox}}
+          <div class="cox-row">
+            <span class="seat">C</span>
+            <span class="name">{{COX_NAME}}</span>
           </div>
-      {{/crewMembers}}
-          
-        </section>
+          {{/hasCox}}
 
-        
-        {{#BOAT_IMAGE_AVAILABLE}}
+          <section class="crew-list">
+            {{#crewMembersNoCox}}
+            <div class="crew-row">
+              <span class="seat">{{badge}}</span>
+              <span class="name">{{name}}</span>
+            </div>
+            {{/crewMembersNoCox}}
+          </section>
+        </div>
 
-        
-        <div class="boat-container">{{BOAT_IMAGE}}</div>
-
-        
-        {{/BOAT_IMAGE_AVAILABLE}}
-        
       </div>
 
       <!-- Perforation -->
@@ -53,9 +51,9 @@
       <div class="ticket-stub">
         <span class="big-code">{{BOAT_CODE}}</span>
         <span class="boat-type">{{BOAT_TYPE}}</span>
-        
+
         {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
-        
+
         <div class="coach">
           <span class="coach-label">Coach</span>
           <span class="coach-name">{{COACH_NAME}}</span>

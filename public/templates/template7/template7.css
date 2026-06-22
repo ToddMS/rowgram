@@ -1,4 +1,4 @@
-/* Template 8 — One painted club blade per rower, beside the boat */
+/* Template 7 — One painted club blade per rower, beside the boat */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body { width: 1080px; height: 1080px; overflow: hidden; }
@@ -12,12 +12,12 @@ body { font-family: 'Inter', sans-serif; }
   overflow: hidden;
 }
 
-/* ---- Header ---- */
+/* ---- Header: full width ---- */
 .header {
   position: absolute;
   top: 64px;
   left: 64px;
-  right: 360px;
+  right: 64px;
 }
 .eyebrow {
   display: block;
@@ -29,7 +29,7 @@ body { font-family: 'Inter', sans-serif; }
 }
 .race-name {
   margin-top: 10px;
-  font-size: 62px;
+  font-size: 72px;
   font-weight: 900;
   line-height: 0.94;
   letter-spacing: -2px;
@@ -43,24 +43,12 @@ body { font-family: 'Inter', sans-serif; }
   color: #161616;
 }
 
-/* ---- Boat, top right ---- */
-.boat-container {
-  position: absolute;
-  top: 56px;
-  right: 70px;
-  height: 240px;
-}
-.boat-container img {
-  height: 240px;
-  width: auto;
-}
-
-/* ---- Crew list: each row an oar ---- */
+/* ---- Crew list: left half only, logo takes right half ---- */
 .crew-list {
   position: absolute;
   top: 330px;
   left: 64px;
-  right: 64px;
+  right: 480px;
   bottom: 150px;
   display: flex;
   flex-direction: column;
@@ -73,21 +61,13 @@ body { font-family: 'Inter', sans-serif; }
   gap: 0;
   height: 56px;
 }
-.blade {
+.oar {
   flex-shrink: 0;
-  width: 58px;
-  height: 46px;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-  clip-path: polygon(0 50%, 30% 0, 100% 8%, 100% 92%, 30% 100%);
+  height: 36px;
+  width: auto;
+  fill: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
-.crew-row:nth-child(even) .blade { background: #f9a8d4; } /* SECONDARY COLOR PLACEHOLDER */
-.shaft {
-  flex-shrink: 0;
-  width: 70px;
-  height: 9px;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-}
-.crew-row:nth-child(even) .shaft { background: #f9a8d4; } /* SECONDARY COLOR PLACEHOLDER */
+.crew-row:nth-child(even) .oar { fill: #f9a8d4; } /* SECONDARY COLOR PLACEHOLDER */
 .seat {
   flex-shrink: 0;
   width: 46px;
@@ -102,6 +82,19 @@ body { font-family: 'Inter', sans-serif; }
   font-weight: 600;
   color: #161616;
 }
+
+/* ---- Club logo: centered in right half ---- */
+.logo-panel {
+  position: absolute;
+  right: 0;
+  width: 480px;
+  top: 330px;
+  bottom: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.club-logo { width: 280px; height: 280px; object-fit: contain; }
 
 /* ---- Footer ---- */
 .footer {
@@ -126,14 +119,3 @@ body { font-family: 'Inter', sans-serif; }
   color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
 }
 .coach-name { font-size: 30px; font-weight: 700; color: #ffffff; }
-.code-chip {
-  margin-left: auto;
-  padding: 8px 22px;
-  border-radius: 6px;
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
-  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
-}
-.club-logo { width: 92px; height: 92px; object-fit: contain; }

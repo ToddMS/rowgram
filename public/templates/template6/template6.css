@@ -112,7 +112,7 @@ body { font-family: 'Inter', sans-serif; }
 /* ---- Crew list with dotted leaders ---- */
 .crew-list {
   position: absolute;
-  top: 556px;
+  top: 518px;
   left: 200px;
   right: 200px;
 }
@@ -120,7 +120,7 @@ body { font-family: 'Inter', sans-serif; }
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 8px 0;
+  padding: 5px 0;
 }
 .seat {
   flex-shrink: 0;

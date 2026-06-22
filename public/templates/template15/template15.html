@@ -12,24 +12,28 @@
   <div class="canvas">
 
     <header class="board-head">
-      <span class="eyebrow">Crew Departure Board</span>
+      <span class="eyebrow">Crew Lineup</span>
       <h1 class="race-name">{{RACE_NAME}}</h1>
       <span class="category">{{crewCategory}}</span>
     </header>
 
-    <section class="crew-list">
-      {{#crewMembers}}
-      <div class="crew-row"><span class="seat">{{badge}}</span><span class="name">{{name}}</span></div>
-      {{/crewMembers}}
-    </section>
+    <div class="board-body">
+      <section class="crew-list">
+        {{#crewMembers}}
+        <div class="crew-row"><span class="seat">{{badge}}</span><span class="name">{{name}}</span></div>
+        {{/crewMembers}}
+      </section>
+
+      <div class="logo-panel">
+        {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+      </div>
+    </div>
 
     <footer class="board-foot">
       <div class="coach">
         <span class="coach-label">Coach</span>
         <span class="coach-name">{{COACH_NAME}}</span>
       </div>
-      <span class="code-chip">{{BOAT_CODE}}</span>
-      {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
     </footer>
 
   </div>

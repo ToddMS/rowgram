@@ -24,25 +24,34 @@
         <span class="big-code">{{BOAT_CODE}}</span>
         <span class="boat-type">{{BOAT_TYPE}}</span>
       </div>
-      
+
       {{#BOAT_IMAGE_AVAILABLE}}
-      
       <div class="boat-container">{{BOAT_IMAGE}}</div>
-      
       {{/BOAT_IMAGE_AVAILABLE}}
-      
+
     </section>
 
     <!-- Band 3: crew grid on white -->
     <section class="band-names">
-      
-      {{#crewMembers}}
-      <div class="crew-cell">
-        <span class="seat">{{badge}}</span>
-        <span class="name">{{name}}</span>
+
+      <!-- Cox centred above the rower grid -->
+      {{#hasCox}}
+      <div class="cox-cell">
+        <span class="seat">C</span>
+        <span class="name">{{COX_NAME}}</span>
       </div>
-      {{/crewMembers}}
-      
+      {{/hasCox}}
+
+      <!-- Rowers: 2 columns of 4, stroke -> bow -->
+      <div class="crew-grid">
+        {{#crewMembersNoCox}}
+        <div class="crew-cell">
+          <span class="seat">{{badge}}</span>
+          <span class="name">{{name}}</span>
+        </div>
+        {{/crewMembersNoCox}}
+      </div>
+
     </section>
 
     <!-- Band 4: footer on primary -->
@@ -51,9 +60,9 @@
         <span class="coach-label">Coach</span>
         <span class="coach-name">{{COACH_NAME}}</span>
       </div>
-      
+
       {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
-      
+
     </footer>
 
   </div>

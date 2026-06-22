@@ -4,14 +4,14 @@ import { SkeletonGrid } from './SkeletonGrid'
 import '../routes/generate.css'
 
 interface TemplateSelectorProps {
-  selectedTemplateId?: string
-  onTemplateSelect: (templateId: string) => void
+  selectedTemplateIds?: Array<string>
+  onTemplateSelect: (templateIds: Array<string>) => void
   className?: string
   hideTitle?: boolean
 }
 
 export function TemplateSelector({
-  selectedTemplateId,
+  selectedTemplateIds = [],
   onTemplateSelect,
   className = '',
   hideTitle = false,
@@ -49,65 +49,79 @@ export function TemplateSelector({
   type Template = { id: string; name: string; templateType: string; previewUrl: string; isActive: boolean; metadata: any }
   const filteredTemplates = (templates ?? []) as Array<Template>
 
+  const toggle = (id: string) => {
+    if (selectedTemplateIds.includes(id)) {
+      onTemplateSelect(selectedTemplateIds.filter((t) => t !== id))
+    } else {
+      onTemplateSelect([...selectedTemplateIds, id])
+    }
+  }
+
   return (
     <div className={`${className}`}>
       {!hideTitle && (
         <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-4">Choose a Template</h3>
+          <h3 className="text-lg font-semibold mb-4">Choose Templates</h3>
         </div>
       )}
 
       {/* Template grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-        {filteredTemplates.map((template) => (
-          <div
-            key={template.id}
-            className={`generate-template-card ${
-              selectedTemplateId === template.id ? 'selected' : ''
-            }`}
-            onClick={() => {
-              if (selectedTemplateId === template.id) {
-                onTemplateSelect('')
-              } else {
-                onTemplateSelect(template.id)
-              }
-            }}
-          >
-            {/* Template preview */}
-            <div className="aspect-square bg-gray-100 relative overflow-hidden">
-              {template.previewUrl ? (
-                <img
-                  src={template.previewUrl}
-                  alt={`${template.name} preview`}
-                  className="w-full h-full object-contain"
-                  onError={(e) => {
-                    // Fallback to placeholder if image fails to load
-                    const target = e.target as HTMLImageElement
-                    target.style.display = 'none'
-                    target.parentElement!.innerHTML = `
-                      <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                        <div class="text-center">
-                          <div class="text-gray-400 text-4xl mb-2">🎨</div>
-                          <div class="text-gray-600 font-medium">${template.name}</div>
-                        </div>
-                      </div>
-                    `
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                  <div className="text-center">
-                    <div className="text-gray-400 text-4xl mb-2">🎨</div>
-                    <div className="text-gray-600 font-medium">
-                      {template.name}
-                    </div>
-                  </div>
+        {filteredTemplates.map((template) => {
+          const isSelected = selectedTemplateIds.includes(template.id)
+          return (
+            <div
+              key={template.id}
+              className={`generate-template-card ${isSelected ? 'selected' : ''}`}
+              onClick={() => toggle(template.id)}
+            >
+              {/* Selection badge */}
+              {isSelected && (
+                <div style={{
+                  position: 'absolute', top: 6, right: 6, zIndex: 10,
+                  width: 20, height: 20, borderRadius: '50%',
+                  background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 6l3 3 5-5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </div>
               )}
 
+              {/* Template preview */}
+              <div className="aspect-square bg-gray-100 relative overflow-hidden">
+                {template.previewUrl ? (
+                  <img
+                    src={template.previewUrl}
+                    alt={`${template.name} preview`}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.style.display = 'none'
+                      target.parentElement!.innerHTML = `
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                          <div class="text-center">
+                            <div class="text-gray-400 text-4xl mb-2">🎨</div>
+                            <div class="text-gray-600 font-medium">${template.name}</div>
+                          </div>
+                        </div>
+                      `
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                    <div className="text-center">
+                      <div className="text-gray-400 text-4xl mb-2">🎨</div>
+                      <div className="text-gray-600 font-medium">
+                        {template.name}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {filteredTemplates.length === 0 && (

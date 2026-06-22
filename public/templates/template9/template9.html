@@ -33,15 +33,20 @@
 
       <div class="rule"></div>
 
+      {{#hasCox}}
+      <div class="cox-row">
+        <span class="seat">C</span>
+        <span class="name">{{COX_NAME}}</span>
+      </div>
+      {{/hasCox}}
+
       <section class="crew-list">
-        
-        {{#crewMembers}}
-      <div class="crew-row">
+        {{#crewMembersNoCox}}
+        <div class="crew-row">
           <span class="seat">{{badge}}</span>
           <span class="name">{{name}}</span>
         </div>
-      {{/crewMembers}}
-        
+        {{/crewMembersNoCox}}
       </section>
 
       <p class="coach"><span class="coach-label">Coach</span> {{COACH_NAME}}</p>

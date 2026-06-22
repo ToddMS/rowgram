@@ -16,7 +16,7 @@ const PENDING_GENERATION_KEY = 'rowgram_pending_generation'
 
 interface PendingGeneration {
   guestCrewIds: Array<string>
-  templateId: string
+  templateIds: Array<string>
   colors?: { primaryColor: string; secondaryColor: string }
   crewColors?: Array<{ crewId: string; primaryColor: string; secondaryColor: string }>
 }
@@ -36,7 +36,7 @@ function GenerateImagePageContent() {
   const { guestCrews, syncedCrewIds, setSyncedCrewIds } = useGuest()
 
   const [selectedCrewIds, setSelectedCrewIds] = useState<Array<string>>([])
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('')
+  const [selectedTemplateIds, setSelectedTemplateIds] = useState<Array<string>>([])
   const [colorMode, setColorMode] = useState<'auto' | 'override'>('auto')
   const [overridePrimary, setOverridePrimary] = useState('#2563eb')
   const [overrideSecondary, setOverrideSecondary] = useState('#64748b')
@@ -79,17 +79,7 @@ function GenerateImagePageContent() {
     }
   }, [searchParams])
 
-  useEffect(() => {
-    if (allCrews.length > 0 && selectedCrewIds.length === 0 && !searchParams.get('crews')) {
-      setSelectedCrewIds([allCrews[0].id])
-    }
-  }, [crewsRaw, guestCrews.length])
 
-  useEffect(() => {
-    if (templatesRaw && templatesRaw.length > 0 && !selectedTemplateId) {
-      setSelectedTemplateId(templatesRaw[0].id)
-    }
-  }, [templatesRaw])
 
   const getCrewBaseColors = (crew: any) => {
     if (!('isGuest' in crew) && crew.club) {
@@ -158,15 +148,16 @@ function GenerateImagePageContent() {
     return { colors: undefined, crewColors: overrides.length > 0 ? overrides : undefined }
   }
 
-  const triggerGeneration = (crewIds: Array<string>, templateId: string, savedColorArgs?: { colors?: { primaryColor: string; secondaryColor: string }; crewColors?: Array<{ crewId: string; primaryColor: string; secondaryColor: string }> }) => {
+  const triggerGeneration = (crewIds: Array<string>, templateIds: Array<string>, savedColorArgs?: { colors?: { primaryColor: string; secondaryColor: string }; crewColors?: Array<{ crewId: string; primaryColor: string; secondaryColor: string }> }) => {
     setIsGenerating(true)
     const colorArgs = savedColorArgs ?? buildColorArgs(crewIds)
-    if (crewIds.length === 1) {
-      const singleColors = colorArgs.colors ?? colorArgs.crewColors?.[0] ? { primaryColor: colorArgs.crewColors![0].primaryColor, secondaryColor: colorArgs.crewColors![0].secondaryColor } : undefined
-      generateImageMutation.mutate({ crewId: crewIds[0], templateId, colors: singleColors })
+    if (crewIds.length === 1 && templateIds.length === 1) {
+      const singleColors = colorArgs.colors ?? (colorArgs.crewColors?.[0] ? { primaryColor: colorArgs.crewColors[0].primaryColor, secondaryColor: colorArgs.crewColors[0].secondaryColor } : undefined)
+      generateImageMutation.mutate({ crewId: crewIds[0], templateId: templateIds[0], colors: singleColors })
     } else {
-      setGenerationProgress({ current: 0, total: crewIds.length })
-      generateBatchMutation.mutate({ crewIds, templateId, ...colorArgs })
+      const total = crewIds.length * templateIds.length
+      setGenerationProgress({ current: 0, total })
+      generateBatchMutation.mutate({ crewIds, templateIds, ...colorArgs })
     }
   }
 
@@ -192,7 +183,7 @@ function GenerateImagePageContent() {
 
     localStorage.removeItem(PENDING_GENERATION_KEY)
     setSyncedCrewIds({})
-    triggerGeneration(mappedIds, pending.templateId, { colors: pending.colors, crewColors: pending.crewColors })
+    triggerGeneration(mappedIds, pending.templateIds, { colors: pending.colors, crewColors: pending.crewColors })
   }, [user, syncedCrewIds])
 
   const filterFunction = (crew: any, query: string) => {
@@ -218,7 +209,7 @@ function GenerateImagePageContent() {
       setTimeout(() => setCrewError(false), 3000)
       return
     }
-    if (!selectedTemplateId) {
+    if (!selectedTemplateIds.length) {
       setTemplateError(true)
       document.querySelector('[data-section="template"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       setTimeout(() => setTemplateError(false), 3000)
@@ -228,11 +219,10 @@ function GenerateImagePageContent() {
     setTemplateError(false)
 
     if (!user) {
-      // Save pending state to localStorage so it survives the OAuth redirect
       const colorArgs = buildColorArgs(selectedCrewIds)
       const pending: PendingGeneration = {
         guestCrewIds: selectedCrewIds.filter((id) => id.startsWith('guest_')),
-        templateId: selectedTemplateId,
+        templateIds: selectedTemplateIds,
         colors: colorArgs.colors,
         crewColors: colorArgs.crewColors,
       }
@@ -246,7 +236,7 @@ function GenerateImagePageContent() {
       return
     }
 
-    triggerGeneration(selectedCrewIds, selectedTemplateId)
+    triggerGeneration(selectedCrewIds, selectedTemplateIds)
   }
 
   return (
@@ -311,17 +301,12 @@ function GenerateImagePageContent() {
                           setCrewError(false)
                         }}
                       >
-                        <span className="absolute top-2 right-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">{crew.boatCode}</span>
-                        {!crew.isGuest && crew.club && (
-                          <div className="absolute bottom-2 right-2">
-                            {crew.club.logoUrl ? <img src={crew.club.logoUrl} alt={`${crew.club.name} logo`} className="w-6 h-6 object-contain" /> : (
-                              <div className="flex gap-1">
-                                <div className="w-3 h-3 rounded border border-gray-300" style={{ backgroundColor: crew.club.primaryColor }} />
-                                <div className="w-3 h-3 rounded border border-gray-300" style={{ backgroundColor: crew.club.secondaryColor }} />
-                              </div>
-                            )}
-                          </div>
-                        )}
+                        <div className="absolute top-2 right-2 flex flex-col items-center gap-1">
+                          <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">{crew.boatCode}</span>
+                          {!crew.isGuest && crew.club?.logoUrl && (
+                            <img src={crew.club.logoUrl} alt={`${crew.club.name} logo`} className="w-7 h-7 object-contain" />
+                          )}
+                        </div>
                         <h3 className="font-medium text-gray-900 mb-2 text-base pr-12 -ml-1 -mt-1">
                           {crew.isGuest && (
                             <span className="inline-block bg-amber-100 text-amber-700 text-xs font-medium px-1.5 py-0.5 rounded mr-1.5 align-middle" style={{ verticalAlign: 'middle' }}>Unsaved</span>
@@ -349,10 +334,15 @@ function GenerateImagePageContent() {
 
             <section className="bg-white rounded-lg shadow p-6" data-section="template">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold">Choose a Template</h3>
-                {templateError && <span className="text-red-600 text-sm font-medium animate-pulse">Please select a template</span>}
+                <div className="flex items-center gap-3">
+                  <h3 className="text-lg font-semibold">Choose Templates</h3>
+                  {selectedTemplateIds.length > 0 && (
+                    <span className="text-sm text-gray-500">{selectedTemplateIds.length} selected</span>
+                  )}
+                </div>
+                {templateError && <span className="text-red-600 text-sm font-medium animate-pulse">Please select at least one template</span>}
               </div>
-              <TemplateSelector selectedTemplateId={selectedTemplateId} onTemplateSelect={(id) => { setSelectedTemplateId(id); setTemplateError(false) }} hideTitle={true} />
+              <TemplateSelector selectedTemplateIds={selectedTemplateIds} onTemplateSelect={(ids) => { setSelectedTemplateIds(ids); setTemplateError(false) }} hideTitle={true} />
             </section>
 
             <section className="bg-white rounded-lg shadow p-6">
@@ -441,7 +431,12 @@ function GenerateImagePageContent() {
                     <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
                     {generationProgress.total > 1 ? `Generating ${generationProgress.current}/${generationProgress.total} images...` : selectedCrewIds.length > 1 ? `Generating ${selectedCrewIds.length} images...` : 'Generating...'}
                   </div>
-                ) : selectedCrewIds.length > 1 ? `Generate ${selectedCrewIds.length} Images` : selectedCrewIds.length === 1 ? 'Generate Image' : 'Generate Images'}
+                ) : (() => {
+                    const total = selectedCrewIds.length * selectedTemplateIds.length
+                    if (total > 1) return `Generate ${total} Images`
+                    if (total === 1) return 'Generate Image'
+                    return 'Generate Images'
+                  })()}
               </button>
               {!user && (
                 <p className="text-sm text-gray-500">A free account is required to generate and save images.</p>

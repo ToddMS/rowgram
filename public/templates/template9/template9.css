@@ -85,12 +85,21 @@ body { font-family: 'Inter', sans-serif; }
   background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
 
-/* ---- Crew list ---- */
-.crew-list {
+/* ---- Cox row (left-aligned, above crew grid) ---- */
+.cox-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   margin-top: 26px;
+  margin-bottom: 10px;
+}
+
+/* ---- Crew list (rowers only, below cox) ---- */
+.crew-list {
+  margin-top: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(5, auto);
+  grid-template-rows: repeat(4, auto);
   grid-auto-flow: column;
   column-gap: 40px;
 }

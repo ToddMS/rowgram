@@ -19,9 +19,10 @@ function generateClubAbbreviation(clubName: string): string {
   return abbreviation
 }
 
-function createBoatFilename(boatName: string | null | undefined, fallbackFilename: string): string {
+function createBoatFilename(boatName: string | null | undefined, fallbackFilename: string, templateName?: string | null): string {
+  const templateSuffix = templateName ? `-${templateName.toLowerCase().replace(/\s+/g, '-')}` : ''
   if (!boatName?.trim()) return fallbackFilename
-  return `${boatName.trim().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').toLowerCase()}.png`
+  return `${boatName.trim().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').toLowerCase()}${templateSuffix}.png`
 }
 
 async function resolveClub(crew: { club: any; clubName: string | null; clubId: string | null }, userId: string, inputClubId?: string) {
@@ -216,7 +217,8 @@ export const savedImageRouter = router({
   generateBatch: protectedProcedure
     .input(z.object({
       crewIds: z.array(z.string()),
-      templateId: z.string(),
+      templateId: z.string().optional(),
+      templateIds: z.array(z.string()).optional(),
       clubId: z.string().optional(),
       colors: z.object({
         primaryColor: z.string().regex(/^#[0-9A-F]{6}$/i).optional(),
@@ -230,11 +232,13 @@ export const savedImageRouter = router({
     }))
     .mutation(async ({ input, ctx }): Promise<{ successful: number; failed: number; errors: Array<string>; total: number }> => {
       try {
-        const template = await prisma.template.findUnique({ where: { id: input.templateId } })
-        if (!template) throw new Error('Template not found')
+        const resolvedTemplateIds = input.templateIds?.length ? input.templateIds : (input.templateId ? [input.templateId] : [])
+        if (resolvedTemplateIds.length === 0) throw new Error('No template specified')
 
-        let selectedClub = null
-        if (input.clubId) selectedClub = await prisma.club.findUnique({ where: { id: input.clubId } })
+        const templates = await prisma.template.findMany({ where: { id: { in: resolvedTemplateIds } } })
+        if (templates.length === 0) throw new Error('No templates found')
+
+        if (input.clubId) await prisma.club.findUnique({ where: { id: input.clubId } })
 
         const perCrewColorMap = new Map(
           (input.crewColors ?? []).map((c) => [c.crewId, { primaryColor: c.primaryColor, secondaryColor: c.secondaryColor }])
@@ -243,13 +247,16 @@ export const savedImageRouter = router({
         const results: Array<any> = []
         const errors: Array<{ crewId: string; error: string }> = []
 
+        // Build full work list: crewId × templateId pairs
+        const workItems = input.crewIds.flatMap((crewId) => templates.map((template) => ({ crewId, template })))
+
         const browser = await ImageGenerationService.launchBrowser()
         try {
           const CONCURRENCY = 3
-          for (let i = 0; i < input.crewIds.length; i += CONCURRENCY) {
-            const chunk = input.crewIds.slice(i, i + CONCURRENCY)
+          for (let i = 0; i < workItems.length; i += CONCURRENCY) {
+            const chunk = workItems.slice(i, i + CONCURRENCY)
             const chunkResults = await Promise.allSettled(
-              chunk.map(async (crewId) => {
+              chunk.map(async ({ crewId, template }) => {
                 const crew = await prisma.crew.findUnique({ where: { id: crewId }, include: { club: true } })
                 if (!crew) throw new Error('Crew not found')
                 const validation = ImageGenerationService.validateGenerationInput(crew, template)
@@ -269,7 +276,7 @@ export const savedImageRouter = router({
                 return await prisma.savedImage.create({
                   data: {
                     crewId,
-                    templateId: input.templateId,
+                    templateId: template.id,
                     userId: ctx.user.id,
                     imageUrl: generatedImage.imageUrl,
                     filename: generatedImage.filename,
@@ -287,14 +294,14 @@ export const savedImageRouter = router({
             for (let j = 0; j < chunkResults.length; j++) {
               const result = chunkResults[j]
               if (result.status === 'fulfilled') results.push(result.value)
-              else errors.push({ crewId: chunk[j], error: result.reason instanceof Error ? result.reason.message : 'Unknown error' })
+              else errors.push({ crewId: chunk[j].crewId, error: result.reason instanceof Error ? result.reason.message : 'Unknown error' })
             }
           }
         } finally {
           await browser.close()
         }
 
-        return { successful: results.length, failed: errors.length, errors: errors.map((e) => e.error), total: input.crewIds.length }
+        return { successful: results.length, failed: errors.length, errors: errors.map((e) => e.error), total: workItems.length }
       } catch (err) {
         console.error('Batch image generation error:', err)
         throw new Error(`Failed to generate batch images: ${err instanceof Error ? err.message : 'Unknown error'}`)
@@ -324,7 +331,7 @@ export const savedImageRouter = router({
         const crewImageBuffer = await fetchImageBuffer(savedImage.imageUrl)
         const coverImageBuffer = await fetchImageBuffer(coverImage.imageUrl)
 
-        zip.file(createBoatFilename(savedImage.crew.boatName, savedImage.filename), crewImageBuffer)
+        zip.file(createBoatFilename(savedImage.crew.boatName, savedImage.filename, savedImage.template?.name), crewImageBuffer)
         zip.file(`${savedImage.crew.raceName || 'race'}-cover.png`, coverImageBuffer)
 
         const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' })
@@ -379,7 +386,7 @@ export const savedImageRouter = router({
         if (input.mode === 'all-together' || (!isMixed && input.mode === 'auto')) {
           const zip = new JSZip()
           for (const image of savedImages) {
-            zip.file(createBoatFilename(image.crew.boatName, image.filename), await fetchImageBuffer(image.imageUrl))
+            zip.file(createBoatFilename(image.crew.boatName, image.filename, image.template?.name), await fetchImageBuffer(image.imageUrl))
           }
           if (!isMixed || input.mode === 'all-together') {
             const firstImage = savedImages[0]
@@ -399,7 +406,7 @@ export const savedImageRouter = router({
           const downloads = []
           for (const [raceName, raceImages] of raceGroups.entries()) {
             const zip = new JSZip()
-            for (const image of raceImages) zip.file(createBoatFilename(image.crew.boatName, image.filename), await fetchImageBuffer(image.imageUrl))
+            for (const image of raceImages) zip.file(createBoatFilename(image.crew.boatName, image.filename, image.template?.name), await fetchImageBuffer(image.imageUrl))
             const firstImage = raceImages[0]
             const coverImage = await ImageGenerationService.generateCoverImage(
               { raceName, raceDate: firstImage.crew.raceDate || undefined, club: firstImage.crew.club },
@@ -417,7 +424,7 @@ export const savedImageRouter = router({
           const downloads = []
           for (const [clubName, clubImages] of clubGroups.entries()) {
             const zip = new JSZip()
-            for (const image of clubImages) zip.file(createBoatFilename(image.crew.boatName, image.filename), await fetchImageBuffer(image.imageUrl))
+            for (const image of clubImages) zip.file(createBoatFilename(image.crew.boatName, image.filename, image.template?.name), await fetchImageBuffer(image.imageUrl))
             const firstImage = clubImages[0]
             const clubAbbr = generateClubAbbreviation(clubName)
             const coverImage = await ImageGenerationService.generateCoverImage(
@@ -445,7 +452,7 @@ export const savedImageRouter = router({
             const clubName = key.slice(0, pipeIndex)
             const raceName = key.slice(pipeIndex + 1)
             const zip = new JSZip()
-            for (const image of images) zip.file(createBoatFilename(image.crew.boatName, image.filename), await fetchImageBuffer(image.imageUrl))
+            for (const image of images) zip.file(createBoatFilename(image.crew.boatName, image.filename, image.template?.name), await fetchImageBuffer(image.imageUrl))
             const firstImage = images[0]
             const coverImage = await ImageGenerationService.generateCoverImage(
               { raceName, raceDate: firstImage.crew.raceDate || undefined, club: firstImage.crew.club },
@@ -480,7 +487,7 @@ export const savedImageRouter = router({
 
         if (input.mode === 'images-only') {
           const zip = new JSZip()
-          for (const image of savedImages) zip.file(createBoatFilename(image.crew.boatName, image.filename), await fetchImageBuffer(image.imageUrl))
+          for (const image of savedImages) zip.file(createBoatFilename(image.crew.boatName, image.filename, image.template?.name), await fetchImageBuffer(image.imageUrl))
           const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' })
           return { downloads: [{ zipData: zipBuffer.toString('base64'), filename: 'crew-images.zip' }] }
         }

@@ -21,16 +21,21 @@
       <div class="inlay"></div>
       <p class="category">{{crewCategory}} &middot; {{BOAT_TYPE}} {{BOAT_CODE}}</p>
 
-      <section class="crew-list">
-        
-        {{#crewMembers}}
-      <div class="crew-row">
+      {{#hasCox}}
+      <div class="cox-cell">
+        <span class="seat">C</span>
+        <span class="name">{{COX_NAME}}</span>
+      </div>
+      {{/hasCox}}
+
+      <div class="crew-grid">
+        {{#crewMembersNoCox}}
+        <div class="crew-row">
           <span class="seat">{{badge}}</span>
           <span class="name">{{name}}</span>
         </div>
-      {{/crewMembers}}
-        
-      </section>
+        {{/crewMembersNoCox}}
+      </div>
 
       
       {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}

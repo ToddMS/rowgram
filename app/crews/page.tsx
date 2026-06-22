@@ -56,6 +56,7 @@ export default function CrewsPage() {
     return {
       ...crew,
       boatClub: crew.club?.name || crew.clubName || 'No Club',
+      clubLogoUrl: crew.club?.logoUrl ?? null,
       boatName: crew.name,
       boatClass: crew.boatCode,
       crewMembers: crew.crewNames.map((name, idx) => ({ seat: getSeatLabel(idx, totalRowers, hasCox), name })),
@@ -144,8 +145,27 @@ export default function CrewsPage() {
       id: crew.id,
       boatClass: crew.boatClass,
       clubName: crew.boatClub !== 'No Club' ? crew.boatClub : '',
+      clubId: crew.club?.id || crew.clubId || '',
       raceName: crew.raceName,
       boatName: crew.boatName,
+      raceDate: crew.raceDate,
+      coachName: crew.coachName,
+      raceCategory: crew.raceCategory,
+      crewNames: crew.crewMembers.filter((m: any) => m.seat !== 'C').map((m: any) => m.name),
+      coxName: crew.crewMembers.find((m: any) => m.seat === 'C')?.name || '',
+      isGuest: crew.isGuest,
+    })
+    setShowCreateModal(true)
+  }
+
+  const handleDuplicateCrew = (crew: any) => {
+    setEditingCrew({
+      // no id — modal treats this as a new crew creation
+      boatClass: crew.boatClass,
+      clubName: crew.boatClub !== 'No Club' ? crew.boatClub : '',
+      clubId: crew.club?.id || crew.clubId || '',
+      raceName: crew.raceName,
+      boatName: `${crew.boatName} (Copy)`,
       raceDate: crew.raceDate,
       coachName: crew.coachName,
       raceCategory: crew.raceCategory,
@@ -200,6 +220,7 @@ export default function CrewsPage() {
             onSelect={onSelect}
             onEdit={handleEditCrew}
             onDelete={(c) => setShowDeleteConfirm(c)}
+            onDuplicate={handleDuplicateCrew}
             onGenerate={(c) => navigateToGenerate([c.id])}
             expandedCrewMembers={expandedCrewMembers}
             onToggleExpansion={toggleCrewMembersExpansion}

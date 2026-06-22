@@ -90,6 +90,7 @@ export function CreateCrewModal({ isOpen, onClose, onSuccess, editingCrew }: Cre
     if (editingCrew && isOpen) {
       setBoatClass(editingCrew.boatClass || '')
       setClubName(editingCrew.clubName || '')
+      setSelectedClubId(editingCrew.clubId || '')
       setRaceName(editingCrew.raceName || '')
       setBoatName(editingCrew.boatName || '')
       setCoxName(editingCrew.coxName || '')
@@ -111,6 +112,14 @@ export function CreateCrewModal({ isOpen, onClose, onSuccess, editingCrew }: Cre
       resetForm()
     }
   }, [editingCrew, isOpen])
+
+  // Resolve selectedClubId by name once existingClubs loads (fallback when clubId wasn't passed)
+  useEffect(() => {
+    if (isOpen && clubName && existingClubs.length > 0) {
+      const match = existingClubs.find((c) => c.name === clubName)
+      if (match && !selectedClubId) setSelectedClubId(match.id)
+    }
+  }, [isOpen, clubName, existingClubs])
 
   const handleClose = () => {
     resetForm()
@@ -214,6 +223,7 @@ export function CreateCrewModal({ isOpen, onClose, onSuccess, editingCrew }: Cre
           id: editingCrew.id,
           name: boatName,
           clubName,
+          clubId: selectedClubId || undefined,
           raceName,
           raceDate: raceDate.trim() || undefined,
           boatName,

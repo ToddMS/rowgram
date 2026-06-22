@@ -68,17 +68,32 @@ body {
   color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
 
-/* ---- Crew list (2 columns, stroke -> bow, column-major) ---- */
+/* ---- Cox row (left-aligned, above crew grid) ---- */
+.cox-row {
+  position: absolute;
+  top: 405px;
+  left: 64px;
+  right: 64px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(9, 78, 42, 0.14);
+}
+
+/* ---- Crew list (2 columns of 4, stroke -> bow, column-major) ---- */
 .crew-list {
   position: absolute;
-  top: 430px;
+  top: 487px;
   left: 64px;
   right: 64px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr);
   grid-auto-flow: column;
   column-gap: 56px;
+  row-gap: 18px;
 }
 .crew-row {
   display: flex;
@@ -138,25 +153,8 @@ body {
   font-weight: 700;
   color: #ffffff;
 }
-.boat-container {
-  margin-left: auto;
-  height: 110px;
-  display: flex;
-  align-items: center;
-}
-.boat-container img {
-  height: 110px;
-  width: auto;
-  filter: invert(1); /* injected boat is black; flip to read on dark band */
-}
-.boat-type {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #ffffff;
-}
 .club-logo {
+  margin-left: auto;
   width: 110px;
   height: 110px;
   object-fit: contain;

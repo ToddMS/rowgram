@@ -14,7 +14,6 @@
     
     {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
     
-    <span class="code-chip">{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</span>
 
     <!-- Grosgrain ribbon -->
     <div class="ribbon"></div>
@@ -29,17 +28,18 @@
       <div class="rule"></div>
 
       <section class="crew-list">
-        
-        {{#crewMembers}}
-      <div class="crew-row">
+        {{#crewMembersNoCox}}
+        <div class="crew-row">
           <span class="seat">{{badge}}</span>
           <span class="name">{{name}}</span>
         </div>
-      {{/crewMembers}}
-        
+        {{/crewMembersNoCox}}
       </section>
 
-      <p class="coach"><span class="coach-label">Coach</span> {{COACH_NAME}}</p>
+      <div class="footer-bar">
+        {{#hasCox}}<div class="footer-item"><span class="coach-label">COX</span> {{COX_NAME}}</div>{{/hasCox}}
+        <div class="footer-item"><span class="coach-label">COACH</span> {{COACH_NAME}}</div>
+      </div>
     </div>
   </div>
 </body>

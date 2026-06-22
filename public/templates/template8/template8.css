@@ -1,4 +1,4 @@
-/* Template 9 — Race-entry ticket with tear-off stub and perforation */
+/* Template 8 — Race-entry ticket with tear-off stub and perforation */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body { width: 1080px; height: 1080px; overflow: hidden; }
@@ -40,6 +40,14 @@ body { font-family: 'Inter', sans-serif; }
   position: relative;
   flex: 1;
   padding: 56px 60px;
+  display: flex;
+  flex-direction: column;
+}
+.crew-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .ticket-main .eyebrow {
   display: block;
@@ -65,10 +73,10 @@ body { font-family: 'Inter', sans-serif; }
   color: #161616;
 }
 .crew-list {
-  margin-top: 34px;
+  margin-top: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(5, auto);
+  grid-template-rows: repeat(4, auto);
   grid-auto-flow: column;
   column-gap: 40px;
 }
@@ -100,13 +108,22 @@ body { font-family: 'Inter', sans-serif; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.boat-container {
-  position: absolute;
-  left: 60px;
-  bottom: 40px;
-  height: 90px;
+
+/* ---- Cox row (above crew list) ---- */
+.cox-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
 }
-.boat-container img { height: 90px; width: auto; transform: rotate(90deg); }
+.cox-row .name {
+  font-size: 29px;
+  font-weight: 600;
+  color: #161616;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* ---- Perforation + stub ---- */
 .perforation {
@@ -135,21 +152,21 @@ body { font-family: 'Inter', sans-serif; }
   justify-content: center;
   gap: 6px;
   padding: 40px 24px;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
 }
 .big-code {
   font-size: 120px;
   font-weight: 900;
   line-height: 1;
   letter-spacing: -4px;
-  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
 .boat-type {
   font-size: 26px;
   font-weight: 700;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: #ffffff;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
 .club-logo {
   margin-top: 28px;
@@ -168,6 +185,6 @@ body { font-family: 'Inter', sans-serif; }
   font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
-.ticket-stub .coach-name { font-size: 26px; font-weight: 700; color: #ffffff; }
+.ticket-stub .coach-name { font-size: 26px; font-weight: 700; color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */ }

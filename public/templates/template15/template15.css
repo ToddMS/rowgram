@@ -55,11 +55,23 @@ body { font-family: 'Inter', sans-serif; }
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* ---- Flap rows ---- */
+/* ---- Two-column body: crew left, logo right ---- */
+.board-body {
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+}
 .crew-list {
+  flex: 0 0 50%;
   display: flex;
   flex-direction: column;
   gap: 7px;
+}
+.logo-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .crew-row {
   position: relative;
@@ -134,14 +146,4 @@ body { font-family: 'Inter', sans-serif; }
   text-transform: uppercase;
   color: #ffffff;
 }
-.code-chip {
-  margin-left: auto;
-  padding: 8px 22px;
-  border-radius: 5px;
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
-  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
-}
-.club-logo { width: 80px; height: 80px; object-fit: contain; }
+.club-logo { width: 220px; height: 220px; object-fit: contain; }

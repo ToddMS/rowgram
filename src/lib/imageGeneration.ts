@@ -189,7 +189,7 @@ export class ImageGenerationService {
     htmlContent = htmlContent.replace(/<link[^>]*rel="stylesheet"[^>]*>/g, '')
 
     if (htmlContent.includes('{{')) {
-      const templateData = TemplateCompiler.formatCrewData(crew, template)
+      const templateData = await TemplateCompiler.formatCrewData(crew, template)
       const templateMetadata = template.metadata ? template.metadata : undefined
       htmlContent = TemplateCompiler.compileTemplate(htmlContent, templateData, colors, templateMetadata)
     } else {

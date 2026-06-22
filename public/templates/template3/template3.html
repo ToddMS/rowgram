@@ -14,7 +14,6 @@
     <!-- Masthead row -->
     <header class="masthead">
       <span class="masthead-label">Race Day &middot; Crew Announcement</span>
-      <span class="masthead-code">{{BOAT_CODE}}</span>
     </header>
 
     <!-- Giant headline -->
@@ -25,16 +24,22 @@
 
     <p class="category">{{crewCategory}}</p>
 
-    <!-- Crew list: flows into two columns, stroke -> bow -->
+    <!-- Cox centred above the crew grid -->
+    {{#hasCox}}
+    <div class="cox-row">
+      <span class="seat">C</span>
+      <span class="name">{{COX_NAME}}</span>
+    </div>
+    {{/hasCox}}
+
+    <!-- Crew list: 4 per column, stroke -> bow -->
     <section class="crew-list">
-      
-      {{#crewMembers}}
+      {{#crewMembersNoCox}}
       <div class="crew-row">
         <span class="seat">{{badge}}</span>
         <span class="name">{{name}}</span>
       </div>
-      {{/crewMembers}}
-      
+      {{/crewMembersNoCox}}
     </section>
 
     <!-- Footer band -->
@@ -44,21 +49,7 @@
         <span class="coach-name">{{COACH_NAME}}</span>
       </div>
 
-      
-      {{#BOAT_IMAGE_AVAILABLE}}
-
-      
-      <div class="boat-container">{{BOAT_IMAGE}}</div>
-
-      
-      {{/BOAT_IMAGE_AVAILABLE}}
-      
-
-      <div class="boat-type">{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</div>
-
-      
       {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
-      
     </footer>
 
   </div>

@@ -121,7 +121,7 @@ body { font-family: 'Inter', sans-serif; }
   margin-top: 28px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(5, auto);
+  grid-template-rows: repeat(4, auto);
   grid-auto-flow: column;
   column-gap: 44px;
 }
@@ -153,9 +153,14 @@ body { font-family: 'Inter', sans-serif; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.badge .coach {
-  margin-top: 24px;
-  text-align: center;
+.footer-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin-top: 20px;
+}
+.footer-item {
   font-size: 23px;
   font-weight: 600;
   color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */

@@ -23,6 +23,9 @@ export interface TemplateData {
   raceName?: string
   crewCategory?: string
   crewMembers?: Array<{ name: string; badge: string; style: string }>
+  crewMembersNoCox?: Array<{ name: string; badge: string; style: string }>
+  COX_NAME?: string
+  hasCox?: boolean
   clubLogo?: string | null
   clubName?: string
   boatImage?: string
@@ -110,50 +113,51 @@ export class TemplateCompiler {
   }
 
   /**
-   * Process club logo URL for reliable loading in Puppeteer
+   * Process club logo URL for reliable loading in Puppeteer.
+   * Always converts to a base64 data URL so Puppeteer doesn't need network access.
    */
-  static getClubLogoInfo(logoUrl: string | null | undefined): {
+  static async getClubLogoInfo(logoUrl: string | null | undefined): Promise<{
     available: boolean
     url?: string
-  } {
+  }> {
     try {
       if (!logoUrl) {
         return { available: false, url: undefined }
       }
 
-      // If it's a local URL (starts with /uploads/), convert to base64
-      if (logoUrl.startsWith('/uploads/')) {
-        const imagePath = path.join(process.cwd(), 'public', logoUrl)
-
-        if (existsSync(imagePath)) {
-          // Convert to base64 data URL for reliable loading in puppeteer
-          const imageBuffer = readFileSync(imagePath)
-          const base64 = imageBuffer.toString('base64')
-          // Try to detect the image type from file extension
-          const extension = logoUrl.split('.').pop()?.toLowerCase()
-          const mimeType = extension === 'png' ? 'image/png' :
-                          extension === 'jpg' || extension === 'jpeg' ? 'image/jpeg' :
-                          extension === 'webp' ? 'image/webp' :
-                          'image/png' // default fallback
-          const dataUrl = `data:${mimeType};base64,${base64}`
-          console.log('Club logo converted to base64:', { logoUrl, available: true })
-          return { available: true, url: dataUrl }
-        } else {
-          console.log('Club logo file not found:', imagePath)
-        }
-      } else {
-        // External URL - use as-is (might work in Puppeteer)
-        console.log('Club logo external URL:', logoUrl)
+      // Already a data URL — use directly, no re-encoding needed
+      if (logoUrl.startsWith('data:')) {
+        console.log('🖼️ LOGO: already a data URL, length:', logoUrl.length, 'type:', logoUrl.substring(5, logoUrl.indexOf(';')))
         return { available: true, url: logoUrl }
       }
+
+      if (logoUrl.startsWith('/uploads/')) {
+        const imagePath = path.join(process.cwd(), 'public', logoUrl)
+        if (existsSync(imagePath)) {
+          const base64 = readFileSync(imagePath).toString('base64')
+          const ext = logoUrl.split('.').pop()?.toLowerCase()
+          const mimeType = ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg'
+            : ext === 'webp' ? 'image/webp'
+            : 'image/png'
+          return { available: true, url: `data:${mimeType};base64,${base64}` }
+        }
+        console.log('🖼️ LOGO: local file not found:', imagePath)
+      } else {
+        // External URL (e.g. Vercel Blob) — fetch and convert to base64
+        const response = await fetch(logoUrl)
+        if (response.ok) {
+          const buffer = Buffer.from(await response.arrayBuffer())
+          const base64 = buffer.toString('base64')
+          const mimeType = (response.headers.get('content-type') ?? 'image/png').split(';')[0].trim()
+          return { available: true, url: `data:${mimeType};base64,${base64}` }
+        }
+        console.error('🖼️ LOGO: fetch failed:', logoUrl, response.status)
+      }
     } catch (error) {
-      console.error('Error loading club logo:', error)
+      console.error('🖼️ LOGO: exception:', error)
     }
 
-    return {
-      available: false,
-      url: undefined,
-    }
+    return { available: false, url: undefined }
   }
 
   /**
@@ -172,7 +176,7 @@ export class TemplateCompiler {
 
     // Replace single variables (both uppercase and lowercase versions)
     Object.entries(data).forEach(([key, value]) => {
-      if (key !== 'CREW_MEMBERS' && key !== 'crewMembers') {
+      if (key !== 'CREW_MEMBERS' && key !== 'crewMembers' && key !== 'crewMembersNoCox' && key !== 'hasCox') {
         // Skip null/undefined — let processConditionalBlock clean up the block
         if (value === null || value === undefined) return
 
@@ -204,6 +208,11 @@ export class TemplateCompiler {
     if ((data.crewMembers?.length ?? 0) > 0) {
       compiledHtml = this.compileCrewMembersNew(compiledHtml, data.crewMembers!)
     }
+
+    // Handle rowers-only crew list ({{#crewMembersNoCox}}, used by template12)
+    if ((data.crewMembersNoCox?.length ?? 0) > 0) {
+      compiledHtml = this.compileCrewMembersNew(compiledHtml, data.crewMembersNoCox!, 'crewMembersNoCox')
+    }
     // Handle boat image with template-specific positioning
     compiledHtml = this.applyBoatImage(
       compiledHtml,
@@ -213,10 +222,6 @@ export class TemplateCompiler {
 
     // Handle club logo conditional
     const hasClubLogo = !!(data as any).clubLogo
-    console.log('🎯 DEBUG: Club logo conditional processing:', {
-      hasClubLogo,
-      clubLogoValue: (data as any).clubLogo
-    })
     compiledHtml = this.processConditionalBlock(
       compiledHtml,
       'clubLogo',
@@ -228,9 +233,11 @@ export class TemplateCompiler {
       const hasLogoSection = compiledHtml.includes('class="club-logo"')
       console.log('🎯 DEBUG: Club logo section included in HTML:', hasLogoSection)
       if (hasLogoSection) {
-        // Extract and log the img src
-        const imgMatch = compiledHtml.match(/src="([^"]*)"[^>]*alt="Club Logo"/)
-        console.log('🎯 DEBUG: Club logo img src found:', imgMatch ? imgMatch[1] : 'NOT FOUND')
+        const logoIdx = compiledHtml.indexOf('class="club-logo"')
+        const snippet = compiledHtml.substring(Math.max(0, logoIdx - 20), logoIdx + 120)
+        console.log('🎯 DEBUG: Club logo img tag snippet:', snippet)
+      } else {
+        console.log('🎯 DEBUG: clubLogo data value (first 60 chars):', String(data.clubLogo).substring(0, 60))
       }
     }
 
@@ -248,6 +255,13 @@ export class TemplateCompiler {
       compiledHtml,
       'RACE_DATE',
       hasRaceDate,
+    )
+
+    // Handle cox conditional (used by template12 to show cox in footer)
+    compiledHtml = this.processConditionalBlock(
+      compiledHtml,
+      'hasCox',
+      !!data.hasCox,
     )
 
     // Apply color scheme
@@ -315,20 +329,23 @@ export class TemplateCompiler {
   private static compileCrewMembersNew(
     html: string,
     crewMembers: Array<{ name: string; badge: string; style: string }>,
+    blockName: string = 'crewMembers',
   ): string {
     // Find the crew member template block
-    const templateStart = html.indexOf('{{#crewMembers}}')
+    const templateStart = html.indexOf(`{{#${blockName}}}`)
     const templateEnd =
-      html.indexOf('{{/crewMembers}}') + '{{/crewMembers}}'.length
+      html.indexOf(`{{/${blockName}}}`) + `{{/${blockName}}}`.length
 
     if (templateStart === -1 || templateEnd === -1) {
       return html
     }
 
     // Extract the template
+    const startTag = `{{#${blockName}}}`
+    const endTag = `{{/${blockName}}}`
     const template = html.substring(
-      templateStart + '{{#crewMembers}}'.length,
-      templateEnd - '{{/crewMembers}}'.length,
+      templateStart + startTag.length,
+      templateEnd - endTag.length,
     )
 
     // Generate HTML for each crew member
@@ -673,15 +690,15 @@ export class TemplateCompiler {
   /**
    * Convert crew data from database format to template format
    */
-  static formatCrewData(crew: any, template: any): TemplateData {
+  static async formatCrewData(crew: any, template: any): Promise<TemplateData> {
     const crewMembers: Array<{ POSITION: string; NAME: string }> = []
 
     // Add regular crew members
     if (crew.crewNames && Array.isArray(crew.crewNames)) {
       const boatSeats = getBoatType(crew.boatCode)?.seats ?? 8
       const hasCox = getBoatType(crew.boatCode)?.hasCox ?? false
-      // For coxed boats, rower seats are total seats minus cox seat
-      const maxRowerSeat = hasCox ? boatSeats - 1 : boatSeats
+      // seats in boat-types already excludes the cox, so maxRowerSeat == boatSeats
+      const maxRowerSeat = boatSeats
 
       console.log(`🎯 DEBUG: boatSeats=${boatSeats}, hasCox=${hasCox}, maxRowerSeat=${maxRowerSeat}`)
 
@@ -725,12 +742,15 @@ export class TemplateCompiler {
     console.log('🎯 DEBUG: crew.clubId:', crew.clubId)
     console.log('🎯 DEBUG: crew.clubName:', crew.clubName)
     console.log('🎯 DEBUG: crew.club:', JSON.stringify(crew.club, null, 2))
-    console.log('🎯 DEBUG: crew.club?.logoUrl:', crew.club?.logoUrl)
-    const clubLogoInfo = this.getClubLogoInfo(crew.club?.logoUrl)
+    const clubLogoInfo = await this.getClubLogoInfo(crew.club?.logoUrl)
 
     // Enhanced data for Template 4 (Professional Layout)
     const crewMembersWithPositions = this.generateCrewPositions(crewMembers, boatCode)
     const crewCategory = this.generateCrewCategory(crew, template)
+
+    // Separate cox from rowers for templates that show them differently (e.g. template12)
+    const coxPosition = crewMembersWithPositions.find(m => m.badge === 'C')
+    const crewMembersNoCox = crewMembersWithPositions.filter(m => m.badge !== 'C')
 
     // For Template 2: Put crew in Bow to Stroke order with Cox at end
     const rowers = crewMembers.filter(m => m.POSITION !== 'Coxswain')
@@ -777,6 +797,9 @@ export class TemplateCompiler {
       raceName: crew.raceName || 'Championship Regatta 2025',
       crewCategory: crewCategory,
       crewMembers: crewMembersWithPositions,
+      crewMembersNoCox,
+      COX_NAME: coxPosition?.name,
+      hasCox: !!coxPosition,
       clubLogo: clubLogoInfo.url || null,
       clubName: crew.club?.name || crew.clubName || 'Rowing Club',
       boatImage: boatImageInfo.url,
