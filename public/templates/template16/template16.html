@@ -2,36 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="template20.css">
-  <title>RowGram — Template 16</title>
+  <link rel="stylesheet" href="template16.css">
 </head>
 <body>
-  <div class="canvas">
+  <div class="sheet">
+    <div class="bill">
 
-    <header class="head">
-      <div class="titles">
-        <span class="eyebrow">Crew Lineup</span>
-        <h1 class="race-name">{{RACE_NAME}}</h1>
-        <p class="category">{{crewCategory}}</p>
+      <div class="prech">Crew &middot; Selection</div>
+      <div class="rule"></div>
+      <div class="pre">has the honour to present the crew for</div>
+
+      <div class="raceband oncolor">{{RACE_NAME}}</div>
+      <div class="catband oncolor">{{crewCategory}}</div>
+
+      <div class="orn">&#10022; &nbsp; POSITIONS &amp; CREW &nbsp; &#10022;</div>
+
+      <div class="crew">
+        {{#crewMembers}}
+        <div class="c-row">
+          <span class="seat oncolor">{{badge}}</span>
+          <span class="nm">{{name}}</span>
+        </div>
+        {{/crewMembers}}
       </div>
-      {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
-    </header>
 
-    <section class="lanes">
-      {{#crewMembers}}
-      <div class="lane"><span class="buoy">{{badge}}</span><span class="name">{{name}}</span></div>
-      {{/crewMembers}}
-    </section>
+      <div class="director">
+        <div class="lab">under the direction of</div>
+        <div class="coach">Coach {{COACH_NAME}}</div>
+      </div>
+      <div class="foot-rule"></div>
+      <div class="colophon">
+        {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+        <span>{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</span>
+      </div>
 
-    <footer class="foot">
-      <span class="coach-label">Coach</span>
-      <span class="coach-name">{{COACH_NAME}}</span>
-
-    </footer>
-
+    </div>
   </div>
 </body>
 </html>

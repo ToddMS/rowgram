@@ -1,0 +1,172 @@
+/* ============================================================
+   RowGram — Template 29 "Henley Lawn"
+   Summer-enclosure editorial: green masthead, order-of-rowing
+   list, framed photographic placeholder, pink footer band.
+   ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 1080px;
+  height: 1080px;
+  overflow: hidden;
+}
+
+.sheet {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background: #f5f1e8;                         /* neutral ivory */
+  font-family: 'Inter', sans-serif;
+  color: #1a1a17;                             /* charcoal neutral */
+  display: flex;
+  flex-direction: column;
+}
+
+.oncolor {
+  color: #ffffff;
+  text-shadow:
+    -1.4px -1.4px 0 #14130f, 1.4px -1.4px 0 #14130f,
+    -1.4px 1.4px 0 #14130f, 1.4px 1.4px 0 #14130f;
+}
+
+/* masthead ---------------------------------------------------------- */
+.mast {
+  height: 168px;
+  background: #094e2a;                         /* PRIMARY COLOR PLACEHOLDER */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 56px;
+  border-bottom: 6px solid #f9a8d4;           /* SECONDARY COLOR PLACEHOLDER */
+}
+.mast .titles .eyebrow {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.mast .titles .race {
+  font-size: 54px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 0.95;
+}
+.mast img {
+  width: 112px;
+  height: 112px;
+  background: #f5f1e8;
+  border-radius: 50%;
+  padding: 6px;
+  display: block;
+}
+
+/* middle ------------------------------------------------------------ */
+.middle {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* crew column ------------------------------------------------------- */
+.crew-col {
+  width: 500px;
+  padding: 40px 0 30px 56px;
+  display: flex;
+  flex-direction: column;
+}
+.crew-col .kicker {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #094e2a;                             /* PRIMARY COLOR PLACEHOLDER */
+}
+.crew-col .cat {
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 500;
+  color: #4a4a44;
+  margin: 10px 0 18px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid #094e2a;           /* PRIMARY COLOR PLACEHOLDER */
+}
+.crew-list { flex: 1; display: flex; flex-direction: column; }
+.crew-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid #f9a8d4;           /* SECONDARY COLOR PLACEHOLDER */
+}
+.crew-row .seat {
+  flex: 0 0 34px;
+  font-size: 16px;
+  font-weight: 800;
+  font-style: italic;
+  color: #f9a8d4;                             /* SECONDARY COLOR PLACEHOLDER */
+  -webkit-text-stroke: 0.5px #094e2a;         /* PRIMARY COLOR PLACEHOLDER */
+}
+.crew-row .name {
+  font-size: 31px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* photo column ------------------------------------------------------ */
+.photo-col {
+  flex: 1;
+  padding: 40px 56px 30px 36px;
+}
+.photo {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border: 8px solid #094e2a;                  /* PRIMARY COLOR PLACEHOLDER */
+  background:
+    repeating-linear-gradient(135deg, #e7e0d0 0 22px, #ded5c2 22px 44px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.photo .ph-tag {
+  position: absolute;
+  top: 22px;
+  left: -2px;
+  background: #f9a8d4;                         /* SECONDARY COLOR PLACEHOLDER */
+  padding: 9px 20px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #1a1a17;
+}
+.photo .ph-cap {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #8a8170;
+  border: 2px dashed #b3a98f;
+  padding: 16px 24px;
+}
+
+/* footer ------------------------------------------------------------ */
+.footer {
+  height: 78px;
+  background: #f9a8d4;                         /* SECONDARY COLOR PLACEHOLDER */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 56px;
+  border-top: 6px solid #094e2a;              /* PRIMARY COLOR PLACEHOLDER */
+}
+.footer .f-item {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+.footer .f-item b { font-weight: 900; }

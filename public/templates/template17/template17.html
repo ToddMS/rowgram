@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template27.css">
+</head>
+<body>
+  <div class="sheet">
+    <div class="frame"></div>
+    <div class="inner">
+
+      <div class="header">
+        <div>
+          <span class="dwg">Crew Lineup</span>
+        </div>
+        <div class="meta">Scale 1:1 &nbsp;&middot;&nbsp; Sheet 1 of 1</div>
+      </div>
+
+      <div class="body">
+        <div class="schematic">
+          <div class="centre-line"></div>
+          <div class="dimline"></div>
+          <div class="dim-label">L.O.A. {{BOAT_CODE}}</div>
+          {{#BOAT_IMAGE_AVAILABLE}}
+          <div class="boat-container">{{BOAT_IMAGE}}</div>
+          {{/BOAT_IMAGE_AVAILABLE}}
+          <div class="caption">
+            <div class="cls">{{crewCategory}}</div>
+            <div class="rig">Bow &mdash; Stern Rigging Plan</div>
+          </div>
+        </div>
+
+        <div class="crew">
+          <div class="thead">
+            <span>Seat</span>
+            <span class="right">Crew</span>
+          </div>
+          <div class="crew-list">
+            {{#crewMembers}}
+            <div class="crew-row">
+              <span class="seat">{{badge}}</span>
+              <span class="name">{{name}}</span>
+            </div>
+            {{/crewMembers}}
+          </div>
+        </div>
+      </div>
+
+      <div class="titleblock">
+        <div class="tb-cell tb-project">
+          <div class="lab">Project</div>
+          <div class="val">{{RACE_NAME}}</div>
+        </div>
+        <div class="tb-cell tb-boat">
+          <div class="lab">Boat</div>
+          <div class="val">{{BOAT_TYPE}}<br>{{BOAT_CODE}}</div>
+        </div>
+        <div class="tb-cell tb-class">
+          <div class="lab">Coach</div>
+          <div class="val">{{COACH_NAME}}</div>
+        </div>
+        {{#clubLogo}}
+        <div class="tb-cell tb-logo">
+          <img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />
+        </div>
+        {{/clubLogo}}
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

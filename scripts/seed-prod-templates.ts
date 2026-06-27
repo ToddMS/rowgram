@@ -4,7 +4,7 @@ const prisma = new PrismaClient()
 
 const PREVIEWS_WITH_IMAGE = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15])
 
-const TEMPLATE_NUMS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+const TEMPLATE_NUMS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 
 async function main() {
   console.log('Upserting templates to production...\n')
@@ -13,7 +13,7 @@ async function main() {
     const name = `Template ${num}`
     const previewUrl = PREVIEWS_WITH_IMAGE.has(num)
       ? `/templates/previews/template-${num}.png`
-      : null
+      : ''
 
     const existing = await prisma.template.findFirst({ where: { name } })
 

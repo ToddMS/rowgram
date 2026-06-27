@@ -1,155 +1,216 @@
-/* Template 17 — Lineup card: top-down boat centred, names radiating out to each oar */
+/* ============================================================
+   RowGram — Template 33 "Boathouse Logbook"
+   Ruled ledger page: the day's boat logged out, ink stamp,
+   leather spine.
+   ============================================================ */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html, body { width: 1080px; height: 1080px; overflow: hidden; }
-body { font-family: 'Inter', sans-serif; }
-
-.canvas {
-  position: relative;
+html, body {
   width: 1080px;
   height: 1080px;
-  background: #ffffff;
   overflow: hidden;
 }
 
-/* ---- Top ---- */
-.top {
-  position: absolute;
-  top: 0;
-  left: 0;
+.sheet {
+  position: relative;
   width: 1080px;
-  height: 200px;
+  height: 1080px;
+  background: #f1e9d6;                         /* neutral aged ledger paper */
+  font-family: 'Inter', sans-serif;
+  color: #20201b;                             /* charcoal neutral */
+  display: flex;
+  flex-direction: column;
+}
+
+.oncolor {
+  color: #ffffff;
+  text-shadow:
+    -1.4px -1.4px 0 #14130f, 1.4px -1.4px 0 #14130f,
+    -1.4px 1.4px 0 #14130f, 1.4px 1.4px 0 #14130f;
+}
+
+/* leather spine ----------------------------------------------------- */
+.spine {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 50px;
+  background: #2a2620;                         /* neutral leather */
+  border-right: 2px solid #14110c;
+  z-index: 5;
+}
+.spine::before {
+  content: "";
+  position: absolute;
+  top: 24px; bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  border-left: 2px dashed rgba(241,233,214,0.45);
+}
+
+/* header band ------------------------------------------------------- */
+.log-head {
+  height: 156px;
+  margin-left: 50px;
+  background: #094e2a;                         /* PRIMARY COLOR PLACEHOLDER */
   display: flex;
   align-items: center;
-  gap: 26px;
-  padding: 0 56px;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  justify-content: space-between;
+  padding: 0 46px;
 }
-.club-logo {
-  width: 104px;
-  height: 104px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-.titles { flex: 1; }
-.eyebrow {
-  display: block;
-  font-size: 20px;
+.log-head .ttl .eyebrow {
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 5px;
+  letter-spacing: 7px;
   text-transform: uppercase;
-  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  margin-bottom: 10px;
+  opacity: 0.92;
 }
-.race-name {
-  margin-top: 6px;
-  font-size: 52px;
+.log-head .ttl .race {
+  font-size: 44px;
   font-weight: 900;
-  line-height: 0.96;
-  letter-spacing: -1.5px;
+  line-height: 0.95;
+  letter-spacing: -0.5px;
+}
+.log-head .meta {
+  text-align: right;
+}
+.log-head .meta img {
+  width: 86px;
+  height: 86px;
+  background: #f1e9d6;
+  border-radius: 50%;
+  padding: 5px;
+  display: block;
+  margin: 0 0 0 auto;
+}
+.log-head .meta .boat {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+/* column header band ------------------------------------------------ */
+.col-head {
+  height: 52px;
+  margin-left: 50px;
+  background: #f9a8d4;                         /* SECONDARY COLOR PLACEHOLDER */
+  display: flex;
+  align-items: center;
+  padding: 0 46px 0 0;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 4px;
   text-transform: uppercase;
   color: #ffffff;
+  text-shadow: -1.3px -1.3px 0 #14130f, 1.3px -1.3px 0 #14130f, -1.3px 1.3px 0 #14130f, 1.3px 1.3px 0 #14130f;
 }
-.category {
-  margin-top: 6px;
-  font-size: 23px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.82);
-}
-.code-chip {
-  flex-shrink: 0;
-  align-self: center;
-  padding: 12px 22px;
-  border-radius: 8px;
-  font-size: 34px;
-  font-weight: 800;
-  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
-  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
-}
+.col-head .h-seat { width: 130px; text-align: center; }
+.col-head .h-name { flex: 1; }
+.col-head .h-stat { width: 150px; text-align: right; }
 
-/* ---- Boat, centred ---- */
-.boat-container {
-  position: absolute;
-  top: 268px;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 500px;
+/* ledger body ------------------------------------------------------- */
+.ledger {
+  flex: 1;
+  margin-left: 50px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
-.boat-container img { height: 500px; width: auto; }
-
-/* ---- Radiating crew names (fixed stroke->bow->cox order) ---- */
-.crew-row {
+/* red margin rule */
+.ledger::before {
+  content: "";
   position: absolute;
+  top: 0; bottom: 0; left: 130px;
+  border-left: 2px solid #f9a8d4;             /* SECONDARY COLOR PLACEHOLDER */
+  box-shadow: 3px 0 0 #f9a8d4;                /* SECONDARY COLOR PLACEHOLDER */
+}
+.entry {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 16px;
-  width: 360px;
+  border-bottom: 1.5px solid #094e2a;         /* PRIMARY COLOR PLACEHOLDER (rule) */
+  padding-right: 46px;
 }
-.seat {
-  flex-shrink: 0;
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  font-size: 26px;
-  font-weight: 800;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-  color: #ffffff;
-  box-shadow: 0 0 0 5px rgba(249, 168, 212, 0.55); /* SECONDARY COLOR PLACEHOLDER (ring) */
-}
-.name {
-  font-size: 31px;
-  font-weight: 700;
-  color: #161616;
-  white-space: nowrap;
-}
-
-/* right side: stroke, 7, 6, 5 */
-.crew-row:nth-child(1) { top: 314px; left: 660px; }
-.crew-row:nth-child(2) { top: 414px; left: 660px; }
-.crew-row:nth-child(3) { top: 514px; left: 660px; }
-.crew-row:nth-child(4) { top: 614px; left: 660px; }
-
-/* left side: 4, 3, 2, bow — mirrored (name then badge, badge toward boat) */
-.crew-row:nth-child(5),
-.crew-row:nth-child(6),
-.crew-row:nth-child(7),
-.crew-row:nth-child(8) {
-  flex-direction: row-reverse;
-  justify-content: flex-start;
-  text-align: right;
-  left: auto;
-  right: 660px;
-}
-.crew-row:nth-child(5) { top: 314px; }
-.crew-row:nth-child(6) { top: 414px; }
-.crew-row:nth-child(7) { top: 514px; }
-.crew-row:nth-child(8) { top: 614px; }
-
-/* cox: centred below the boat */
-.crew-row:nth-child(9) {
-  top: 792px;
-  left: 50%;
-  width: auto;
-  transform: translateX(-50%);
-  justify-content: center;
-}
-.crew-row:nth-child(9) .seat {
-  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
-  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
-  box-shadow: 0 0 0 5px rgba(9, 78, 42, 0.18); /* PRIMARY COLOR PLACEHOLDER (ring) */
-}
-
-/* ---- Coach ---- */
-.coach {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 50px;
+.entry .seat {
+  width: 130px;
   text-align: center;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 26px;
+  font-weight: 900;
+  color: #f9a8d4;                             /* SECONDARY COLOR PLACEHOLDER */
+  -webkit-text-stroke: 0.6px #094e2a;         /* PRIMARY COLOR PLACEHOLDER */
+}
+.entry .name {
+  flex: 1;
+  padding-left: 28px;
+  font-size: 34px;
+  font-weight: 500;
   font-style: italic;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+}
+.entry .stat {
+  width: 150px;
+  text-align: right;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #094e2a;                             /* PRIMARY COLOR PLACEHOLDER */
+}
+.entry .stat .tick { font-size: 22px; margin-right: 4px; }
+
+/* footer ------------------------------------------------------------ */
+.log-foot {
+  height: 74px;
+  margin-left: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 46px;
+  border-top: 3px double #094e2a;             /* PRIMARY COLOR PLACEHOLDER */
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.log-foot b { font-weight: 900; }
+
+/* rubber ink stamp -------------------------------------------------- */
+.stamp {
+  position: absolute;
+  right: 70px;
+  bottom: 92px;
+  width: 168px;
+  height: 168px;
+  border: 4px solid #094e2a;                  /* PRIMARY COLOR PLACEHOLDER */
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transform: rotate(-13deg);
+  color: #094e2a;                             /* PRIMARY COLOR PLACEHOLDER */
+  opacity: 0.86;
+  z-index: 6;
+  background: rgba(241,233,214,0.35);
+}
+.stamp::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1.5px solid #094e2a;                /* PRIMARY COLOR PLACEHOLDER */
+  border-radius: 50%;
+}
+.stamp .s-big {
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  line-height: 0.92;
+}
+.stamp .s-sm {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 6px;
 }

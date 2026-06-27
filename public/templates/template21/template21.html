@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template21.css">
+</head>
+<body>
+  <div class="sheet">
+    <div class="string"></div>
+    <div class="eyelet"></div>
+
+    <div class="tag">
+      <div class="t-head">
+        <div class="eyebrow">Crew &middot; Boat Tag</div>
+        <div class="race">{{RACE_NAME}}</div>
+        <div class="cat">{{crewCategory}}</div>
+      </div>
+
+      <div class="t-list">
+        {{#crewMembers}}
+        <div class="t-row">
+          <span class="seat">{{badge}}</span>
+          <span class="name">{{name}}</span>
+        </div>
+        {{/crewMembers}}
+      </div>
+
+      <div class="t-foot">
+        {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+        <div class="coach">Coach &middot; {{COACH_NAME}}</div>
+      </div>
+
+      <div class="stamp">
+        <div class="s-big">&#10003;</div>
+        <div class="s-sm">Selected</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

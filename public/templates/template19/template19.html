@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template29.css">
+</head>
+<body>
+  <div class="sheet">
+
+    <div class="mast">
+      <div class="titles">
+        <div class="eyebrow oncolor">The Enclosure</div>
+        <div class="race oncolor">{{RACE_NAME}}</div>
+      </div>
+      {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+    </div>
+
+    <div class="middle">
+      <div class="crew-col">
+        <div class="kicker">Order of the Rowing</div>
+        <div class="cat">{{crewCategory}}</div>
+        <div class="crew-list">
+          {{#crewMembers}}
+          <div class="crew-row">
+            <span class="seat">{{badge}}</span>
+            <span class="name">{{name}}</span>
+          </div>
+          {{/crewMembers}}
+        </div>
+      </div>
+
+      <div class="photo-col">
+        <div class="photo">
+          <div class="ph-tag">{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</div>
+          <div class="ph-cap">The Trophy Lawn<br>&mdash;<br>Drop Photo</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="f-item oncolor">Coached by <b>{{COACH_NAME}}</b></div>
+      <div class="f-item oncolor">Allerton Rowing Club</div>
+    </div>
+
+  </div>
+</body>
+</html>

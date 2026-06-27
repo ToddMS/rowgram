@@ -2,37 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="template17.css">
-  <title>RowGram — Template 13</title>
+  <link rel="stylesheet" href="template33.css">
 </head>
 <body>
-  <div class="canvas">
+  <div class="sheet">
+    <div class="spine"></div>
 
-    <header class="top">
-      {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
-      <div class="titles">
-        <span class="eyebrow">Crew Lineup</span>
-        <h1 class="race-name">{{RACE_NAME}}</h1>
-        <p class="category">{{crewCategory}}</p>
+    <div class="log-head">
+      <div class="ttl">
+        <div class="eyebrow oncolor">Boathouse Logbook</div>
+        <div class="race oncolor">{{RACE_NAME}}</div>
       </div>
-    </header>
+      <div class="meta">
+        {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+        <div class="boat oncolor">{{BOAT_TYPE}} {{BOAT_CODE}} &middot; Out</div>
+      </div>
+    </div>
 
-    {{#BOAT_IMAGE_AVAILABLE}}
+    <div class="col-head">
+      <span class="h-seat">Seat</span>
+      <span class="h-name">Crew Member</span>
+      <span class="h-stat">Status</span>
+    </div>
 
-    <div class="boat-container">{{BOAT_IMAGE}}</div>
-
-    {{/BOAT_IMAGE_AVAILABLE}}
-
-    <section class="crew-list">
+    <div class="ledger">
       {{#crewMembers}}
-      <div class="crew-row"><span class="seat">{{badge}}</span><span class="name">{{name}}</span></div>
+      <div class="entry">
+        <span class="seat">{{badge}}</span>
+        <span class="name">{{name}}</span>
+        <span class="stat"><span class="tick">&#10003;</span>Out</span>
+      </div>
       {{/crewMembers}}
-    </section>
+    </div>
 
-    <footer class="coach">Coached by {{COACH_NAME}}</footer>
+    <div class="log-foot">
+      <span>Logged by <b>{{COACH_NAME}}</b></span>
+      <span>{{crewCategory}}</span>
+    </div>
+
+    <div class="stamp">
+      <div class="s-big">BOAT<br>OUT</div>
+      <div class="s-sm">Allerton R.C.</div>
+    </div>
 
   </div>
 </body>

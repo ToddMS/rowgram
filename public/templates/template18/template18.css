@@ -1,0 +1,208 @@
+/* ============================================================
+   RowGram — Template 28 "Stamp Sheet"
+   A philatelic sheet: 3x3 perforated stamps, one rower each,
+   plate selvedge + handstamp cancel.
+   ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 1080px;
+  height: 1080px;
+  overflow: hidden;
+}
+
+.sheet {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background: #094e2a;                        /* PRIMARY COLOR PLACEHOLDER */
+  font-family: 'Inter', sans-serif;
+  color: #1a1a17;                             /* charcoal neutral */
+  padding: 58px 58px 54px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* selvedge text uses white + dark outline so it survives any club colour */
+.oncolor {
+  color: #ffffff;
+  text-shadow:
+    -1.4px -1.4px 0 #14130f, 1.4px -1.4px 0 #14130f,
+    -1.4px 1.4px 0 #14130f, 1.4px 1.4px 0 #14130f;
+}
+
+/* top selvedge ------------------------------------------------------ */
+.selvedge-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 96px;
+  position: relative;
+}
+.plate-id {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.logo-stamp {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: #f3efe4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.logo-stamp::before,
+.logo-stamp::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+.logo-stamp::before {
+  left: 0; right: 0; top: -7px; bottom: -7px;
+  background:
+    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) top center / 16px 14px repeat-x,
+    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) bottom center / 16px 14px repeat-x;
+}
+.logo-stamp::after {
+  top: 0; bottom: 0; left: -7px; right: -7px;
+  background:
+    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) left center / 14px 16px repeat-y,
+    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) right center / 14px 16px repeat-y;
+}
+.club-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+}
+.plate-id .txt .t1 {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+.plate-id .txt .t2 {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  opacity: 0.92;
+  margin-top: 4px;
+}
+
+
+/* stamp grid -------------------------------------------------------- */
+.stamp-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 22px;
+  padding: 18px 0;
+}
+
+.stamp {
+  position: relative;
+  background: #f3efe4;                         /* neutral ivory */
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18px 14px;
+}
+/* perforations: holes punched in the selvedge colour along all edges */
+.stamp::before,
+.stamp::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+.stamp::before {  /* top + bottom rows of holes */
+  left: 0; right: 0; top: -7px; bottom: -7px;
+  background:
+    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) top center / 16px 14px repeat-x,
+    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) bottom center / 16px 14px repeat-x;
+                                              /* PRIMARY COLOR PLACEHOLDER (perforations) */
+}
+.stamp::after {  /* left + right columns of holes */
+  top: 0; bottom: 0; left: -7px; right: -7px;
+  background:
+    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) left center / 14px 16px repeat-y,
+    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) right center / 14px 16px repeat-y;
+                                              /* PRIMARY COLOR PLACEHOLDER (perforations) */
+}
+
+.stamp-inner {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  border: 1.5px solid #f9a8d4;                /* SECONDARY COLOR PLACEHOLDER */
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+}
+.stamp-top {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #094e2a;                             /* PRIMARY COLOR PLACEHOLDER */
+}
+.stamp .seat {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #094e2a;                         /* PRIMARY COLOR PLACEHOLDER */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: -1px -1px 0 #14130f, 1px -1px 0 #14130f, -1px 1px 0 #14130f, 1px 1px 0 #14130f;
+}
+.stamp .name {
+  margin-top: auto;
+  font-size: 29px;
+  font-weight: 700;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+.stamp .denom {
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #4a4a44;
+  border-top: 1px solid #f9a8d4;              /* SECONDARY COLOR PLACEHOLDER */
+  padding-top: 8px;
+}
+
+/* bottom selvedge --------------------------------------------------- */
+.selvedge-bot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+.selvedge-bot .field {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.selvedge-bot .field b {
+  font-weight: 800;
+}
+.selvedge-bot .center {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+}

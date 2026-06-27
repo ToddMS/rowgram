@@ -1,0 +1,198 @@
+/* ============================================================
+   RowGram — Template 30 "Broadsheet"
+   Sports-page newspaper: masthead, banner headline, halftone
+   photo placeholder + boxed crew roster in columns.
+   ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 1080px;
+  height: 1080px;
+  overflow: hidden;
+}
+
+.sheet {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background: #f1ece0;                         /* neutral newsprint */
+  font-family: 'Inter', sans-serif;
+  color: #1a1a17;                             /* charcoal neutral */
+  padding: 40px 48px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.oncolor {
+  color: #ffffff;
+  text-shadow:
+    -1.4px -1.4px 0 #14130f, 1.4px -1.4px 0 #14130f,
+    -1.4px 1.4px 0 #14130f, 1.4px 1.4px 0 #14130f;
+}
+
+/* masthead ---------------------------------------------------------- */
+.masthead {
+  text-align: center;
+  border-bottom: 3px double #094e2a;          /* PRIMARY COLOR PLACEHOLDER */
+  padding-bottom: 14px;
+}
+.masthead .paper {
+  font-size: 62px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #1a1a17;
+  line-height: 0.9;
+}
+.dateline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #094e2a;              /* PRIMARY COLOR PLACEHOLDER */
+  margin-top: 12px;
+  padding-top: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #4a4a44;
+}
+.dateline .mid { color: #f9a8d4; -webkit-text-stroke: 0.4px #094e2a; font-weight: 800; } /* SECONDARY/PRIMARY COLOR PLACEHOLDER */
+
+/* headline ---------------------------------------------------------- */
+.headline {
+  padding: 26px 0 18px;
+  border-bottom: 2px solid #1a1a17;
+}
+.headline .kicker {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #f9a8d4;                             /* SECONDARY COLOR PLACEHOLDER */
+  -webkit-text-stroke: 0.5px #094e2a;         /* PRIMARY COLOR PLACEHOLDER */
+  margin-bottom: 10px;
+}
+.headline h1 {
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -1.5px;
+}
+.headline .sub {
+  margin-top: 12px;
+  font-style: italic;
+  font-size: 23px;
+  font-weight: 500;
+  color: #4a4a44;
+}
+
+/* body -------------------------------------------------------------- */
+.body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  padding-top: 22px;
+}
+
+/* feature photo */
+.feature {
+  flex: 1;
+  padding-right: 30px;
+  border-right: 1px solid #f9a8d4;            /* SECONDARY COLOR PLACEHOLDER */
+  display: flex;
+  flex-direction: column;
+}
+.halftone {
+  flex: 1;
+  background:
+    radial-gradient(#cdc4b0 28%, transparent 29%) 0 0 / 11px 11px,
+    radial-gradient(#cdc4b0 28%, transparent 29%) 5.5px 5.5px / 11px 11px,
+    #e6dfcd;
+  border: 2px solid #1a1a17;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.halftone span {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #7c7460;
+  background: #f1ece0;
+  padding: 12px 22px;
+  border: 1px dashed #9a917b;
+  text-align: center;
+}
+.feature .caption {
+  margin-top: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  font-style: italic;
+  color: #4a4a44;
+  border-left: 4px solid #094e2a;             /* PRIMARY COLOR PLACEHOLDER */
+  padding-left: 12px;
+}
+
+/* roster */
+.roster {
+  width: 408px;
+  padding-left: 30px;
+  display: flex;
+  flex-direction: column;
+}
+.roster .rhead {
+  background: #094e2a;                         /* PRIMARY COLOR PLACEHOLDER */
+  padding: 12px 16px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.roster-list { flex: 1; display: flex; flex-direction: column; }
+.r-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid rgba(26,26,23,0.18);
+}
+.r-row .seat {
+  flex: 0 0 30px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 900;
+  color: #094e2a;                             /* PRIMARY COLOR PLACEHOLDER */
+}
+.r-row .name {
+  font-size: 29px;
+  font-weight: 600;
+}
+.roster .coach {
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: #f9a8d4;                         /* SECONDARY COLOR PLACEHOLDER */
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* footer ------------------------------------------------------------ */
+.foot {
+  height: 64px;
+  margin-top: 8px;
+  border-top: 3px double #094e2a;             /* PRIMARY COLOR PLACEHOLDER */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.foot .f-l { display: flex; align-items: center; gap: 14px; }
+.foot img { width: 44px; height: 44px; display: block; }
+.foot .f-t {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #4a4a44;
+}

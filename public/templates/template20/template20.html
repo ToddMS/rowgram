@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template30.css">
+</head>
+<body>
+  <div class="sheet">
+
+    <div class="masthead">
+      <div class="paper">The Tideway Gazette</div>
+      <div class="dateline">
+        <span>{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</span>
+        <span class="mid">Crew &mdash; Team Sheet</span>
+        <span>Late Edition</span>
+      </div>
+    </div>
+
+    <div class="headline">
+      <div class="kicker">Crew Announcement</div>
+      <h1>{{RACE_NAME}}</h1>
+      <div class="sub">{{crewCategory}}</div>
+    </div>
+
+    <div class="body">
+      <div class="feature">
+        <div class="halftone"><span>Crew Portrait<br>Drop Photo</span></div>
+        <div class="caption">The selected line-up, bow to stroke, at the boathouse.</div>
+      </div>
+
+      <div class="roster">
+        <div class="rhead oncolor">Today&rsquo;s Crew</div>
+        <div class="roster-list">
+          {{#crewMembers}}
+          <div class="r-row">
+            <span class="seat">{{badge}}</span>
+            <span class="name">{{name}}</span>
+          </div>
+          {{/crewMembers}}
+        </div>
+        <div class="coach oncolor">Coach &middot; {{COACH_NAME}}</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="f-l">
+        {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+        <span class="f-t">Allerton Rowing Club</span>
+      </div>
+      <span class="f-t">Vol. MMXXVI &middot; No. 8</span>
+    </div>
+
+  </div>
+</body>
+</html>
