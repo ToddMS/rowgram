@@ -126,7 +126,8 @@ html, body {
   box-shadow: 3px 0 0 #f9a8d4;                /* SECONDARY COLOR PLACEHOLDER */
 }
 .entry {
-  flex: 1;
+.entry {
+  flex: 0 0 86px;
   display: flex;
   align-items: center;
   border-bottom: 1.5px solid #094e2a;         /* PRIMARY COLOR PLACEHOLDER (rule) */

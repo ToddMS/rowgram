@@ -11,6 +11,7 @@ export interface TemplateData {
   RACE_NAME: string
   RACE_CATEGORY?: string
   RACE_DATE?: string
+  EDITION_TEXT?: string
   BOAT_NAME: string
   COACH_NAME: string
   CREW_MEMBERS: Array<{
@@ -374,6 +375,22 @@ export class TemplateCompiler {
   /**
    * Apply color scheme to the template
    */
+  /**
+   * Returns '#ffffff' or '#1a1a17' — whichever has better contrast against the given hex color.
+   * Uses WCAG relative luminance formula.
+   */
+  static getContrastColor(hex: string): string {
+    const clean = hex.replace('#', '')
+    const r = parseInt(clean.slice(0, 2), 16) / 255
+    const g = parseInt(clean.slice(2, 4), 16) / 255
+    const b = parseInt(clean.slice(4, 6), 16) / 255
+    const toLinear = (c: number) =>
+      c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+    const luminance =
+      0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b)
+    return luminance > 0.179 ? '#1a1a17' : '#ffffff'
+  }
+
   private static applyColorScheme(html: string, colors: ColorScheme): string {
     let styledHtml = html
 
@@ -382,6 +399,14 @@ export class TemplateCompiler {
     styledHtml = this.applySolidColors(styledHtml, colors)
     styledHtml = this.applyBorderColors(styledHtml, colors)
     styledHtml = this.applySpecialColors(styledHtml, colors)
+
+    // Inject --on-primary / --on-secondary CSS variables so any template can use them
+    const onPrimary = this.getContrastColor(colors.primaryColor)
+    const onSecondary = this.getContrastColor(colors.secondaryColor)
+    const cssVars = `<style>:root{--on-primary:${onPrimary};--on-secondary:${onSecondary};}</style>`
+    styledHtml = styledHtml.includes('</head>')
+      ? styledHtml.replace('</head>', `${cssVars}</head>`)
+      : cssVars + styledHtml
 
     return styledHtml
   }
@@ -787,6 +812,7 @@ export class TemplateCompiler {
       RACE_NAME: crew.raceName || 'Championship Race',
       RACE_CATEGORY: crew.raceCategory || undefined,
       RACE_DATE: crew.raceDate || undefined,
+      EDITION_TEXT: crew.raceDate || 'Late Edition',
       BOAT_NAME: crew.boatName || `${getBoatType(crew.boatCode)?.name || 'Eight'} Shell`,
       COACH_NAME: this.formatName(crew.coachName || crew.coach?.name || 'Head Coach'),
       CREW_MEMBERS: this.isTemplate2(template)
@@ -807,8 +833,10 @@ export class TemplateCompiler {
     }
   }
 
+  private static readonly NAME_MAX_LENGTH = 15
+
   /**
-   * Format name as "First initial. Surname" (e.g., "Todd Sandler" -> "T. Sandler")
+   * Format name: full name by default, abbreviated to "F. Surname" if over NAME_MAX_LENGTH chars.
    */
   private static formatName(name: string): string {
     if (!name || typeof name !== 'string') {
@@ -816,19 +844,18 @@ export class TemplateCompiler {
     }
 
     const trimmedName = name.trim()
-
-    // Split by space to get name parts
     const nameParts = trimmedName.split(/\s+/)
 
     if (nameParts.length === 1) {
-      // Single name - return as is
       return nameParts[0]
     }
 
-    // Multiple parts - use first initial + dot + last name
+    if (trimmedName.length <= this.NAME_MAX_LENGTH) {
+      return trimmedName
+    }
+
     const firstInitial = nameParts[0].charAt(0).toUpperCase()
     const lastName = nameParts[nameParts.length - 1]
-
     return `${firstInitial}. ${lastName}`
   }
 

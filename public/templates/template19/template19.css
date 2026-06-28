@@ -91,9 +91,9 @@ html, body {
   padding-bottom: 18px;
   border-bottom: 2px solid #094e2a;           /* PRIMARY COLOR PLACEHOLDER */
 }
-.crew-list { flex: 1; display: flex; flex-direction: column; }
+.crew-list { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .crew-row {
-  flex: 1;
+  height: 70px;
   display: flex;
   align-items: center;
   gap: 20px;

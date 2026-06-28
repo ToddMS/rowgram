@@ -98,14 +98,18 @@ html, body {
 /* stamp grid -------------------------------------------------------- */
 .stamp-grid {
   flex: 1;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
   gap: 22px;
   padding: 18px 0;
 }
 
 .stamp {
+  width: 306px;
+  height: 236px;
+  flex: 0 0 auto;
   position: relative;
   background: #f3efe4;                         /* neutral ivory */
   display: flex;

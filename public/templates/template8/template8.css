@@ -75,10 +75,15 @@ body { font-family: 'Inter', sans-serif; }
 .crew-list {
   margin-top: 0;
   display: grid;
+  grid-template-columns: 1fr;          /* default: single column for small crews */
+  grid-auto-flow: row;
+  column-gap: 40px;
+}
+/* 6+ rowers (e.g. 8+) reflow into the original two-column, column-major grid */
+.crew-list:has(.crew-row:nth-child(6)) {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(4, auto);
   grid-auto-flow: column;
-  column-gap: 40px;
 }
 .crew-row {
   display: flex;

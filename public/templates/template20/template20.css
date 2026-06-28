@@ -23,12 +23,7 @@ html, body {
   flex-direction: column;
 }
 
-.oncolor {
-  color: #ffffff;
-  text-shadow:
-    -1.4px -1.4px 0 #14130f, 1.4px -1.4px 0 #14130f,
-    -1.4px 1.4px 0 #14130f, 1.4px 1.4px 0 #14130f;
-}
+.oncolor { color: var(--on-primary, #ffffff); }
 
 /* masthead ---------------------------------------------------------- */
 .masthead {
@@ -48,15 +43,15 @@ html, body {
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid #094e2a;              /* PRIMARY COLOR PLACEHOLDER */
-  margin-top: 12px;
-  padding-top: 8px;
+  margin-top: 30px;
+  padding-top: 15px;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: #4a4a44;
 }
-.dateline .mid { color: #f9a8d4; -webkit-text-stroke: 0.4px #094e2a; font-weight: 800; } /* SECONDARY/PRIMARY COLOR PLACEHOLDER */
+.dateline .mid { color: #1a1a17; font-weight: 800; }
 
 /* headline ---------------------------------------------------------- */
 .headline {
@@ -68,8 +63,7 @@ html, body {
   font-weight: 800;
   letter-spacing: 5px;
   text-transform: uppercase;
-  color: #f9a8d4;                             /* SECONDARY COLOR PLACEHOLDER */
-  -webkit-text-stroke: 0.5px #094e2a;         /* PRIMARY COLOR PLACEHOLDER */
+  color: #1a1a17;
   margin-bottom: 10px;
 }
 .headline h1 {
@@ -149,9 +143,9 @@ html, body {
   letter-spacing: 3px;
   text-transform: uppercase;
 }
-.roster-list { flex: 1; display: flex; flex-direction: column; }
+.roster-list { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .r-row {
-  flex: 1;
+  height: 54px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -162,20 +156,21 @@ html, body {
   text-align: center;
   font-size: 18px;
   font-weight: 900;
-  color: #094e2a;                             /* PRIMARY COLOR PLACEHOLDER */
+  color: #1a1a17;
 }
 .r-row .name {
   font-size: 29px;
   font-weight: 600;
 }
 .roster .coach {
-  margin-top: 14px;
+  margin-top: 6px;
   padding: 12px 16px;
   background: #f9a8d4;                         /* SECONDARY COLOR PLACEHOLDER */
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
+  color: var(--on-secondary, #ffffff);
 }
 
 /* footer ------------------------------------------------------------ */

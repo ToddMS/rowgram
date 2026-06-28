@@ -52,7 +52,8 @@ body { font-family: 'Inter', sans-serif; }
   bottom: 150px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 26px;
 }
 .crew-row {
   position: relative;

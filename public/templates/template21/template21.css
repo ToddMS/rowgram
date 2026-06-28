@@ -103,9 +103,9 @@ html, body { width: 1080px; height: 1080px; overflow: hidden; }
   color: #6b5e44;
 }
 
-.t-list { flex: 1; display: flex; flex-direction: column; padding: 4px 6px 0; }
+.t-list { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 4px 6px 0; }
 .t-row {
-  flex: 1;
+  height: 60px;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -124,15 +124,25 @@ html, body { width: 1080px; height: 1080px; overflow: hidden; }
 }
 .t-row .name { font-size: 31px; font-weight: 600; }
 
+.bg-logo {
+  position: absolute;
+  top: 36px;
+  right: 48px;
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  z-index: 10;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+}
+
 .t-foot {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 14px;
   padding-top: 14px;
   border-top: 3px solid #094e2a;                /* PRIMARY COLOR PLACEHOLDER */
 }
-.t-foot img { width: 56px; height: 56px; }
 .t-foot .coach {
   font-size: 16px;
   font-weight: 800;
@@ -168,3 +178,10 @@ html, body { width: 1080px; height: 1080px; overflow: hidden; }
 }
 .stamp .s-big { font-size: 28px; font-weight: 900; letter-spacing: 1px; }
 .stamp .s-sm { font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
+
+
+/* ---- Small crews (1x, 2-): center & scale up so the tag doesn't read empty ---- */
+.t-list:not(:has(.t-row:nth-child(3))) { gap: 30px; }
+.t-list:not(:has(.t-row:nth-child(3))) .t-row { height: 104px; border-bottom: none; }
+.t-list:not(:has(.t-row:nth-child(3))) .t-row .seat { flex: 0 0 64px; width: 64px; height: 64px; font-size: 26px; }
+.t-list:not(:has(.t-row:nth-child(3))) .t-row .name { font-size: 52px; font-weight: 700; }

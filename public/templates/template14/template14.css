@@ -108,10 +108,11 @@ html, body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   padding: 6px 4px 0;
 }
 .c-row {
-  flex: 1;
+  height: 58px;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -147,3 +148,10 @@ html, body {
   text-transform: uppercase;
 }
 .c-foot b { color: #094e2a; }                  /* PRIMARY COLOR PLACEHOLDER */
+
+
+/* ---- Small crews (1x, 2-): fill the cartouche ---- */
+.c-list:not(:has(.c-row:nth-child(3))) { gap: 30px; }
+.c-list:not(:has(.c-row:nth-child(3))) .c-row { height: 110px; }
+.c-list:not(:has(.c-row:nth-child(3))) .c-row .seat { width: 58px; height: 58px; font-size: 24px; }
+.c-list:not(:has(.c-row:nth-child(3))) .c-row .name { font-size: 46px; }

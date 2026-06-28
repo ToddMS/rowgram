@@ -178,9 +178,9 @@ html, body {
   text-transform: uppercase;
 }
 .crew .thead .right { color: #094e2a; }      /* PRIMARY COLOR PLACEHOLDER */
-.crew-list { flex: 1; display: flex; flex-direction: column; }
+.crew-list { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .crew-row {
-  flex: 1;
+  height: 74px;
   display: flex;
   align-items: center;
   gap: 18px;

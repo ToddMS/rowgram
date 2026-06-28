@@ -88,7 +88,9 @@ export class ImageGenerationService {
     let clubLogoDataUrl: string | undefined = undefined
     if (raceData.club?.logoUrl) {
       try {
-        if (raceData.club.logoUrl.startsWith('http')) {
+        if (raceData.club.logoUrl.startsWith('data:')) {
+          clubLogoDataUrl = raceData.club.logoUrl
+        } else if (raceData.club.logoUrl.startsWith('http')) {
           const res = await fetch(raceData.club.logoUrl)
           const buf = await res.arrayBuffer()
           const ext = raceData.club.logoUrl.split('.').pop()?.toLowerCase() || 'png'
@@ -250,28 +252,39 @@ export class ImageGenerationService {
     coverData: any,
     colors: { primaryColor: string; secondaryColor: string },
   ): Promise<string> {
-    let htmlPath: string
-    let cssPath: string
-
-    if (
+    const candidates =
       template.metadata?.cssFile?.includes('template2') ||
       template.metadata?.htmlFile?.includes('template2') ||
       template.name.toLowerCase().includes('corner brackets')
-    ) {
-      htmlPath = path.join(process.cwd(), 'public', 'templates/template2/cover/cover.html')
-      cssPath = path.join(process.cwd(), 'public', 'templates/template2/cover/cover.css')
-    } else {
-      htmlPath = path.join(process.cwd(), 'public', 'templates/template1/cover/cover.html')
-      cssPath = path.join(process.cwd(), 'public', 'templates/template1/cover/cover.css')
+        ? ['templates/template2/cover/cover']
+        : ['templates/template1/cover/cover']
+
+    for (const base of candidates) {
+      try {
+        const htmlPath = path.join(process.cwd(), 'public', `${base}.html`)
+        const cssPath = path.join(process.cwd(), 'public', `${base}.css`)
+        let htmlContent = await fs.readFile(htmlPath, 'utf-8')
+        const cssContent = await fs.readFile(cssPath, 'utf-8')
+        htmlContent = htmlContent.replace('</head>', `<style>${cssContent}</style></head>`)
+        htmlContent = htmlContent.replace(/<link[^>]*rel="stylesheet"[^>]*>/g, '')
+        return TemplateCompiler.compileTemplate(htmlContent, coverData, colors, template.metadata)
+      } catch {
+        // file doesn't exist — fall through to fallback
+      }
     }
 
-    let htmlContent = await fs.readFile(htmlPath, 'utf-8')
-    const cssContent = await fs.readFile(cssPath, 'utf-8')
-    htmlContent = htmlContent.replace('</head>', `<style>${cssContent}</style></head>`)
-    htmlContent = htmlContent.replace(/<link[^>]*rel="stylesheet"[^>]*>/g, '')
-    htmlContent = TemplateCompiler.compileTemplate(htmlContent, coverData, colors, template.metadata)
-
-    return htmlContent
+    // Fallback: simple cover page using club colors
+    return `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:1080px; height:1080px; overflow:hidden; }
+body { background:${colors.primaryColor}; font-family:Inter,sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+h1 { color:#fff; font-size:72px; font-weight:900; text-align:center; letter-spacing:-2px; padding:0 80px; line-height:1; }
+p { color:${colors.secondaryColor}; font-size:28px; font-weight:700; margin-top:24px; letter-spacing:4px; text-transform:uppercase; }
+</style></head><body>
+<h1>${coverData.RACE_NAME || 'Race Day'}</h1>
+<p>${coverData.CLUB_NAME || 'Rowing Club'}</p>
+</body></html>`
   }
 
   static validateGenerationInput(crew: Crew, _template: Template): { valid: boolean; error?: string } {

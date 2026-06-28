@@ -151,3 +151,9 @@ html, body { width: 1080px; height: 1080px; overflow: hidden; }
   color: #5a554a;
 }
 .colophon img { width: 40px; height: 40px; }
+
+
+/* ---- Small crews (1x, 2-): enlarge so the single name commands the bill ---- */
+.crew:not(:has(.c-row:nth-child(3))) .c-row { max-height: 132px; }
+.crew:not(:has(.c-row:nth-child(3))) .c-row .nm { font-size: 66px; width: auto; }
+.crew:not(:has(.c-row:nth-child(3))) .c-row .seat { min-width: 54px; height: 54px; font-size: 24px; }

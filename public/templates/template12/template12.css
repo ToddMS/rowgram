@@ -119,6 +119,12 @@ body { font-family: 'Inter', sans-serif; }
 .crew-list {
   margin-top: 28px;
   display: grid;
+  grid-template-columns: 1fr;          /* default: single column for small crews */
+  grid-auto-flow: row;
+  column-gap: 44px;
+}
+/* 6+ rowers (e.g. 8+) reflow into the original two-column, column-major grid */
+.crew-list:has(.crew-row:nth-child(6)) {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(4, auto);
   grid-auto-flow: column;
@@ -170,3 +176,10 @@ body { font-family: 'Inter', sans-serif; }
   text-transform: uppercase;
   color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
 }
+
+
+/* ---- Small crews (1x, 2-): fill the badge ---- */
+.crew-list:not(:has(.crew-row:nth-child(3))) { margin-top: 60px; row-gap: 30px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row { padding: 22px 0; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .seat { width: 60px; height: 60px; font-size: 28px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .name { font-size: 42px; }
