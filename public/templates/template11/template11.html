@@ -9,7 +9,14 @@
 </head>
 <body>
   <div class="canvas">
-    <div class="door-grooves"></div>
+    <div class="planks">
+      <div class="plank"></div>
+      <div class="plank"></div>
+      <div class="plank"></div>
+      <div class="plank"></div>
+      <div class="plank"></div>
+      <div class="plank"></div>
+    </div>
 
     <div class="plaque">
       <span class="screw s-tl"></span>
@@ -21,25 +28,27 @@
       <div class="inlay"></div>
       <p class="category">{{crewCategory}} &middot; {{BOAT_TYPE}} {{BOAT_CODE}}</p>
 
-      {{#hasCox}}
-      <div class="cox-cell">
-        <span class="seat">C</span>
-        <span class="name">{{COX_NAME}}</span>
-      </div>
-      {{/hasCox}}
+      {{#clubLogo}}<img class="logo-wm" src="{{clubLogo}}" alt="" />{{/clubLogo}}
 
-      <div class="crew-grid">
-        {{#crewMembersNoCox}}
-        <div class="crew-row">
-          <span class="seat">{{badge}}</span>
-          <span class="name">{{name}}</span>
+      <div class="roster">
+        {{#hasCox}}
+        <div class="cox-row">
+          <span class="seat">C</span>
+          <span class="name">{{COX_NAME}}</span>
+          <span class="leader"></span>
         </div>
-        {{/crewMembersNoCox}}
+        {{/hasCox}}
+        <section class="crew-list">
+          {{#crewMembersNoCox}}
+          <div class="crew-row">
+            <span class="seat">{{badge}}</span>
+            <span class="name">{{name}}</span>
+            <span class="leader"></span>
+          </div>
+          {{/crewMembersNoCox}}
+        </section>
       </div>
 
-      
-      {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
-      
 
       <p class="coach"><span class="coach-label">Coach</span> {{COACH_NAME}}</p>
     </div>
