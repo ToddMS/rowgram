@@ -2,50 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="template13.css">
+  <title>RowGram — Template 13</title>
 </head>
 <body>
-  <div class="sheet">
-    <div class="spine"></div>
+  <div class="canvas">
+    <div class="wood-grain">
+      <svg viewBox="0 0 1080 1080" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="woodgrain13-dark" x="0" y="0" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.0042 0.11" numOctaves="6" seed="11" stitchTiles="stitch" result="n"/>
+            <feColorMatrix in="n" type="matrix"
+              values="0 0 0 0 0.20
+                      0 0 0 0 0.09
+                      0 0 0 0 0.02
+                      1.25 1.25 1.25 0 -1.05"/>
+          </filter>
+          <filter id="woodgrain13-light" x="0" y="0" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.0052 0.13" numOctaves="5" seed="4" stitchTiles="stitch" result="n"/>
+            <feColorMatrix in="n" type="matrix"
+              values="0 0 0 0 0.99
+                      0 0 0 0 0.82
+                      0 0 0 0 0.52
+                      -1.15 -1.15 -1.15 0 0.78"/>
+          </filter>
+        </defs>
+        <rect width="1080" height="1080" filter="url(#woodgrain13-dark)" opacity="0.55"/>
+        <rect width="1080" height="1080" filter="url(#woodgrain13-light)" opacity="0.35"/>
+      </svg>
+    </div>
 
-    <div class="log-head">
-      <div class="ttl">
-        <div class="eyebrow oncolor">Boathouse Logbook</div>
-        <div class="race oncolor">{{RACE_NAME}}</div>
+    <div class="notebook">
+      <div class="margin-line"></div>
+
+      <!-- punched holes (on the page) -->
+      <div class="hole" style="top: 28px"></div>
+      <div class="hole" style="top: 124px"></div>
+      <div class="hole" style="top: 220px"></div>
+      <div class="hole" style="top: 316px"></div>
+      <div class="hole" style="top: 412px"></div>
+      <div class="hole" style="top: 508px"></div>
+      <div class="hole" style="top: 604px"></div>
+      <div class="hole" style="top: 700px"></div>
+      <div class="hole" style="top: 796px"></div>
+      <div class="hole" style="top: 892px"></div>
+
+      <!-- front pass of each coil (on top of the page, into the hole) -->
+      <div class="ring-front" style="top: 22px"></div>
+      <div class="ring-front" style="top: 118px"></div>
+      <div class="ring-front" style="top: 214px"></div>
+      <div class="ring-front" style="top: 310px"></div>
+      <div class="ring-front" style="top: 406px"></div>
+      <div class="ring-front" style="top: 502px"></div>
+      <div class="ring-front" style="top: 598px"></div>
+      <div class="ring-front" style="top: 694px"></div>
+      <div class="ring-front" style="top: 790px"></div>
+      <div class="ring-front" style="top: 886px"></div>
+
+      <div class="page">
+        <header class="head">
+          <div class="titles">
+            <span class="eyebrow">Crew Lineup</span>
+            <h1 class="race-name">{{RACE_NAME}}</h1>
+            <p class="category">{{crewCategory}}</p>
+          </div>
+          {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+        </header>
+
+        <section class="crew-list">
+          {{#crewMembers}}
+          <div class="crew-row"><span class="seat">{{badge}}</span><span class="name">{{name}}</span></div>
+          {{/crewMembers}}
+        </section>
+
+        <div class="coach"><span class="coach-label">Coach &mdash; </span>{{COACH_NAME}}</div>
       </div>
-      <div class="meta">
-        {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
-        <div class="boat oncolor">{{BOAT_TYPE}} {{BOAT_CODE}} &middot; Out</div>
-      </div>
     </div>
-
-    <div class="col-head">
-      <span class="h-seat">Seat</span>
-      <span class="h-name">Crew Member</span>
-      <span class="h-stat">Status</span>
-    </div>
-
-    <div class="ledger">
-      {{#crewMembers}}
-      <div class="entry">
-        <span class="seat">{{badge}}</span>
-        <span class="name">{{name}}</span>
-        <span class="stat"><span class="tick">&#10003;</span>Out</span>
-      </div>
-      {{/crewMembers}}
-    </div>
-
-    <div class="log-foot">
-      <span>Logged by <b>{{COACH_NAME}}</b></span>
-      <span>{{crewCategory}}</span>
-    </div>
-
-    <div class="stamp">
-      <div class="s-big">BOAT<br>OUT</div>
-      <div class="s-sm">Allerton R.C.</div>
-    </div>
-
   </div>
 </body>
 </html>
