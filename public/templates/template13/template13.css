@@ -126,7 +126,6 @@ html, body {
   box-shadow: 3px 0 0 #f9a8d4;                /* SECONDARY COLOR PLACEHOLDER */
 }
 .entry {
-.entry {
   flex: 0 0 86px;
   display: flex;
   align-items: center;

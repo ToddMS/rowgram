@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react'
-
 interface SavedImage {
   id: string
   imageUrl: string
@@ -93,6 +91,9 @@ export function ImageCard({
           {(image.crew?.club?.name || image.crew?.clubName) || 'No Club'}
           {image.crew?.raceName && ` - ${image.crew.raceName}`}
         </div>
+        {image.template?.name && (
+          <div className="image-template-name">{image.template.name}</div>
+        )}
 
         {/* Created Date - Bottom Left */}
         <div className="image-created-date">

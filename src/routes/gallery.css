@@ -875,6 +875,13 @@
   margin-bottom: 0.75rem;
 }
 
+.image-template-name {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
 .image-created-date {
   position: absolute;
   bottom: 0.75rem;
