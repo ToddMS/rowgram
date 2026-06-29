@@ -9,15 +9,18 @@
   <div class="sheet">
 
     <div class="selvedge-top">
-      <div class="plate-id">
-        {{#clubLogo}}
-        <div class="logo-stamp">
-          <img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />
+      <div class="header-stamp">
+        <div class="h-left">
+          {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+          <div class="txt">
+            <div class="t-label">Crew Lineup &middot; {{BOAT_CODE}}</div>
+            <div class="t1">{{RACE_NAME}}</div>
+            <div class="t2">{{crewCategory}}</div>
+          </div>
         </div>
-        {{/clubLogo}}
-        <div class="txt">
-          <div class="t1 oncolor">{{RACE_NAME}}</div>
-          <div class="t2 oncolor">Crew Sheet &middot; Plate {{BOAT_CODE}}</div>
+        <div class="h-right">
+          <div class="t-label">Coach</div>
+          <div class="t-coach">{{COACH_NAME}}</div>
         </div>
       </div>
     </div>
@@ -26,19 +29,16 @@
       {{#crewMembers}}
       <div class="stamp">
         <div class="stamp-inner">
-          <div class="stamp-top">Rowing Post</div>
-          <span class="seat">{{badge}}</span>
+          <div class="stamp-top">{{seatLabel}}</div>
           <div class="name">{{name}}</div>
-          <div class="denom">Allerton R.C.</div>
+          <div class="denom">{{CLUB_NAME}}</div>
         </div>
       </div>
       {{/crewMembers}}
     </div>
 
     <div class="selvedge-bot">
-      <div class="field oncolor">{{crewCategory}}</div>
       <div class="center oncolor">&starf; &starf; &starf;</div>
-      <div class="field oncolor">Coach <b>{{COACH_NAME}}</b></div>
     </div>
 
   </div>

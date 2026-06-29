@@ -22,23 +22,20 @@ html, body {
   flex-direction: column;
 }
 
-.oncolor {
-  color: #ffffff;
-  text-shadow:
-    -1.4px -1.4px 0 #14130f, 1.4px -1.4px 0 #14130f,
-    -1.4px 1.4px 0 #14130f, 1.4px 1.4px 0 #14130f;
-}
+.oncolor { color: var(--on-primary, #ffffff); }
 
 /* masthead ---------------------------------------------------------- */
 .mast {
   height: 168px;
-  background: #094e2a;                         /* PRIMARY COLOR PLACEHOLDER */
+  background: #f9a8d4;                         /* SECONDARY COLOR PLACEHOLDER */
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 56px;
-  border-bottom: 6px solid #f9a8d4;           /* SECONDARY COLOR PLACEHOLDER */
+  border-bottom: 6px solid #094e2a;            /* PRIMARY COLOR PLACEHOLDER */
 }
+.mast .titles .eyebrow,
+.mast .titles .race { color: var(--on-secondary, #1a1a17); }
 .mast .titles .eyebrow {
   font-size: 15px;
   font-weight: 700;
@@ -55,9 +52,9 @@ html, body {
 .mast img {
   width: 112px;
   height: 112px;
-  background: #f5f1e8;
-  border-radius: 50%;
-  padding: 6px;
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 18px;
+  padding: 8px;
   display: block;
 }
 
@@ -156,12 +153,12 @@ html, body {
 /* footer ------------------------------------------------------------ */
 .footer {
   height: 78px;
-  background: #f9a8d4;                         /* SECONDARY COLOR PLACEHOLDER */
+  background: #094e2a;                         /* PRIMARY COLOR PLACEHOLDER */
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 56px;
-  border-top: 6px solid #094e2a;              /* PRIMARY COLOR PLACEHOLDER */
+  border-top: 6px solid #f9a8d4;              /* SECONDARY COLOR PLACEHOLDER */
 }
 .footer .f-item {
   font-size: 15px;

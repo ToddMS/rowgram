@@ -329,7 +329,7 @@ export class TemplateCompiler {
    */
   private static compileCrewMembersNew(
     html: string,
-    crewMembers: Array<{ name: string; badge: string; style: string }>,
+    crewMembers: Array<{ name: string; badge: string; style: string; seatLabel?: string; [key: string]: any }>,
     blockName: string = 'crewMembers',
   ): string {
     // Find the crew member template block
@@ -360,6 +360,9 @@ export class TemplateCompiler {
           member.style ? `style="${member.style}"` : '',
         )
         memberHtml = memberHtml.replace(/\{\{style\}\}/g, member.style)
+        if (member.seatLabel) {
+          memberHtml = memberHtml.replace(/\{\{seatLabel\}\}/g, member.seatLabel)
+        }
         return memberHtml
       })
       .join('')
@@ -972,14 +975,24 @@ export class TemplateCompiler {
 
       console.log(`🔍 DEBUG: Member "${member.NAME}" - Position: "${member.POSITION}" -> Badge: "${badge}"`)
       const style = this.getPositionStyle(badge, boatCode)
+      const seatLabel = this.getSeatLabel(badge)
 
       return {
         name: this.formatName(member.NAME),
         position: badge,
         badge: badge,
+        seatLabel: seatLabel,
         style: style
       }
     })
+  }
+
+  private static getSeatLabel(badge: string): string {
+    if (badge === 'C') return 'Cox'
+    if (badge === 'S') return 'Stroke'
+    if (badge === 'B') return 'Bow'
+    if (/^\d+$/.test(badge)) return `${badge} Seat`
+    return badge
   }
 
   /**
