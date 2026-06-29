@@ -247,8 +247,15 @@ export const savedImageRouter = router({
         const results: Array<any> = []
         const errors: Array<{ crewId: string; error: string }> = []
 
-        // Build full work list: crewId × templateId pairs
-        const workItems = input.crewIds.flatMap((crewId) => templates.map((template) => ({ crewId, template })))
+        // Build full work list: crewId × templateId pairs, with sheet numbers per template
+        const totalSheets = input.crewIds.length
+        const workItems = input.crewIds.flatMap((crewId, crewIndex) =>
+          templates.map((template) => ({
+            crewId,
+            template,
+            batchInfo: { sheetNumber: crewIndex + 1, totalSheets },
+          }))
+        )
 
         const browser = await ImageGenerationService.launchBrowser()
         try {
@@ -256,7 +263,7 @@ export const savedImageRouter = router({
           for (let i = 0; i < workItems.length; i += CONCURRENCY) {
             const chunk = workItems.slice(i, i + CONCURRENCY)
             const chunkResults = await Promise.allSettled(
-              chunk.map(async ({ crewId, template }) => {
+              chunk.map(async ({ crewId, template, batchInfo }) => {
                 const crew = await prisma.crew.findUnique({ where: { id: crewId }, include: { club: true } })
                 if (!crew) throw new Error('Crew not found')
                 const validation = ImageGenerationService.validateGenerationInput(crew, template)
@@ -272,6 +279,7 @@ export const savedImageRouter = router({
                   crewForGeneration, template,
                   effectiveColors,
                   browser,
+                  batchInfo,
                 )
                 return await prisma.savedImage.create({
                   data: {

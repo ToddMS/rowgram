@@ -12,6 +12,8 @@ export interface TemplateData {
   RACE_CATEGORY?: string
   RACE_DATE?: string
   EDITION_TEXT?: string
+  SHEET_NUMBER?: number
+  TOTAL_SHEETS?: number
   BOAT_NAME: string
   COACH_NAME: string
   CREW_MEMBERS: Array<{
@@ -626,21 +628,23 @@ export class TemplateCompiler {
   ): string {
     const startTag = `{{#${blockName}}}`
     const endTag = `{{/${blockName}}}`
-    const startIndex = html.indexOf(startTag)
-    const endIndex = html.indexOf(endTag)
 
-    if (startIndex !== -1 && endIndex !== -1) {
-      const beforeBlock = html.substring(0, startIndex)
-      const blockContent = html.substring(
-        startIndex + startTag.length,
-        endIndex,
-      )
-      const afterBlock = html.substring(endIndex + endTag.length)
+    let result = html
+    let startIndex = result.indexOf(startTag)
 
-      return beforeBlock + (condition ? blockContent : '') + afterBlock
+    while (startIndex !== -1) {
+      const endIndex = result.indexOf(endTag, startIndex)
+      if (endIndex === -1) break
+
+      const beforeBlock = result.substring(0, startIndex)
+      const blockContent = result.substring(startIndex + startTag.length, endIndex)
+      const afterBlock = result.substring(endIndex + endTag.length)
+
+      result = beforeBlock + (condition ? blockContent : '') + afterBlock
+      startIndex = result.indexOf(startTag)
     }
 
-    return html
+    return result
   }
 
   /**
@@ -816,6 +820,8 @@ export class TemplateCompiler {
       RACE_CATEGORY: crew.raceCategory || undefined,
       RACE_DATE: crew.raceDate || undefined,
       EDITION_TEXT: crew.raceDate || 'Late Edition',
+      SHEET_NUMBER: 1,
+      TOTAL_SHEETS: 1,
       BOAT_NAME: crew.boatName || `${getBoatType(crew.boatCode)?.name || 'Eight'} Shell`,
       COACH_NAME: this.formatName(crew.coachName || crew.coach?.name || 'Head Coach'),
       CREW_MEMBERS: this.isTemplate2(template)

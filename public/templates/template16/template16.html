@@ -9,8 +9,10 @@
   <div class="sheet">
     <div class="bill">
 
+      {{#clubLogo}}<img class="corner-logo corner-logo-left" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+      {{#clubLogo}}<img class="corner-logo corner-logo-right" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+
       <div class="prech">Crew &middot; Selection</div>
-      <div class="rule"></div>
       <div class="pre">has the honour to present the crew for</div>
 
       <div class="raceband oncolor">{{RACE_NAME}}</div>
@@ -33,7 +35,6 @@
       </div>
       <div class="foot-rule"></div>
       <div class="colophon">
-        {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
         <span>{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</span>
       </div>
 

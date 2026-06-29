@@ -19,6 +19,7 @@ html, body { width: 1080px; height: 1080px; overflow: hidden; }
 }
 
 .bill {
+  position: relative;
   width: 100%;
   height: 100%;
   border: 5px solid #1a1a17;
@@ -30,23 +31,28 @@ html, body { width: 1080px; height: 1080px; overflow: hidden; }
   text-align: center;
 }
 
+.corner-logo {
+  position: absolute;
+  top: 24px;
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+}
+.corner-logo-left  { left: 24px; }
+.corner-logo-right { right: 24px; }
+
 .prech {
   font-size: 17px;
   font-weight: 800;
   letter-spacing: 6px;
   text-transform: uppercase;
-}
-.rule {
-  height: 0;
-  border-top: 3px solid #1a1a17;
-  border-bottom: 1px solid #1a1a17;
-  margin: 12px 0;
+  margin-top: 50px;
 }
 .pre {
   font-size: 22px;
   font-weight: 500;
   font-style: italic;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
 }
 
 .raceband {
@@ -150,7 +156,6 @@ html, body { width: 1080px; height: 1080px; overflow: hidden; }
   text-transform: uppercase;
   color: #5a554a;
 }
-.colophon img { width: 40px; height: 40px; }
 
 
 /* ---- Small crews (1x, 2-): enlarge so the single name commands the bill ---- */

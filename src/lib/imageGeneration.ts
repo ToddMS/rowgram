@@ -132,6 +132,7 @@ export class ImageGenerationService {
     template: Template,
     colors?: { primaryColor: string; secondaryColor: string },
     browser?: any,
+    batchInfo?: { sheetNumber: number; totalSheets: number },
   ): Promise<GeneratedImage> {
     const filename = `${crew.name.toLowerCase().replace(/\s+/g, '-')}-${template.name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.png`
 
@@ -140,7 +141,7 @@ export class ImageGenerationService {
       secondaryColor: crew.club?.secondaryColor || '#f9a8d4',
     }
 
-    const htmlContent = await this.loadTemplate(template, crew, finalColors)
+    const htmlContent = await this.loadTemplate(template, crew, finalColors, batchInfo)
     const imgBuffer = await htmlToBuffer(htmlContent, browser)
 
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
@@ -160,6 +161,7 @@ export class ImageGenerationService {
     template: Template,
     crew: Crew,
     colors: { primaryColor: string; secondaryColor: string },
+    batchInfo?: { sheetNumber: number; totalSheets: number },
   ): Promise<string> {
     let htmlPath: string
     let cssPath: string
@@ -192,6 +194,10 @@ export class ImageGenerationService {
 
     if (htmlContent.includes('{{')) {
       const templateData = await TemplateCompiler.formatCrewData(crew, template)
+      if (batchInfo) {
+        templateData.SHEET_NUMBER = batchInfo.sheetNumber
+        templateData.TOTAL_SHEETS = batchInfo.totalSheets
+      }
       const templateMetadata = template.metadata ? template.metadata : undefined
       htmlContent = TemplateCompiler.compileTemplate(htmlContent, templateData, colors, templateMetadata)
     } else {
