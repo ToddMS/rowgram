@@ -18,36 +18,35 @@
     <!-- Certificate-style double frame -->
     <div class="frame"></div>
 
-    
     {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
-    
 
-    <span class="eyebrow">Race Day &middot; Crew Announcement</span>
+    <!-- Flow content — stacks naturally so ornament sits below race name regardless of length -->
+    <div class="content">
+      <span class="eyebrow">Race Day &middot; Crew Announcement</span>
 
-    <h1 class="race-name">{{RACE_NAME}}</h1>
+      <h1 class="race-name">{{RACE_NAME}}</h1>
 
-    <div class="ornament">
-      <span class="ornament-line"></span>
-      <span class="ornament-diamond"></span>
-      <span class="ornament-line"></span>
-    </div>
-
-    <p class="category">{{crewCategory}}</p>
-    <p class="boat-line">{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</p>
-
-    <section class="crew-list">
-      
-      {{#crewMembers}}
-      <div class="crew-row">
-        <span class="seat">{{badge}}</span>
-        <span class="leader"></span>
-        <span class="name">{{name}}</span>
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-diamond"></span>
+        <span class="ornament-line"></span>
       </div>
-      {{/crewMembers}}
-      
-    </section>
 
-    <p class="coach">Coached by {{COACH_NAME}}</p>
+      <p class="category">{{crewCategory}}</p>
+      <p class="boat-line">{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</p>
+
+      <section class="crew-list">
+        {{#crewMembers}}
+        <div class="crew-row">
+          <span class="seat">{{badge}}</span>
+          <span class="leader"></span>
+          <span class="name">{{name}}</span>
+        </div>
+        {{/crewMembers}}
+      </section>
+
+      <p class="coach">Coached by {{COACH_NAME}}</p>
+    </div>
 
   </div>
 </body>
