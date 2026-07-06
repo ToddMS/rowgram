@@ -12,12 +12,13 @@
   <div class="canvas">
 
     <header class="header">
+      {{#clubLogo}}<img class="crest" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
       <span class="eyebrow">Crew Lineup</span>
       <h1 class="race-name">{{RACE_NAME}}</h1>
       <p class="category">{{crewCategory}}</p>
     </header>
 
-    <!-- One club oar per rower -->
+    <!-- One painted club blade per rower, alternating club colours -->
     <section class="crew-list">
       {{#crewMembers}}
       <div class="crew-row">
@@ -29,11 +30,6 @@
       </div>
       {{/crewMembers}}
     </section>
-
-    <!-- Club logo: center right -->
-    <div class="logo-panel">
-      {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
-    </div>
 
     <footer class="footer">
       <div class="coach">

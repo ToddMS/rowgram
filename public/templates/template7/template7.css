@@ -1,122 +1,60 @@
-/* Template 7 — One painted club blade per rower, beside the boat */
+/* Template 7 redesign A — Bold alternating bands, big blades */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 html, body { width: 1080px; height: 1080px; overflow: hidden; }
 body { font-family: 'Inter', sans-serif; }
 
-.canvas {
-  position: relative;
-  width: 1080px;
-  height: 1080px;
-  background: #ffffff;
-  overflow: hidden;
-}
+.canvas { position: relative; width: 1080px; height: 1080px; background: #f7f4ec; overflow: hidden; }
 
-/* ---- Header: full width ---- */
-.header {
-  position: absolute;
-  top: 64px;
-  left: 64px;
-  right: 64px;
-}
+/* Header */
+.header { position: absolute; top: 72px; left: 72px; right: 72px; }
 .eyebrow {
   display: block;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 5px;
+  font-size: 22px; font-weight: 700; letter-spacing: 6px;
   text-transform: uppercase;
-  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
 .race-name {
-  margin-top: 10px;
-  font-size: 72px;
-  font-weight: 900;
-  line-height: 0.94;
-  letter-spacing: -2px;
-  text-transform: uppercase;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  margin-top: 8px; max-width: 770px;
+  font-size: 84px; font-weight: 900; line-height: 0.9;
+  letter-spacing: -3px; text-transform: uppercase; color: #1a1a17;
 }
 .category {
-  margin-top: 14px;
-  font-size: 26px;
-  font-weight: 600;
-  color: #161616;
-}
-
-/* ---- Crew list: left half only, logo takes right half ---- */
-.crew-list {
-  position: absolute;
-  top: 330px;
-  left: 64px;
-  right: 480px;
-  bottom: 150px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 26px;
-}
-.crew-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0;
-  height: 56px;
-}
-.oar {
-  flex-shrink: 0;
-  height: 36px;
-  width: auto;
-  fill: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-}
-.crew-row:nth-child(even) .oar { fill: #f9a8d4; } /* SECONDARY COLOR PLACEHOLDER */
-.seat {
-  flex-shrink: 0;
-  width: 46px;
-  margin: 0 22px 0 14px;
-  text-align: center;
-  font-size: 28px;
-  font-weight: 800;
+  margin-top: 16px; font-size: 26px; font-weight: 600;
   color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
-.name {
-  font-size: 33px;
-  font-weight: 600;
-  color: #161616;
-}
+.crest { position: absolute; top: 0; right: 0; width: 180px; height: 180px; object-fit: contain; }
 
-/* ---- Club logo: centered in right half ---- */
-.logo-panel {
-  position: absolute;
-  right: 0;
-  width: 480px;
-  top: 330px;
-  bottom: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Crew list */
+.crew-list { position: absolute; top: 340px; left: 0; right: 0; bottom: 128px; display: flex; flex-direction: column; }
+.crew-row { flex: 1; display: flex; align-items: center; padding: 0 72px; }
+.crew-row:nth-child(even) { background: #efeadd; } /* neutral band — not swapped */
+.oar {
+  flex-shrink: 0; height: 44px; width: auto;
+  fill: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
-.club-logo { width: 280px; height: 280px; object-fit: contain; }
+.crew-row:nth-child(even) .oar { fill: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */ }
+.seat {
+  flex-shrink: 0; width: 56px; height: 56px; margin: 0 30px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 7px; font-size: 28px; font-weight: 800;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--on-primary);
+}
+.crew-row:nth-child(even) .seat {
+  background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: var(--on-secondary);
+}
+.name { font-size: 36px; font-weight: 700; color: #1a1a17; }
 
-/* ---- Footer ---- */
+/* Footer */
 .footer {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 1080px;
-  height: 124px;
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  padding: 0 64px;
+  position: absolute; left: 0; bottom: 0; width: 1080px; height: 128px;
+  display: flex; align-items: center; padding: 0 72px;
   background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
-.footer-rule { display: none; }
 .coach { display: flex; flex-direction: column; }
 .coach-label {
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: 3px;
-  text-transform: uppercase;
+  font-size: 17px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
   color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
 }
-.coach-name { font-size: 30px; font-weight: 700; color: #ffffff; }
+.coach-name { font-size: 32px; font-weight: 700; color: var(--on-primary); }

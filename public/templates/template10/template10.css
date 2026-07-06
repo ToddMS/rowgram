@@ -8,44 +8,55 @@ body { font-family: 'Inter', sans-serif; }
   position: relative;
   width: 1080px;
   height: 1080px;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  /* Cork board */
+  background-color: #c19a5b;
+  background-image:
+    radial-gradient(circle at 18% 26%, rgba(96,66,30,0.34) 0 2px, transparent 3px),
+    radial-gradient(circle at 62% 58%, rgba(74,50,22,0.30) 0 2px, transparent 3px),
+    radial-gradient(circle at 38% 82%, rgba(150,112,58,0.34) 0 1.6px, transparent 3px),
+    radial-gradient(circle at 84% 16%, rgba(110,78,38,0.30) 0 2px, transparent 3px),
+    radial-gradient(circle at 8% 70%, rgba(150,116,62,0.30) 0 1.6px, transparent 3px),
+    radial-gradient(circle at 100% 100%, rgba(70,46,20,0.30), transparent 60%);
+  background-size: 92px 92px, 71px 71px, 53px 53px, 113px 113px, 64px 64px, 100% 100%;
+  box-shadow: inset 0 0 120px rgba(60,40,18,0.45);
   overflow: hidden;
 }
-.stripes {
+
+/* Cork frame edge */
+.canvas::before {
+  content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.10) 0,
-    rgba(0, 0, 0, 0.10) 2px,
-    transparent 2px,
-    transparent 60px
-  );
+  border: 16px solid #7c5a2e;
+  box-shadow: inset 0 0 0 3px rgba(0,0,0,0.25);
+  pointer-events: none;
+  z-index: 6;
 }
 
 /* ---- Header ---- */
 .header {
   position: absolute;
-  top: 56px;
-  left: 64px;
-  right: 64px;
+  top: 60px;
+  left: 200px;
+  right: 200px;
   text-align: center;
 }
 .race-name {
-  font-size: 62px;
+  font-size: 56px;
   font-weight: 900;
   line-height: 0.96;
   letter-spacing: -2px;
   text-transform: uppercase;
   color: #ffffff;
+  text-shadow: 0 2px 6px rgba(60,40,18,0.45);
 }
 .header .category {
-  margin-top: 10px;
+  margin-top: 12px;
   font-size: 25px;
-  font-weight: 600;
-  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  font-weight: 700;
+  color: #fdf6e7;
+  text-shadow: 0 1px 3px rgba(60,40,18,0.4);
 }
-.header .code { color: #ffffff; }
 
 /* ---- Wall of photos ---- */
 .wall {
@@ -59,14 +70,35 @@ body { font-family: 'Inter', sans-serif; }
   gap: 30px 36px;
 }
 .card {
+  position: relative;
   width: 280px;
   padding: 14px 14px 20px;
   background: #fdfdfb;
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 12px 22px rgba(40, 24, 8, 0.40);
 }
 .card:nth-child(3n+1) { transform: rotate(-2.5deg); }
 .card:nth-child(3n+2) { transform: rotate(1.5deg); }
 .card:nth-child(3n)   { transform: rotate(-1deg); }
+/* Push pin */
+.pin {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255,255,255,0.9) 0 4px, transparent 6px),
+    #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  box-shadow: 0 4px 6px rgba(40,24,8,0.5), inset 0 -3px 5px rgba(0,0,0,0.35);
+  z-index: 4;
+}
+.card:nth-child(even) .pin {
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255,255,255,0.9) 0 4px, transparent 6px),
+    #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
 .photo {
   position: relative;
   height: 150px;
@@ -107,7 +139,8 @@ body { font-family: 'Inter', sans-serif; }
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: #fdf6e7;
+  text-shadow: 0 1px 3px rgba(60,40,18,0.4);
 }
 .footer .coach-name {
   display: block;
@@ -115,12 +148,16 @@ body { font-family: 'Inter', sans-serif; }
   font-size: 28px;
   font-weight: 700;
   color: #ffffff;
+  text-shadow: 0 1px 4px rgba(60,40,18,0.45);
 }
 .club-logo {
   position: absolute;
-  bottom: 40px;
-  right: 56px;
-  width: 110px;
-  height: 110px;
+  top: 52px;
+  width: 104px;
+  height: 104px;
   object-fit: contain;
+  z-index: 7;
+  filter: drop-shadow(0 3px 5px rgba(40,24,8,0.45));
 }
+.club-logo-left { left: 52px; }
+.club-logo-right { right: 52px; }
