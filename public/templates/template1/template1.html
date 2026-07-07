@@ -67,10 +67,18 @@
         {{/crewMembers}}
       </div>
 
-      <!-- Coach name in bottom left -->
+      <!-- Coach bottom left -->
       <div class="coach-name">
-        Coach: {{COACH_NAME}}{{#RACE_DATE}} · {{RACE_DATE}}{{/RACE_DATE}}
+        <span class="coach-label">Coach</span>
+        <span class="coach-value">{{COACH_NAME}}</span>
       </div>
+      <!-- Date bottom right of coach -->
+      {{#RACE_DATE}}
+      <div class="date-name">
+        <span class="coach-label">Date</span>
+        <span class="coach-value">{{RACE_DATE}}</span>
+      </div>
+      {{/RACE_DATE}}
 
       <!-- Club logo in bottom-right -->
       {{#clubLogo}}

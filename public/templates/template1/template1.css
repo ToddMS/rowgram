@@ -79,7 +79,7 @@ body {
   width: 500px !important;
   height: 650px !important;
   opacity: 1;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  filter: brightness(0) invert(var(--on-secondary-ultra));
   object-fit: fill;
 }
 
@@ -119,11 +119,11 @@ body {
 .member-name {
   font-size: 32px;
   font-weight: normal;
-  color: #094e2a; /* Will be replaced with primary color */
+  color: var(--on-secondary);
   font-family: 'Inter', sans-serif;
   white-space: nowrap;
   position: absolute;
-  top: 25px; /* Center vertically with badge (badge height 50px / 2) */
+  top: 25px;
   transform: translateY(-50%);
 }
 
@@ -187,22 +187,36 @@ body {
 
 /* Club logo in bottom-right */
 /* Coach name in bottom left */
-.coach-name {
+.coach-name, .date-name {
   position: absolute;
-  bottom: 20px;
-  left: 30px;
-  font-size: 32px;
-  font-weight: 500;
-  font-family: 'Inter', sans-serif;
-  color: #f3bfd4; /* Will be replaced with secondary color */
+  bottom: 24px;
   z-index: 10;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.coach-name { left: 30px; }
+.date-name  { left: 400px; }
+.coach-label {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  color: var(--on-primary);
+  opacity: 0.6;
+}
+.coach-value {
+  font-size: 32px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: var(--on-primary);
   line-height: 1.2;
 }
 
 .club-logo {
   position: absolute;
-  bottom: 20px;
+  bottom: 5px;
   right: 30px;
   width: 170px;
   height: 170px;

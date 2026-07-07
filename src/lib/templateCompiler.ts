@@ -408,7 +408,11 @@ export class TemplateCompiler {
     // Inject --on-primary / --on-secondary CSS variables so any template can use them
     const onPrimary = this.getContrastColor(colors.primaryColor)
     const onSecondary = this.getContrastColor(colors.secondaryColor)
-    const cssVars = `<style>:root{--on-primary:${onPrimary};--on-secondary:${onSecondary};}</style>`
+    const onPrimaryInvert = onPrimary === '#ffffff' ? 1 : 0
+    const onSecondaryInvert = onSecondary === '#ffffff' ? 1 : 0
+    const onSecondaryUltra = TemplateCompiler.isUltraDark(colors.secondaryColor) ? 1 : 0
+    const onPrimaryUltra = TemplateCompiler.isUltraDark(colors.primaryColor) ? 1 : 0
+    const cssVars = `<style>:root{--on-primary:${onPrimary};--on-secondary:${onSecondary};--on-primary-invert:${onPrimaryInvert};--on-secondary-invert:${onSecondaryInvert};--on-secondary-ultra:${onSecondaryUltra};--on-primary-ultra:${onPrimaryUltra};}</style>`
     styledHtml = styledHtml.includes('</head>')
       ? styledHtml.replace('</head>', `${cssVars}</head>`)
       : cssVars + styledHtml
@@ -840,6 +844,17 @@ export class TemplateCompiler {
       boatImage: boatImageInfo.url,
       positions: this.generateOarPositions(boatCode),
     }
+  }
+
+  static isUltraDark(hex: string): boolean {
+    const clean = hex.replace('#', '')
+    const r = parseInt(clean.slice(0, 2), 16) / 255
+    const g = parseInt(clean.slice(2, 4), 16) / 255
+    const b = parseInt(clean.slice(4, 6), 16) / 255
+    const toLinear = (c: number) =>
+      c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+    const luminance = 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b)
+    return luminance < 0.02
   }
 
   static formatRaceDate(raw: string): string {

@@ -267,18 +267,30 @@ body {
   object-fit: contain;
 }
 
-/* Coach name in bottom left */
-.coach-name {
+.coach-name, .date-name {
   position: absolute;
-  bottom: 100px;
-  left: 100px;
-  font-size:  32px;
-  font-weight: 500;
-  font-family: 'Inter', sans-serif;
-  color: #094e2a; /* Will be replaced with primary color */
+  bottom: 110px;
   z-index: 15;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 360px;
+}
+.coach-name { left: 110px; text-align: left; }
+.date-name  { right: 110px; text-align: right; }
+.coach-label {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  opacity: 0.6;
+  font-family: 'Inter', sans-serif;
+}
+.coach-value {
+  font-size: 38px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
   line-height: 1.2;
-  padding: 8px 12px;
-  background-color: rgba(255, 255, 255, 0.9);
 }
