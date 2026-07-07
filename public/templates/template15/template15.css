@@ -34,7 +34,8 @@ body { font-family: 'Inter', sans-serif; }
   font-weight: 700;
   letter-spacing: 7px;
   text-transform: uppercase;
-  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: var(--on-primary);
+  opacity: 0.7;
 }
 .race-name {
   margin-top: 8px;
@@ -107,7 +108,7 @@ body { font-family: 'Inter', sans-serif; }
   font-size: 26px;
   font-weight: 800;
   background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
-  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--on-secondary);
 }
 .name {
   position: relative;
@@ -131,19 +132,21 @@ body { font-family: 'Inter', sans-serif; }
   padding-top: 20px;
   border-top: 4px solid #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
 }
-.coach { display: flex; flex-direction: column; }
+.coach { display: flex; flex-direction: row; gap: 60px; }
+.coach-block { display: flex; flex-direction: column; gap: 4px; }
 .coach-label {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: var(--on-primary);
+  opacity: 0.6;
 }
 .coach-name {
   font-size: 28px;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--on-primary);
 }
 .club-logo { width: 220px; height: 220px; object-fit: contain; }

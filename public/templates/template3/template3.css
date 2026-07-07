@@ -34,7 +34,7 @@ body {
   font-weight: 600;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--on-primary);
 }
 .masthead-code {
   font-size: 30px;
@@ -144,19 +144,26 @@ body {
 }
 .coach {
   display: flex;
+  flex-direction: row;
+  gap: 60px;
+}
+.coach-block {
+  display: flex;
   flex-direction: column;
+  gap: 4px;
 }
 .coach-label {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 800;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: var(--on-primary);
+  opacity: 0.6;
 }
 .coach-name {
   font-size: 32px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--on-primary);
 }
 .club-logo {
   margin-left: auto;

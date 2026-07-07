@@ -22,7 +22,6 @@
     <section class="band-boat">
       <div class="code-block">
         <span class="big-code">{{BOAT_CODE}}</span>
-        <span class="boat-type">{{BOAT_TYPE}}</span>
       </div>
 
       {{#BOAT_IMAGE_AVAILABLE}}
@@ -57,9 +56,16 @@
     <!-- Band 4: footer on primary -->
     <footer class="band-footer">
       <div class="coach">
-        <span class="coach-label">Coach</span>
-        <span class="coach-name">{{COACH_NAME}}</span>
-        {{#RACE_DATE}}<span class="coach-label">Date</span><span class="coach-name">{{RACE_DATE}}</span>{{/RACE_DATE}}
+        <div class="coach-block">
+          <span class="coach-label">Coach</span>
+          <span class="coach-name">{{COACH_NAME}}</span>
+        </div>
+        {{#RACE_DATE}}
+        <div class="coach-block">
+          <span class="coach-label">Date</span>
+          <span class="coach-name">{{RACE_DATE}}</span>
+        </div>
+        {{/RACE_DATE}}
       </div>
 
       {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
