@@ -206,7 +206,7 @@ html, body {
 
 /* title block ------------------------------------------------------- */
 .titleblock {
-  height: 150px;
+  height: 130px;
   display: flex;
   border-top: 3px solid #094e2a;             /* PRIMARY COLOR PLACEHOLDER */
 }
@@ -239,5 +239,8 @@ html, body {
   width: 170px;
   border-right: none;
   align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  padding-bottom: 0;
 }
-.tb-logo img { width: 118px; height: 118px; display: block; }
+.tb-logo img { width: 115px; height: 115px; display: block; object-fit: contain; }

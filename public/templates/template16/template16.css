@@ -139,11 +139,13 @@ html, body { width: 1080px; height: 1080px; overflow: hidden; }
   text-transform: uppercase;
   margin-top: 2px;
 }
-.foot-rule {
-  height: 0;
-  border-top: 1px solid #1a1a17;
-  border-bottom: 3px solid #1a1a17;
-  margin: 12px 0 10px;
+.director .race-date {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #5a554a;
+  margin-top: 4px;
 }
 .colophon {
   display: flex;

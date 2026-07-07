@@ -19,8 +19,16 @@
           </div>
         </div>
         <div class="h-right">
-          <div class="t-label">Coach</div>
-          <div class="t-coach">{{COACH_NAME}}{{#RACE_DATE}}<br>{{RACE_DATE}}{{/RACE_DATE}}</div>
+          <div class="h-row">
+            <div class="t-label">Coach</div>
+            <div class="t-value">{{COACH_NAME}}</div>
+          </div>
+          {{#RACE_DATE}}
+          <div class="h-row">
+            <div class="t-label">Date</div>
+            <div class="t-value">{{RACE_DATE}}</div>
+          </div>
+          {{/RACE_DATE}}
         </div>
       </div>
     </div>

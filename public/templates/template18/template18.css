@@ -56,7 +56,15 @@ html, body {
   gap: 24px;
 }
 .h-right {
-  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+}
+.h-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
 }
 .header-stamp::before,
 .header-stamp::after {
@@ -115,8 +123,8 @@ html, body {
   color: #094e2a;                              /* PRIMARY COLOR PLACEHOLDER */
   margin-bottom: 4px;
 }
-.h-right .t-coach {
-  font-size: 22px;
+.h-right .t-value {
+  font-size: 18px;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;

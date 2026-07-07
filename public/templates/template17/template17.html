@@ -52,13 +52,15 @@
           <div class="lab">Project</div>
           <div class="val">{{RACE_NAME}}</div>
         </div>
+        {{#RACE_DATE}}
         <div class="tb-cell tb-boat">
-          <div class="lab">Boat</div>
-          <div class="val">{{BOAT_TYPE}}<br>{{BOAT_CODE}}</div>
+          <div class="lab">Date</div>
+          <div class="val">{{RACE_DATE}}</div>
         </div>
+        {{/RACE_DATE}}
         <div class="tb-cell tb-class">
           <div class="lab">Coach</div>
-          <div class="val">{{COACH_NAME}}{{#RACE_DATE}}<br>{{RACE_DATE}}{{/RACE_DATE}}</div>
+          <div class="val">{{COACH_NAME}}</div>
         </div>
         {{#clubLogo}}
         <div class="tb-cell tb-logo">

@@ -31,11 +31,8 @@
 
       <div class="director">
         <div class="lab">under the direction of</div>
-        <div class="coach">Coach {{COACH_NAME}}{{#RACE_DATE}} · {{RACE_DATE}}{{/RACE_DATE}}</div>
-      </div>
-      <div class="foot-rule"></div>
-      <div class="colophon">
-        <span>{{BOAT_TYPE}} &middot; {{BOAT_CODE}}</span>
+        <div class="coach">{{COACH_NAME}}</div>
+        {{#RACE_DATE}}<div class="race-date">{{RACE_DATE}}</div>{{/RACE_DATE}}
       </div>
 
     </div>
