@@ -206,11 +206,11 @@ body.hide-rings .ring-front { display: none; }
   font-size: 24px;
   font-weight: 800;
   background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-  color: #fbf8ef;
+  color: var(--on-primary);
 }
 .crew-row:nth-child(even) .seat {
   background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
-  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--on-secondary);
 }
 .name {
   font-size: 33px;
@@ -218,23 +218,32 @@ body.hide-rings .ring-front { display: none; }
   color: #25221c;
 }
 
-/* coach as a footnote on the last lines */
-.coach {
+/* coach/date footer */
+.coach-bar {
   position: absolute;
   left: 184px;
-  bottom: 40px;
-  font-size: 22px;
-  font-weight: 500;
-  font-style: italic;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  right: 40px;
+  bottom: 36px;
+  display: flex;
+  gap: 48px;
+  align-items: flex-end;
 }
-.coach .coach-label {
-  font-style: normal;
-  font-weight: 700;
-  letter-spacing: 2px;
+.coach-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.coach-label {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  font-size: 15px;
   color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.coach-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
 .code-chip {
   position: absolute;

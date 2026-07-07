@@ -49,12 +49,13 @@ body { font-family: 'Inter', sans-serif; }
 /* Footer */
 .footer {
   position: absolute; left: 0; bottom: 0; width: 1080px; height: 128px;
-  display: flex; align-items: center; padding: 0 72px;
+  display: flex; align-items: center; gap: 60px; padding: 0 72px;
   background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
-.coach { display: flex; flex-direction: column; }
+.coach-block { display: flex; flex-direction: column; gap: 4px; }
 .coach-label {
-  font-size: 17px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
-  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  font-size: 22px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--on-primary);
+  opacity: 0.6;
 }
 .coach-name { font-size: 32px; font-weight: 700; color: var(--on-primary); }

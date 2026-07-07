@@ -44,9 +44,16 @@
     
 
     <div class="coach">
-      <span class="coach-label">Coach</span>
-      <span class="coach-name">{{COACH_NAME}}</span>
-      {{#RACE_DATE}}<span class="coach-label">Date</span><span class="coach-name">{{RACE_DATE}}</span>{{/RACE_DATE}}
+      <div class="coach-block">
+        <span class="coach-label">Coach</span>
+        <span class="coach-name">{{COACH_NAME}}</span>
+      </div>
+      {{#RACE_DATE}}
+      <div class="coach-block">
+        <span class="coach-label">Date</span>
+        <span class="coach-name">{{RACE_DATE}}</span>
+      </div>
+      {{/RACE_DATE}}
     </div>
 
   </div>

@@ -33,9 +33,18 @@
     </section>
 
     <footer class="footer">
-      <span class="coach-label">Coach</span>
-      <span class="coach-name">{{COACH_NAME}}</span>
-      {{#RACE_DATE}}<span class="coach-label">Date</span><span class="coach-name">{{RACE_DATE}}</span>{{/RACE_DATE}}
+      <div class="note note-left">
+        <span class="note-pin"></span>
+        <span class="coach-label">Coach</span>
+        <span class="coach-name">{{COACH_NAME}}</span>
+      </div>
+      {{#RACE_DATE}}
+      <div class="note note-right">
+        <span class="note-pin"></span>
+        <span class="coach-label">Date</span>
+        <span class="coach-name">{{RACE_DATE}}</span>
+      </div>
+      {{/RACE_DATE}}
     </footer>
 
     

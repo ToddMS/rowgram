@@ -24,22 +24,36 @@
       <p class="category">{{crewCategory}}</p>
       <div class="rule"></div>
 
-      <section class="crew-list">
-        {{#crewMembersNoCox}}
-        <div class="crew-row">
-          <span class="seat">{{badge}}</span>
-          <span class="name">{{name}}</span>
+      <div class="crew-section">
+        {{#hasCox}}
+        <div class="cox-row">
+          <span class="seat">C</span>
+          <span class="name">{{COX_NAME}}</span>
         </div>
-        {{/crewMembersNoCox}}
-      </section>
-
-      <div class="footer-bar">
-        {{#hasCox}}<div class="footer-item"><span class="coach-label">COX</span> {{COX_NAME}}</div>{{/hasCox}}
-        <div class="footer-item"><span class="coach-label">COACH</span> {{COACH_NAME}}</div>
-        {{#RACE_DATE}}<div class="footer-item"><span class="coach-label">DATE</span> {{RACE_DATE}}</div>{{/RACE_DATE}}
+        {{/hasCox}}
+        <section class="crew-list">
+          {{#crewMembersNoCox}}
+          <div class="crew-row">
+            <span class="seat">{{badge}}</span>
+            <span class="name">{{name}}</span>
+          </div>
+          {{/crewMembersNoCox}}
+        </section>
       </div>
 
-      {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+      <div class="footer-bar">
+        <div class="footer-item">
+          <span class="coach-label">Coach</span>
+          <span class="footer-value">{{COACH_NAME}}</span>
+        </div>
+        {{#clubLogo}}<img class="club-logo" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
+        {{#RACE_DATE}}
+        <div class="footer-item footer-item-right">
+          <span class="coach-label">Date</span>
+          <span class="footer-value">{{RACE_DATE}}</span>
+        </div>
+        {{/RACE_DATE}}
+      </div>
     </div>
   </div>
 </body>

@@ -850,7 +850,7 @@ export class TemplateCompiler {
     const datePart = dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
     if (!hasTime) return datePart
     const timePart = dt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
-    return `${datePart}<br>${timePart}`
+    return `${datePart} - ${timePart}`
   }
 
   private static readonly NAME_MAX_LENGTH = 15

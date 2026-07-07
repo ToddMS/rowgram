@@ -89,7 +89,7 @@ body { font-family: 'Inter', sans-serif; }
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 11px 0;
+  padding: 15px 0;
   border-bottom: 1px solid rgba(9, 78, 42, 0.13); /* PRIMARY COLOR PLACEHOLDER (tint) */
 }
 .seat {
@@ -164,32 +164,39 @@ body { font-family: 'Inter', sans-serif; }
   font-weight: 900;
   line-height: 1;
   letter-spacing: -4px;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-}
-.boat-type {
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--on-secondary);
 }
 .club-logo {
-  margin-top: 28px;
+  margin-top: 20px;
   width: 120px;
   height: 120px;
   object-fit: contain;
 }
 .ticket-stub .coach {
-  margin-top: 28px;
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+.coach-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
 }
 .ticket-stub .coach-label {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 800;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--on-secondary);
+  opacity: 0.7;
 }
-.ticket-stub .coach-name { font-size: 26px; font-weight: 700; color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */ }
+.ticket-stub .coach-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--on-secondary);
+  text-align: center;
+}

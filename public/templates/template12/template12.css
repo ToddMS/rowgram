@@ -25,10 +25,10 @@ body { font-family: 'Inter', sans-serif; }
 
 .club-logo {
   display: block;
-  width: 100px;
-  height: 100px;
+  width: 125px;
+  height: 125px;
   object-fit: contain;
-  margin: 36px auto 0;
+  flex-shrink: 0;
 }
 .code-chip {
   position: absolute;
@@ -158,23 +158,58 @@ body { font-family: 'Inter', sans-serif; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.cox-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(9,78,42,0.2);
+}
+.cox-row .seat {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.cox-row .name {
+  font-size: 26px;
+  font-weight: 700;
+  color: #161616;
+}
 .footer-bar {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 40px;
-  margin-top: 20px;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(9,78,42,0.2);
 }
 .footer-item {
-  font-size: 23px;
-  font-weight: 600;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.footer-item-right {
+  text-align: right;
 }
 .coach-label {
+  font-size: 14px;
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+}
+.footer-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
 
 
