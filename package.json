@@ -22,7 +22,8 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
-    "db:reset": "prisma migrate reset --force"
+    "db:reset": "prisma migrate reset --force",
+    "test:templates": "tsx scripts/test-templates.ts"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",

@@ -818,8 +818,8 @@ export class TemplateCompiler {
         8,
       RACE_NAME: crew.raceName || 'Championship Race',
       RACE_CATEGORY: crew.raceCategory || undefined,
-      RACE_DATE: crew.raceDate || undefined,
-      EDITION_TEXT: crew.raceDate || 'Late Edition',
+      RACE_DATE: crew.raceDate ? TemplateCompiler.formatRaceDate(crew.raceDate) : undefined,
+      EDITION_TEXT: crew.raceDate ? TemplateCompiler.formatRaceDate(crew.raceDate) : 'Late Edition',
       SHEET_NUMBER: 1,
       TOTAL_SHEETS: 1,
       BOAT_NAME: crew.boatName || `${getBoatType(crew.boatCode)?.name || 'Eight'} Shell`,
@@ -840,6 +840,17 @@ export class TemplateCompiler {
       boatImage: boatImageInfo.url,
       positions: this.generateOarPositions(boatCode),
     }
+  }
+
+  static formatRaceDate(raw: string): string {
+    // Handles "2025-06-15T09:30" (datetime-local) and "2025-06-15" (legacy date-only)
+    const dt = new Date(raw)
+    if (isNaN(dt.getTime())) return raw
+    const hasTime = raw.includes('T') && !raw.endsWith('T00:00')
+    const datePart = dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+    if (!hasTime) return datePart
+    const timePart = dt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+    return `${datePart}, ${timePart}`
   }
 
   private static readonly NAME_MAX_LENGTH = 15

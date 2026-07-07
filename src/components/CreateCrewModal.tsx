@@ -330,9 +330,9 @@ export function CreateCrewModal({ isOpen, onClose, onSuccess, editingCrew }: Cre
       </div>
 
       <div className="dialog-form-group">
-        <label className="dialog-label">Race Date (Optional)</label>
+        <label className="dialog-label">Race Date & Time (Optional)</label>
         <input
-          type="date"
+          type="datetime-local"
           value={raceDate}
           onChange={(e) => setRaceDate(e.target.value)}
           className="dialog-input"
