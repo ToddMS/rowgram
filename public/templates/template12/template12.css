@@ -45,7 +45,7 @@ body { font-family: 'Inter', sans-serif; }
 /* ---- Hanging ribbon ---- */
 .ribbon {
   position: absolute;
-  top: 150px;
+  top: 94px;
   left: 50%;
   transform: translateX(-50%);
   width: 150px;
@@ -61,7 +61,7 @@ body { font-family: 'Inter', sans-serif; }
 /* ---- Badge ---- */
 .badge {
   position: absolute;
-  top: 196px;
+  top: 140px;
   left: 130px;
   width: 820px;
   height: 800px;
@@ -101,7 +101,7 @@ body { font-family: 'Inter', sans-serif; }
   line-height: 0.96;
   letter-spacing: -1px;
   text-transform: uppercase;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
 }
 .badge .category {
   margin-top: 12px;
@@ -159,8 +159,8 @@ body { font-family: 'Inter', sans-serif; }
   border-radius: 50%;
   font-size: 23px;
   font-weight: 800;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-  color: #ffffff;
+  background: var(--on-white-color);
+  color: var(--seat-badge-text);
 }
 .name {
   font-size: 29px;
@@ -181,8 +181,8 @@ body { font-family: 'Inter', sans-serif; }
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-  color: #fff;
+  background: var(--on-white-color);
+  color: var(--seat-badge-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -221,7 +221,7 @@ body { font-family: 'Inter', sans-serif; }
 .footer-value {
   font-size: 26px;
   font-weight: 700;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
 }
 
 

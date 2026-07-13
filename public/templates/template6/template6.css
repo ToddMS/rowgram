@@ -73,7 +73,7 @@ body { font-family: 'Inter', sans-serif; }
   line-height: 0.96;
   letter-spacing: -2px;
   text-transform: uppercase;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
 }
 
 /* ---- Ornament (flows naturally below race name) ---- */
@@ -128,7 +128,7 @@ body { font-family: 'Inter', sans-serif; }
   text-align: center;
   font-size: 26px;
   font-weight: 800;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
 }
 .leader {
   flex: 1;
@@ -159,11 +159,11 @@ body { font-family: 'Inter', sans-serif; }
   font-weight: 800;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
   opacity: 0.6;
 }
 .footer-value {
   font-size: 22px;
   font-weight: 700;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
 }

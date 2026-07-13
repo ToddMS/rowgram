@@ -65,7 +65,7 @@ body { font-family: 'Inter', sans-serif; }
   line-height: 0.94;
   letter-spacing: -2px;
   text-transform: uppercase;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
 }
 .ticket-main .category {
   margin-top: 12px;
@@ -104,8 +104,8 @@ body { font-family: 'Inter', sans-serif; }
   border-radius: 50%;
   font-size: 23px;
   font-weight: 800;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-  color: #ffffff;
+  background: var(--on-white-color);
+  color: var(--seat-badge-text);
 }
 .crew-row .name {
   font-size: 29px;

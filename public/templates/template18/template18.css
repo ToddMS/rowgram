@@ -15,7 +15,7 @@ html, body {
   position: relative;
   width: 1080px;
   height: 1080px;
-  background: #094e2a;                        /* PRIMARY COLOR PLACEHOLDER */
+  background: var(--on-white-color);           /* PRIMARY COLOR PLACEHOLDER */
   font-family: 'Inter', sans-serif;
   color: #1a1a17;                             /* charcoal neutral */
   padding: 58px 58px 54px;
@@ -75,15 +75,15 @@ html, body {
 .header-stamp::before {
   left: 0; right: 0; top: -7px; bottom: -7px;
   background:
-    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) top center / 16px 14px repeat-x,
-    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) bottom center / 16px 14px repeat-x;
+    radial-gradient(circle at center, var(--on-white-color) 3.2px, transparent 3.7px) top center / 16px 14px repeat-x,
+    radial-gradient(circle at center, var(--on-white-color) 3.2px, transparent 3.7px) bottom center / 16px 14px repeat-x;
                                               /* PRIMARY COLOR PLACEHOLDER (perforations) */
 }
 .header-stamp::after {
   top: 0; bottom: 0; left: -7px; right: -7px;
   background:
-    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) left center / 14px 16px repeat-y,
-    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) right center / 14px 16px repeat-y;
+    radial-gradient(circle at center, var(--on-white-color) 3.2px, transparent 3.7px) left center / 14px 16px repeat-y,
+    radial-gradient(circle at center, var(--on-white-color) 3.2px, transparent 3.7px) right center / 14px 16px repeat-y;
                                               /* PRIMARY COLOR PLACEHOLDER (perforations) */
 }
 .club-logo {
@@ -97,7 +97,7 @@ html, body {
   font-weight: 800;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
   margin-bottom: 4px;
 }
 .header-stamp .txt .t1 {
@@ -120,7 +120,7 @@ html, body {
   font-weight: 800;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
   margin-bottom: 4px;
 }
 .h-right .t-value {
@@ -163,15 +163,15 @@ html, body {
 .stamp::before {  /* top + bottom rows of holes */
   left: 0; right: 0; top: -7px; bottom: -7px;
   background:
-    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) top center / 16px 14px repeat-x,
-    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) bottom center / 16px 14px repeat-x;
+    radial-gradient(circle at center, var(--on-white-color) 3.2px, transparent 3.7px) top center / 16px 14px repeat-x,
+    radial-gradient(circle at center, var(--on-white-color) 3.2px, transparent 3.7px) bottom center / 16px 14px repeat-x;
                                               /* PRIMARY COLOR PLACEHOLDER (perforations) */
 }
 .stamp::after {  /* left + right columns of holes */
   top: 0; bottom: 0; left: -7px; right: -7px;
   background:
-    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) left center / 14px 16px repeat-y,
-    radial-gradient(circle at center, #094e2a 3.2px, transparent 3.7px) right center / 14px 16px repeat-y;
+    radial-gradient(circle at center, var(--on-white-color) 3.2px, transparent 3.7px) left center / 14px 16px repeat-y,
+    radial-gradient(circle at center, var(--on-white-color) 3.2px, transparent 3.7px) right center / 14px 16px repeat-y;
                                               /* PRIMARY COLOR PLACEHOLDER (perforations) */
 }
 

@@ -168,7 +168,7 @@ body.hide-rings .ring-front { display: none; }
   font-weight: 800;
   line-height: 0.98;
   letter-spacing: -1px;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
 }
 .category {
   margin-top: 6px;
@@ -206,8 +206,8 @@ body.hide-rings .ring-front { display: none; }
   border-radius: 50%;
   font-size: 24px;
   font-weight: 800;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-  color: var(--on-primary);
+  background: var(--on-white-color);
+  color: var(--seat-badge-text);
 }
 .crew-row:nth-child(even) .seat {
   background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
@@ -244,7 +244,7 @@ body.hide-rings .ring-front { display: none; }
 .coach-value {
   font-size: 32px;
   font-weight: 700;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
 }
 .code-chip {
   position: absolute;

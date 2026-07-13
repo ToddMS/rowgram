@@ -113,9 +113,9 @@ body { font-family: 'Inter', sans-serif; }
 .photo .seat {
   font-size: 72px;
   font-weight: 900;
-  color: #ffffff;
+  color: var(--on-primary);
 }
-.card:nth-child(even) .photo .seat { color: var(--on-secondary); } /* on secondary background */
+.card:nth-child(even) .photo .seat { color: var(--on-secondary); }
 .card .name {
   display: block;
   margin-top: 14px;
@@ -190,7 +190,7 @@ body { font-family: 'Inter', sans-serif; }
   font-weight: 800;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
 }
 .footer .coach-name {
   display: block;

@@ -43,13 +43,13 @@ body {
   font-weight: 900;
   letter-spacing: -2px;
   text-transform: uppercase;
-  color: #ffffff;
+  color: var(--on-primary);
 }
 .band-top .category {
   margin-top: 14px;
   font-size: 27px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--on-primary);
 }
 
 /* ---- Band 2: boat on secondary ---- */
@@ -70,7 +70,7 @@ body {
   font-size: 130px;
   font-weight: 900;
   letter-spacing: -4px;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--on-secondary);
 }
 .band-boat .boat-type {
   margin-top: 4px;
@@ -78,7 +78,7 @@ body {
   font-weight: 700;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--on-secondary);
 }
 .band-boat .boat-container {
   margin-left: auto;
@@ -144,8 +144,8 @@ body {
   border-radius: 10px;
   font-size: 26px;
   font-weight: 800;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-  color: #ffffff;
+  background: var(--on-white-color);
+  color: var(--seat-badge-text);
 }
 .crew-cell .name,
 .cox-cell .name {

@@ -37,13 +37,13 @@ body { font-family: 'Inter', sans-serif; }
   margin-right: -78px;
   padding: 50px 78px 24px;
   text-align: center; font-size: 44px; font-weight: 900; line-height: 0.96; letter-spacing: -1px; text-transform: uppercase;
-  color: var(--primary-raw);
+  color: var(--on-white-color);
   mix-blend-mode: multiply; text-shadow: 0 1px 0 rgba(255,255,255,0.55), 0 -1px 0 rgba(0,0,0,0.4);
 }
 .inlay { display: none; }
 .plaque .category {
   margin-top: 8px; text-align: center; font-size: 24px; font-weight: 600;
-  color: var(--primary-raw); mix-blend-mode: multiply; text-shadow: 0 1px 0 rgba(255,255,255,0.5), 0 -1px 0 rgba(0,0,0,0.35);
+  color: var(--on-white-color); mix-blend-mode: multiply; text-shadow: 0 1px 0 rgba(255,255,255,0.5), 0 -1px 0 rgba(0,0,0,0.35);
 }
 /* club crest — stamped directly into the plaque metal, no pendant/plate behind it */
 .club-charm {
@@ -149,10 +149,10 @@ body { font-family: 'Inter', sans-serif; }
 
 .plaque .coach {
   position: absolute; bottom: 70px; left: 80px; font-size: 24px; font-weight: 600;
-  color: var(--primary-raw); mix-blend-mode: multiply; text-shadow: 0 1px 0 rgba(255,255,255,0.5), 0 -1px 0 rgba(0,0,0,0.35);
+  color: var(--on-white-color); mix-blend-mode: multiply; text-shadow: 0 1px 0 rgba(255,255,255,0.5), 0 -1px 0 rgba(0,0,0,0.35);
 }
 .plaque .race-date {
   position: absolute; bottom: 70px; right: 80px; text-align: right; font-size: 24px; font-weight: 600;
-  color: var(--primary-raw); mix-blend-mode: multiply; text-shadow: 0 1px 0 rgba(255,255,255,0.5), 0 -1px 0 rgba(0,0,0,0.35);
+  color: var(--on-white-color); mix-blend-mode: multiply; text-shadow: 0 1px 0 rgba(255,255,255,0.5), 0 -1px 0 rgba(0,0,0,0.35);
 }
 .coach-label, .date-label { font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
