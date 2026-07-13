@@ -54,7 +54,7 @@ body {
   font-weight: 900;
   letter-spacing: -3px;
   text-transform: uppercase;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--on-white-color);
 }
 .rule {
   height: 14px;
@@ -65,7 +65,7 @@ body {
   padding: 22px 64px 0;
   font-size: 30px;
   font-weight: 600;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--on-white-color);
 }
 
 /* ---- Cox row (left-aligned, above crew grid) ---- */
@@ -117,8 +117,8 @@ body {
   border-radius: 50%;
   font-size: 26px;
   font-weight: 800;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-  color: #ffffff;
+  background: var(--on-white-color);
+  color: var(--seat-badge-text);
 }
 .name {
   font-size: 32px;

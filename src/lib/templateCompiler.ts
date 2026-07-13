@@ -436,17 +436,20 @@ export class TemplateCompiler {
     const primaryRaw = colors.primaryColor
     const secondaryRaw = colors.secondaryColor
 
-    // --boat-code-color: primary if it reads on white (≥3:1), else secondary, else black.
-    // Used by templates that display the boat code as large display text on a white card.
+    // --boat-code-color / --on-white-color: primary if it reads on white (≥3:1),
+    // else secondary, else black. Used by templates that render club-coloured
+    // text or filled elements on a white card background.
     const LARGE_TEXT_MIN_CONTRAST = 3
-    const boatCodeColor =
+    const onWhiteColor =
       getContrastRatio(colors.primaryColor, '#ffffff') >= LARGE_TEXT_MIN_CONTRAST
         ? colors.primaryColor
         : getContrastRatio(colors.secondaryColor, '#ffffff') >= LARGE_TEXT_MIN_CONTRAST
           ? colors.secondaryColor
           : '#000000'
+    // --seat-badge-text: readable text colour on top of --boat-code-color / --on-white-color fills.
+    const seatBadgeText = this.getContrastColor(onWhiteColor)
 
-    const cssVars = `<style>:root{--on-primary:${onPrimary};--on-secondary:${onSecondary};--on-primary-invert:${onPrimaryInvert};--on-secondary-invert:${onSecondaryInvert};--on-secondary-ultra:${onSecondaryUltra};--on-primary-ultra:${onPrimaryUltra};--primary-text-safe:${primaryTextSafe};--secondary-text-safe:${secondaryTextSafe};--primary-text-safe-dark:${primaryTextSafeDark};--secondary-text-safe-dark:${secondaryTextSafeDark};--color-pair-contrast:${colorPairContrast};--secondary-on-primary:${secondaryOnPrimary};--primary-on-secondary:${primaryOnSecondary};--primary-raw:${primaryRaw};--secondary-raw:${secondaryRaw};--boat-code-color:${boatCodeColor};}</style>`
+    const cssVars = `<style>:root{--on-primary:${onPrimary};--on-secondary:${onSecondary};--on-primary-invert:${onPrimaryInvert};--on-secondary-invert:${onSecondaryInvert};--on-secondary-ultra:${onSecondaryUltra};--on-primary-ultra:${onPrimaryUltra};--primary-text-safe:${primaryTextSafe};--secondary-text-safe:${secondaryTextSafe};--primary-text-safe-dark:${primaryTextSafeDark};--secondary-text-safe-dark:${secondaryTextSafeDark};--color-pair-contrast:${colorPairContrast};--secondary-on-primary:${secondaryOnPrimary};--primary-on-secondary:${primaryOnSecondary};--primary-raw:${primaryRaw};--secondary-raw:${secondaryRaw};--boat-code-color:${onWhiteColor};--on-white-color:${onWhiteColor};--seat-badge-text:${seatBadgeText};}</style>`
     styledHtml = styledHtml.includes('</head>')
       ? styledHtml.replace('</head>', `${cssVars}</head>`)
       : cssVars + styledHtml
