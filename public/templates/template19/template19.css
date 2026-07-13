@@ -77,7 +77,7 @@ html, body {
   font-weight: 800;
   letter-spacing: 6px;
   text-transform: uppercase;
-  color: #094e2a;                             /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--primary-raw);
 }
 .crew-col .cat {
   font-style: italic;

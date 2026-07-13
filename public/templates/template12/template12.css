@@ -53,7 +53,7 @@ body { font-family: 'Inter', sans-serif; }
   background: repeating-linear-gradient(
     90deg,
     #f9a8d4 0, #f9a8d4 14px,         /* SECONDARY COLOR PLACEHOLDER */
-    #f386c0 14px, #f386c0 28px
+    #094e2a 14px, #094e2a 28px        /* PRIMARY COLOR PLACEHOLDER */
   );
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%);
 }
@@ -70,6 +70,8 @@ body { font-family: 'Inter', sans-serif; }
   border-radius: 30px;
   border: 10px solid #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
   box-shadow: 0 26px 50px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
 }
 .eyelet {
   position: absolute;
@@ -99,7 +101,7 @@ body { font-family: 'Inter', sans-serif; }
   line-height: 0.96;
   letter-spacing: -1px;
   text-transform: uppercase;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--primary-raw);
 }
 .badge .category {
   margin-top: 12px;
@@ -115,13 +117,23 @@ body { font-family: 'Inter', sans-serif; }
   background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
 
+.crew-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
 /* ---- Crew list ---- */
 .crew-list {
-  margin-top: 28px;
+  flex: 1;
+  min-height: 0;
+  margin-top: 0;
   display: grid;
   grid-template-columns: 1fr;          /* default: single column for small crews */
   grid-auto-flow: row;
   column-gap: 44px;
+  align-content: space-between;
 }
 /* 6+ rowers (e.g. 8+) reflow into the original two-column, column-major grid */
 .crew-list:has(.crew-row:nth-child(6)) {
@@ -163,7 +175,7 @@ body { font-family: 'Inter', sans-serif; }
   align-items: center;
   gap: 18px;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(9,78,42,0.2);
+  border-bottom: 1px solid rgba(9, 78, 42, 0.13);
 }
 .cox-row .seat {
   width: 44px;
@@ -209,7 +221,7 @@ body { font-family: 'Inter', sans-serif; }
 .footer-value {
   font-size: 26px;
   font-weight: 700;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--primary-raw);
 }
 
 

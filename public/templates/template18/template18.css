@@ -97,7 +97,7 @@ html, body {
   font-weight: 800;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: #094e2a;                              /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--primary-raw);
   margin-bottom: 4px;
 }
 .header-stamp .txt .t1 {
@@ -120,7 +120,7 @@ html, body {
   font-weight: 800;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: #094e2a;                              /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--primary-raw);
   margin-bottom: 4px;
 }
 .h-right .t-value {

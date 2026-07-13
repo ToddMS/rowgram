@@ -40,7 +40,7 @@ body {
   top: 30px;
   left: 30px;
   z-index: 10;
-  color: #f3bfd4; /* Will be replaced with secondary color */
+  color: var(--secondary-on-primary); /* secondary colour, clamped to contrast against primary bg */
 }
 
 .race-name {
@@ -203,23 +203,23 @@ body {
   letter-spacing: 3px;
   text-transform: uppercase;
   font-family: 'Inter', sans-serif;
-  color: var(--on-primary);
+  color: var(--secondary-on-primary);
   opacity: 0.6;
 }
 .coach-value {
   font-size: 32px;
   font-weight: 600;
   font-family: 'Inter', sans-serif;
-  color: var(--on-primary);
+  color: var(--secondary-on-primary);
   line-height: 1.2;
 }
 
 .club-logo {
   position: absolute;
-  bottom: 5px;
+  bottom: 20px;
   right: 30px;
-  width: 170px;
-  height: 170px;
+  width: 140px;
+  height: 140px;
   z-index: 10;
 }
 

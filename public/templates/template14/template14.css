@@ -85,7 +85,7 @@ html, body {
   font-weight: 800;
   letter-spacing: 6px;
   text-transform: uppercase;
-  color: #094e2a;                             /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--primary-raw);
   margin-bottom: 8px;
 }
 .c-head .race {
@@ -147,7 +147,7 @@ html, body {
   letter-spacing: 3px;
   text-transform: uppercase;
 }
-.c-foot b { color: #094e2a; }                  /* PRIMARY COLOR PLACEHOLDER */
+.c-foot b { color: var(--primary-raw); }
 
 
 /* ---- Small crews (1x, 2-): fill the cartouche ---- */

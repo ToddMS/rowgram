@@ -59,7 +59,7 @@ body { font-family: 'Inter', sans-serif; }
   font-weight: 800;
   letter-spacing: -1px;
   text-transform: uppercase;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--primary-raw);
 }
 .big-code {
   display: block;
@@ -68,7 +68,7 @@ body { font-family: 'Inter', sans-serif; }
   font-weight: 900;
   line-height: 1;
   letter-spacing: -6px;
-  color: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
+  color: var(--boat-code-color);
 }
 .boat-type {
   display: block;
@@ -144,7 +144,7 @@ body { font-family: 'Inter', sans-serif; }
   text-align: center;
   font-size: 24px;
   font-weight: 600;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--primary-raw);
 }
 .coach-label {
   font-weight: 800;

@@ -14,9 +14,11 @@ body { font-family: 'Inter', sans-serif; }
   color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
 }
 .race-name {
-  margin-top: 8px; max-width: 770px;
-  font-size: 84px; font-weight: 900; line-height: 0.9;
-  letter-spacing: -3px; text-transform: uppercase; color: #1a1a17;
+  margin-top: 8px;
+  max-width: calc(100% - 200px);
+  font-size: 48px; font-weight: 900; line-height: 0.9;
+  letter-spacing: -2px; text-transform: uppercase; color: #1a1a17;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .category {
   margin-top: 16px; font-size: 26px; font-weight: 600;
@@ -25,7 +27,7 @@ body { font-family: 'Inter', sans-serif; }
 .crest { position: absolute; top: 0; right: 0; width: 180px; height: 180px; object-fit: contain; }
 
 /* Crew list */
-.crew-list { position: absolute; top: 340px; left: 0; right: 0; bottom: 128px; display: flex; flex-direction: column; }
+.crew-list { position: absolute; top: 230px; left: 0; right: 0; bottom: 128px; display: flex; flex-direction: column; }
 .crew-row { flex: 1; display: flex; align-items: center; padding: 0 72px; }
 .crew-row:nth-child(even) { background: #efeadd; } /* neutral band — not swapped */
 .oar {

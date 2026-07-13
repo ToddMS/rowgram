@@ -1,255 +1,158 @@
-/* Template 15 — Engraved boathouse plaque, screwed to a planked door */
+/* Template 28 — Dog-tag chain: each rower is a hanging aluminum dog tag, strung on a ball chain */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 html, body { width: 1080px; height: 1080px; overflow: hidden; }
 body { font-family: 'Inter', sans-serif; }
 
-.canvas {
-  position: relative;
-  width: 1080px;
-  height: 1080px;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-  overflow: hidden;
-}
-.planks {
-  position: absolute;
-  inset: 0;
-  display: flex;
-}
-.plank {
-  position: relative;
-  flex: 1;
-  /* bevel between planks */
-  box-shadow: inset 6px 0 8px rgba(0, 0, 0, 0.28), inset -3px 0 6px rgba(0, 0, 0, 0.22);
-}
-/* alternate two natural wood tones */
-.plank:nth-child(odd) {
-  background-color: #6f4a2a; /* natural wood */
-}
-.plank:nth-child(even) {
-  background-color: #5c3c22; /* darker wood plank */
-}
-/* vertical wood grain streaks (run along each plank) */
-.plank::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.05) 0px,
-      rgba(255, 255, 255, 0.05) 1px,
-      rgba(0, 0, 0, 0.08) 2px,
-      rgba(0, 0, 0, 0) 5px,
-      rgba(0, 0, 0, 0.06) 9px,
-      rgba(0, 0, 0, 0) 14px
-    );
-}
-/* oval knots on the planks (soft grain marks, no ring lines) */
-.plank::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-repeat: no-repeat;
-  background-image:
-    radial-gradient(ellipse 26px 46px at 50% 250px, rgba(0, 0, 0, 0.26) 0%, rgba(0, 0, 0, 0.12) 46%, transparent 72%),
-    radial-gradient(ellipse 22px 40px at 50% 760px, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.10) 46%, transparent 72%);
-}
-/* stagger knot positions plank-to-plank for a natural look */
+.canvas { position: relative; width: 1080px; height: 1080px; background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */ overflow: hidden; }
+.planks { position: absolute; inset: 0; display: flex; }
+.plank { position: relative; flex: 1; box-shadow: inset 6px 0 8px rgba(0,0,0,0.28), inset -3px 0 6px rgba(0,0,0,0.22); }
+.plank:nth-child(odd) { background-color: #6f4a2a; }
+.plank:nth-child(even) { background-color: #5c3c22; }
+.plank::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0) 5px, rgba(0,0,0,0.06) 9px, rgba(0,0,0,0) 14px); }
+.plank::after { content: ""; position: absolute; inset: 0; background-repeat: no-repeat; background-image: radial-gradient(ellipse 26px 46px at 50% 250px, rgba(0,0,0,0.26) 0%, rgba(0,0,0,0.12) 46%, transparent 72%), radial-gradient(ellipse 22px 40px at 50% 760px, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.10) 46%, transparent 72%); }
 .plank:nth-child(2)::after { transform: translateY(-180px); }
 .plank:nth-child(3)::after { transform: translateY(120px); }
 .plank:nth-child(4)::after { transform: translateY(-90px); }
 .plank:nth-child(5)::after { transform: translateY(220px); }
 .plank:nth-child(6)::after { transform: translateY(40px); }
 
-/* ---- Plaque ---- */
+/* ---- Plaque: brushed satin steel — fine diagonal brush striations ---- */
 .plaque {
-  position: absolute;
-  top: 96px;
-  left: 96px;
-  width: 888px;
-  height: 888px;
-  padding: 70px 80px;
-  background-color: #cdd1d5;
+  position: absolute; top: 96px; left: 96px; width: 888px; height: 888px; padding: 70px 78px;
+  background-color: #9aa1a6;
   background-image:
-    /* soft overhead light */
-    radial-gradient(150% 100% at 50% -15%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 46%),
-    /* diagonal mirror sheen */
-    linear-gradient(118deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.34) 49%, rgba(255,255,255,0.08) 52%, rgba(255,255,255,0) 60%),
-    /* very fine satin grain */
-    repeating-linear-gradient(
-      0deg,
-      rgba(255,255,255,0.05) 0px,
-      rgba(255,255,255,0.05) 1px,
-      rgba(0,0,0,0.035) 1px,
-      rgba(0,0,0,0.035) 3px
-    ),
-    /* polished reflective bands — the metal read */
-    linear-gradient(176deg,
-      #fafbfc 0%,
-      #dfe3e6 9%,
-      #c0c6cc 19%,
-      #eaedf0 31%,
-      #cfd4d9 41%,
-      #b4bac1 52%,
-      #e2e6e9 64%,
-      #c8cdd2 75%,
-      #aeb4bb 85%,
-      #e8ebee 100%);
-  border: 3px solid #8d9399;
-  box-shadow:
-    0 30px 54px rgba(0,0,0,0.5),
-    inset 0 2px 2px rgba(255,255,255,0.85),
-    inset 0 -4px 8px rgba(0,0,0,0.26),
-    inset 2px 0 4px rgba(255,255,255,0.4),
-    inset 0 0 0 2px rgba(255,255,255,0.35);
+    radial-gradient(150% 100% at 50% -15%, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0) 46%),
+    repeating-linear-gradient(115deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.1) 1px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0) 4px, rgba(255,255,255,0.06) 7px, rgba(0,0,0,0) 11px),
+    linear-gradient(176deg, #c3c8cc 0%, #9ba1a6 12%, #83898f 26%, #a7acb1 40%, #8b9095 55%, #767c82 70%, #9ea3a8 85%, #83898e 100%);
+  border: 3px solid #6b7076;
+  box-shadow: 0 30px 54px rgba(0,0,0,0.55), inset 0 2px 2px rgba(255,255,255,0.5), inset 0 -6px 10px rgba(0,0,0,0.35);
 }
-.screw {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 32%, #ffffff, #094e2a 120%); /* PRIMARY COLOR PLACEHOLDER */
-}
-.screw::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 16%;
-  right: 16%;
-  height: 3px;
-  background: rgba(0, 0, 0, 0.55);
-  transform: translateY(-50%) rotate(40deg);
-}
-.s-tl { top: 26px; left: 26px; }
-.s-tr { top: 26px; right: 26px; }
-.s-bl { bottom: 26px; left: 26px; }
-.s-br { bottom: 26px; right: 26px; }
+.screw { position: absolute; width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 38% 32%, #e8ecef, #4a5058 120%); }
+.screw::after { content: ""; position: absolute; top: 50%; left: 16%; right: 16%; height: 3px; background: rgba(0,0,0,0.55); transform: translateY(-50%) rotate(40deg); }
+.s-tl { top: 26px; left: 26px; } .s-tr { top: 26px; right: 26px; } .s-bl { bottom: 26px; left: 26px; } .s-br { bottom: 26px; right: 26px; }
 
 .plaque .race-name {
-  text-align: center;
-  font-size: 58px;
-  font-weight: 900;
-  line-height: 0.96;
-  letter-spacing: -1px;
-  text-transform: uppercase;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  margin-top: -70px;
+  margin-left: -78px;
+  margin-right: -78px;
+  padding: 50px 78px 24px;
+  text-align: center; font-size: 44px; font-weight: 900; line-height: 0.96; letter-spacing: -1px; text-transform: uppercase;
+  color: var(--primary-raw);
+  mix-blend-mode: multiply; text-shadow: 0 1px 0 rgba(255,255,255,0.55), 0 -1px 0 rgba(0,0,0,0.4);
 }
-.inlay {
-  width: 200px;
-  height: 4px;
-  margin: 18px auto 0;
-  background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
-}
+.inlay { display: none; }
 .plaque .category {
-  margin-top: 16px;
-  text-align: center;
-  font-size: 24px;
-  font-weight: 600;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  margin-top: 8px; text-align: center; font-size: 24px; font-weight: 600;
+  color: var(--primary-raw); mix-blend-mode: multiply; text-shadow: 0 1px 0 rgba(255,255,255,0.5), 0 -1px 0 rgba(0,0,0,0.35);
 }
-
-/* club crest engraved into the steel, behind the roster */
-.logo-wm {
+/* club crest — stamped directly into the plaque metal, no pendant/plate behind it */
+.club-charm {
   position: absolute;
+  z-index: 2;
+  top: 158px;
   left: 50%;
-  top: 53%;
-  transform: translate(-50%, -50%);
-  width: 620px;
-  height: auto;
-  z-index: 0;
+  transform: translateX(-50%);
+  width: 190px;
+  height: 190px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
-  opacity: 0.14;
-  filter: grayscale(1) brightness(1.05) contrast(0.85) drop-shadow(0 2px 0 rgba(255,255,255,0.8));
+}
+.club-charm img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   mix-blend-mode: multiply;
+  filter: contrast(1.1) drop-shadow(0 -1.5px 0 rgba(255,255,255,0.55)) drop-shadow(0 2px 3px rgba(0,0,0,0.4));
 }
 
-/* ---- Roster: cox pinned above, rowers fill the remaining space ---- */
-.roster {
-  position: absolute;
-  left: 80px;
-  right: 80px;
-  top: 250px;
-  bottom: 158px;
+/* ---- Roster: bigger freestanding dog-tag plates, no chain — full-width plates, name truly centered, seat pinned at a fixed inset so seats line up in a column ---- */
+.roster { position: absolute; left: 78px; right: 78px; top: 254px; bottom: 158px; z-index: 1; display: flex; flex-direction: column; justify-content: center; }
+/* when a club crest is present, reserve the space above the roster instead of overlapping it */
+.plaque:has(.club-charm) .roster { top: 318px; }
+.crew-list { display: flex; flex-direction: column; gap: 22px; }
+.roster > .crew-row { margin-bottom: 22px; }
+
+.crew-row {
+  position: relative;
   z-index: 1;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 54px 50px;
+  min-height: 0;
+  width: 600px;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  background: linear-gradient(160deg, #e4e6e7 0%, #c7cbcd 35%, #d8dbdc 55%, #aeb2b5 78%, #c9cccd 100%);
+  background-size: 100% 100%;
+  border-radius: 26px;
+  box-shadow:
+    0 12px 20px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.8),
+    inset 0 -3px 5px rgba(0,0,0,0.22),
+    0 0 0 2px rgba(0,0,0,0.1);
 }
-.cox-row {
-  display: flex;
-  align-items: baseline;
-  gap: 22px;
-  padding-bottom: 10px;
-  margin-bottom: 8px;
+/* faint brushed streaks on each tag */
+.crew-row::after {
+  content: "";
+  position: absolute; inset: 0; border-radius: inherit;
+  background: repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 1px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0) 4px);
+  pointer-events: none;
 }
-.crew-list {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-auto-flow: row;
-  column-gap: 40px;
-  align-content: space-evenly;
-}
-.crew-list:has(.crew-row:nth-child(6)) {
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(4, auto);
-  grid-auto-flow: column;
-}
-.crew-row {
-  display: flex;
-  align-items: baseline;
-  gap: 22px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(9, 78, 42, 0.22); /* PRIMARY COLOR PLACEHOLDER (tint) */
-}
+
 .seat {
-  flex-shrink: 0;
-  width: 56px;
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Oswald', sans-serif;
+  font-size: 62px;
+  font-weight: 700;
+  color: #2a2e31;
+  width: 64px;
   text-align: center;
-  font-weight: 800;
-  font-size: 34px;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  text-shadow: 0 -1.5px 0 rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.7);
 }
 .name {
-  font-size: 42px;
+  min-width: 0;
+  max-width: calc(100% - 172px);
+  font-family: 'Oswald', sans-serif;
+  font-size: 58px;
   font-weight: 700;
-  color: #0c2a1b;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  color: #2a2e31;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-shadow: 0 -1.5px 0 rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.7);
 }
-.leader {
-  flex: 1;
-  align-self: center;
-  height: 0;
-  margin: 0 2px;
-  border-bottom: 2px dotted rgba(9, 78, 42, 0.30); /* PRIMARY COLOR PLACEHOLDER (tint) */
-}
-/* 4–5 rowers: single column, scale down slightly */
-.roster:has(.crew-list .crew-row:nth-child(4)) .seat { font-size: 28px; width: 48px; }
-.roster:has(.crew-list .crew-row:nth-child(4)) .name { font-size: 33px; }
-/* 6+ rowers: two columns of 4 — can use a comfortable mid size */
-.roster:has(.crew-list .crew-row:nth-child(6)) .seat { font-size: 26px; width: 46px; }
-.roster:has(.crew-list .crew-row:nth-child(6)) .name { font-size: 31px; }
 
-.plaque .club-logo {
-  position: absolute;
-  bottom: 56px;
-  left: 80px;
-  width: 92px;
-  height: 92px;
-  object-fit: contain;
-}
+/* ---- Scale for crew size ---- */
+.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .seat { font-size: 50px; width: 56px; left: 28px; }
+.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .name { font-size: 46px; max-width: calc(100% - 150px); }
+.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .crew-row { padding: 36px 44px; }
+.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .crew-list { gap: 16px; }
+.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) > .crew-row { margin-bottom: 16px; }
+
+.roster:has(.crew-list .crew-row:nth-child(8)) .seat { font-size: 24px; width: 34px; left: 16px; line-height: 1; }
+.roster:has(.crew-list .crew-row:nth-child(8)) .name { font-size: 24px; line-height: 1; max-width: calc(100% - 100px); }
+.roster:has(.crew-list .crew-row:nth-child(8)) .crew-row { padding: 10px 26px; border-radius: 12px; width: 520px; }
+.roster:has(.crew-list .crew-row:nth-child(8)) .crew-list { gap: 4px; }
+.roster:has(.crew-list .crew-row:nth-child(8)) > .crew-row { margin-bottom: 4px; }
+.plaque:has(.crew-list .crew-row:nth-child(8)) .club-charm { width: 126px; height: 126px; top: 162px; }
+.plaque:has(.crew-list .crew-row:nth-child(8)):has(.club-charm) .roster { top: 286px; }
+
 .plaque .coach {
-  position: absolute;
-  bottom: 70px;
-  right: 80px;
-  font-size: 24px;
-  font-weight: 600;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  position: absolute; bottom: 70px; left: 80px; font-size: 24px; font-weight: 600;
+  color: var(--primary-raw); mix-blend-mode: multiply; text-shadow: 0 1px 0 rgba(255,255,255,0.5), 0 -1px 0 rgba(0,0,0,0.35);
 }
-.coach-label {
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+.plaque .race-date {
+  position: absolute; bottom: 70px; right: 80px; text-align: right; font-size: 24px; font-weight: 600;
+  color: var(--primary-raw); mix-blend-mode: multiply; text-shadow: 0 1px 0 rgba(255,255,255,0.5), 0 -1px 0 rgba(0,0,0,0.35);
 }
+.coach-label, .date-label { font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }

@@ -21,3 +21,6 @@ todos.json
 public/uploads/*
 !public/uploads/*/.gitkeep
 .vercel
+
+# Local image generation output
+local-crew-output/

@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { getBoatType } from './boat-types'
+import { textSafeOnWhite, textSafeOnDark, getContrastRatio, clampToMinContrast } from './colorUtils'
 
 export interface TemplateData {
   CLUB_NAME: string
@@ -412,7 +413,40 @@ export class TemplateCompiler {
     const onSecondaryInvert = onSecondary === '#ffffff' ? 1 : 0
     const onSecondaryUltra = TemplateCompiler.isUltraDark(colors.secondaryColor) ? 1 : 0
     const onPrimaryUltra = TemplateCompiler.isUltraDark(colors.primaryColor) ? 1 : 0
-    const cssVars = `<style>:root{--on-primary:${onPrimary};--on-secondary:${onSecondary};--on-primary-invert:${onPrimaryInvert};--on-secondary-invert:${onSecondaryInvert};--on-secondary-ultra:${onSecondaryUltra};--on-primary-ultra:${onPrimaryUltra};}</style>`
+
+    // --primary-text-safe / --secondary-text-safe: versions of the club colors safe
+    // for use as text on white or near-black backgrounds.  Templates that use the
+    // primary/secondary color as a text color (not a fill) should prefer these
+    // variables so that extreme colours (pure white, pure black) remain readable.
+    const primaryTextSafe = textSafeOnWhite(colors.primaryColor)
+    const secondaryTextSafe = textSafeOnWhite(colors.secondaryColor)
+    // Also a "safe on dark" variant for templates with dark card backgrounds
+    const primaryTextSafeDark = textSafeOnDark(colors.primaryColor)
+    const secondaryTextSafeDark = textSafeOnDark(colors.secondaryColor)
+    // Contrast ratio between the two club colors (useful for deciding layout)
+    const colorPairContrast = Math.round(getContrastRatio(colors.primaryColor, colors.secondaryColor) * 10) / 10
+    // --secondary-on-primary / --primary-on-secondary: use these when one club colour
+    // appears as text *on top of* the other.  E.g. template1's header puts the
+    // secondary-coloured race name on a primary-coloured background.
+    const secondaryOnPrimary = clampToMinContrast(colors.secondaryColor, colors.primaryColor)
+    const primaryOnSecondary = clampToMinContrast(colors.primaryColor, colors.secondaryColor)
+    // --primary-raw / --secondary-raw: the club colour exactly as entered, no contrast
+    // adjustment. Use for large display text (70px+) where the hue matters more than
+    // strict WCAG compliance, or for backgrounds/fills.
+    const primaryRaw = colors.primaryColor
+    const secondaryRaw = colors.secondaryColor
+
+    // --boat-code-color: primary if it reads on white (≥3:1), else secondary, else black.
+    // Used by templates that display the boat code as large display text on a white card.
+    const LARGE_TEXT_MIN_CONTRAST = 3
+    const boatCodeColor =
+      getContrastRatio(colors.primaryColor, '#ffffff') >= LARGE_TEXT_MIN_CONTRAST
+        ? colors.primaryColor
+        : getContrastRatio(colors.secondaryColor, '#ffffff') >= LARGE_TEXT_MIN_CONTRAST
+          ? colors.secondaryColor
+          : '#000000'
+
+    const cssVars = `<style>:root{--on-primary:${onPrimary};--on-secondary:${onSecondary};--on-primary-invert:${onPrimaryInvert};--on-secondary-invert:${onSecondaryInvert};--on-secondary-ultra:${onSecondaryUltra};--on-primary-ultra:${onPrimaryUltra};--primary-text-safe:${primaryTextSafe};--secondary-text-safe:${secondaryTextSafe};--primary-text-safe-dark:${primaryTextSafeDark};--secondary-text-safe-dark:${secondaryTextSafeDark};--color-pair-contrast:${colorPairContrast};--secondary-on-primary:${secondaryOnPrimary};--primary-on-secondary:${primaryOnSecondary};--primary-raw:${primaryRaw};--secondary-raw:${secondaryRaw};--boat-code-color:${boatCodeColor};}</style>`
     styledHtml = styledHtml.includes('</head>')
       ? styledHtml.replace('</head>', `${cssVars}</head>`)
       : cssVars + styledHtml
@@ -466,28 +500,51 @@ export class TemplateCompiler {
   }
 
   /**
-   * Apply solid color replacements
+   * Apply solid color replacements.
+   *
+   * Two-pass strategy:
+   *   Pass 1 — replace occurrences used as CSS text colors (color: #xxx) with a
+   *             "text-safe" version that is guaranteed to have ≥ 4.5:1 contrast
+   *             against white.  This prevents invisible text when a club picks a
+   *             very light primary (e.g. white) or very dark secondary.
+   *   Pass 2 — replace all remaining placeholder occurrences (backgrounds, fills,
+   *             borders) with the raw club color.
    */
   private static applySolidColors(html: string, colors: ColorScheme): string {
-    const solidColorMappings = [
-      // Primary color mappings
-      { from: '#059669', to: colors.primaryColor },
-      { from: '#15803d', to: colors.primaryColor },
-      { from: '#094e2a', to: colors.primaryColor }, // Text colors
-      { from: '#080a54', to: colors.primaryColor }, // Cover template text color
-      { from: '#10b981', to: colors.secondaryColor },
-      // Secondary color mappings
-      { from: '#f9a8d4', to: colors.secondaryColor },
-      { from: '#f3bfd4', to: colors.secondaryColor }, // Header text color
-      { from: '#d946ef', to: colors.secondaryColor },
-    ]
+    const primarySafe = textSafeOnWhite(colors.primaryColor)
+    const secondarySafe = textSafeOnWhite(colors.secondaryColor)
 
-    let styledHtml = html
-    solidColorMappings.forEach((mapping) => {
-      styledHtml = styledHtml.replace(new RegExp(mapping.from, 'g'), mapping.to)
-    })
+    // Primary placeholder hex values (used in various templates as both bg and text)
+    const PRIMARY_PLACEHOLDERS = ['#059669', '#15803d', '#094e2a', '#080a54']
+    // Secondary placeholder hex values
+    const SECONDARY_PLACEHOLDERS = ['#10b981', '#f9a8d4', '#f3bfd4', '#d946ef']
 
-    return styledHtml
+    let result = html
+
+    // ── Pass 1: CSS `color:` property → text-safe version ─────────────────
+    for (const ph of PRIMARY_PLACEHOLDERS) {
+      // Matches: color: #hex and color:#hex (with optional spaces)
+      result = result.replace(
+        new RegExp(`(color:\\s*)${ph}`, 'gi'),
+        `$1${primarySafe}`,
+      )
+    }
+    for (const ph of SECONDARY_PLACEHOLDERS) {
+      result = result.replace(
+        new RegExp(`(color:\\s*)${ph}`, 'gi'),
+        `$1${secondarySafe}`,
+      )
+    }
+
+    // ── Pass 2: remaining occurrences → raw club color ─────────────────────
+    for (const ph of PRIMARY_PLACEHOLDERS) {
+      result = result.replace(new RegExp(ph, 'gi'), colors.primaryColor)
+    }
+    for (const ph of SECONDARY_PLACEHOLDERS) {
+      result = result.replace(new RegExp(ph, 'gi'), colors.secondaryColor)
+    }
+
+    return result
   }
 
   /**

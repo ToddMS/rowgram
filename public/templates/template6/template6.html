@@ -45,7 +45,18 @@
         {{/crewMembers}}
       </section>
 
-      <p class="coach">Coached by {{COACH_NAME}}{{#RACE_DATE}} · {{RACE_DATE}}{{/RACE_DATE}}</p>
+      <div class="footer">
+        <div class="footer-block">
+          <span class="footer-label">Coach</span>
+          <span class="footer-value">{{COACH_NAME}}</span>
+        </div>
+        {{#RACE_DATE}}
+        <div class="footer-block">
+          <span class="footer-label">Date</span>
+          <span class="footer-value">{{RACE_DATE}}</span>
+        </div>
+        {{/RACE_DATE}}
+      </div>
     </div>
 
   </div>

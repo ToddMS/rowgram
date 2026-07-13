@@ -11,9 +11,6 @@
 <body>
   <div class="canvas">
 
-    {{#clubLogo}}<img class="club-logo club-logo-left" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
-    {{#clubLogo}}<img class="club-logo club-logo-right" src="{{clubLogo}}" alt="Club Logo" />{{/clubLogo}}
-
     <header class="header">
       <h1 class="race-name">{{RACE_NAME}}</h1>
       <p class="category">{{crewCategory}}</p>
@@ -38,6 +35,12 @@
         <span class="coach-label">Coach</span>
         <span class="coach-name">{{COACH_NAME}}</span>
       </div>
+      {{#clubLogo}}
+      <div class="note note-center">
+        <span class="note-pin"></span>
+        <img class="logo-in-note" src="{{clubLogo}}" alt="Club Logo" />
+      </div>
+      {{/clubLogo}}
       {{#RACE_DATE}}
       <div class="note note-right">
         <span class="note-pin"></span>

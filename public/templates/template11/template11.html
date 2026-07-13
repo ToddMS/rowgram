@@ -3,21 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="template11.css">
-  <title>RowGram — Template 11</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="template28.css">
+  <title>RowGram — Template 28</title>
 </head>
 <body>
   <div class="canvas">
     <div class="planks">
-      <div class="plank"></div>
-      <div class="plank"></div>
-      <div class="plank"></div>
-      <div class="plank"></div>
-      <div class="plank"></div>
-      <div class="plank"></div>
+      <div class="plank"></div><div class="plank"></div><div class="plank"></div>
+      <div class="plank"></div><div class="plank"></div><div class="plank"></div>
     </div>
-
     <div class="plaque">
       <span class="screw s-tl"></span>
       <span class="screw s-tr"></span>
@@ -26,16 +22,17 @@
 
       <h1 class="race-name">{{RACE_NAME}}</h1>
       <div class="inlay"></div>
-      <p class="category">{{crewCategory}} &middot; {{BOAT_TYPE}} {{BOAT_CODE}}</p>
+      <p class="category">{{crewCategory}}</p>
 
-      {{#clubLogo}}<img class="logo-wm" src="{{clubLogo}}" alt="" />{{/clubLogo}}
+      {{#clubLogo}}
+      <div class="club-charm"><img src="{{clubLogo}}" alt="Club Logo" /></div>
+      {{/clubLogo}}
 
       <div class="roster">
         {{#hasCox}}
-        <div class="cox-row">
+        <div class="crew-row">
           <span class="seat">C</span>
           <span class="name">{{COX_NAME}}</span>
-          <span class="leader"></span>
         </div>
         {{/hasCox}}
         <section class="crew-list">
@@ -43,14 +40,13 @@
           <div class="crew-row">
             <span class="seat">{{badge}}</span>
             <span class="name">{{name}}</span>
-            <span class="leader"></span>
           </div>
           {{/crewMembersNoCox}}
         </section>
       </div>
 
-
-      <p class="coach"><span class="coach-label">Coach</span> {{COACH_NAME}}{{#RACE_DATE}} · {{RACE_DATE}}{{/RACE_DATE}}</p>
+      <p class="coach"><span class="coach-label">Coach</span> {{COACH_NAME}}</p>
+      {{#RACE_DATE}}<p class="race-date"><span class="date-label">Date</span> {{RACE_DATE}}</p>{{/RACE_DATE}}
     </div>
   </div>
 </body>

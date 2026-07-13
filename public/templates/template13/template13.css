@@ -168,7 +168,7 @@ body.hide-rings .ring-front { display: none; }
   font-weight: 800;
   line-height: 0.98;
   letter-spacing: -1px;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--primary-raw);
 }
 .category {
   margin-top: 6px;
@@ -195,6 +195,7 @@ body.hide-rings .ring-front { display: none; }
   height: 74px;
   border-bottom: 2px solid rgba(9,78,42,0.18); /* PRIMARY COLOR PLACEHOLDER (rule tint) */
 }
+.crew-row:last-child { border-bottom: none; }
 .seat {
   flex-shrink: 0;
   width: 50px;
@@ -223,7 +224,7 @@ body.hide-rings .ring-front { display: none; }
   position: absolute;
   left: 184px;
   right: 40px;
-  bottom: 36px;
+  bottom: 18px;
   display: flex;
   gap: 48px;
   align-items: flex-end;
@@ -243,12 +244,12 @@ body.hide-rings .ring-front { display: none; }
 .coach-value {
   font-size: 32px;
   font-weight: 700;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--primary-raw);
 }
 .code-chip {
   position: absolute;
   right: 64px;
-  bottom: 34px;
+  bottom: 16px;
   padding: 7px 18px;
   border-radius: 5px;
   font-size: 22px;

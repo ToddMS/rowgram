@@ -39,6 +39,7 @@ body { font-family: 'Inter', sans-serif; }
 .ticket-main {
   position: relative;
   flex: 1;
+  min-width: 0;
   padding: 56px 60px;
   display: flex;
   flex-direction: column;
@@ -64,7 +65,7 @@ body { font-family: 'Inter', sans-serif; }
   line-height: 0.94;
   letter-spacing: -2px;
   text-transform: uppercase;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--primary-raw);
 }
 .ticket-main .category {
   margin-top: 12px;
@@ -90,6 +91,7 @@ body { font-family: 'Inter', sans-serif; }
   align-items: center;
   gap: 16px;
   padding: 15px 0;
+  min-width: 0;
   border-bottom: 1px solid rgba(9, 78, 42, 0.13); /* PRIMARY COLOR PLACEHOLDER (tint) */
 }
 .seat {
@@ -151,6 +153,7 @@ body { font-family: 'Inter', sans-serif; }
 .ticket-stub {
   position: relative;
   width: 282px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;

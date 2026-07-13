@@ -86,7 +86,7 @@ html, body { width: 1080px; height: 1080px; overflow: hidden; }
   font-weight: 800;
   letter-spacing: 7px;
   text-transform: uppercase;
-  color: #094e2a;                              /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--primary-raw);
   margin-bottom: 8px;
 }
 .t-head .race {

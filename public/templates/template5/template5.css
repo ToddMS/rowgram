@@ -33,7 +33,7 @@ body { font-family: 'Inter', sans-serif; }
   letter-spacing: -2px;
   text-transform: uppercase;
   line-height: 0.9;
-  color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--on-secondary);
 }
 .rail .club-logo {
   position: absolute;
@@ -115,7 +115,7 @@ body { font-family: 'Inter', sans-serif; }
   font-size: 26px;
   font-weight: 800;
   background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
-  color: #094e2a;      /* PRIMARY COLOR PLACEHOLDER */
+  color: var(--on-secondary);
 }
 .name {
   font-size: 33px;
