@@ -95,7 +95,11 @@ body { font-family: 'Inter', sans-serif; }
   top: 188px;
   left: 364px;
   right: 64px;
+  bottom: 160px;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 .crew-row {
   display: flex;
@@ -172,3 +176,9 @@ body { font-family: 'Inter', sans-serif; }
   font-weight: 700;
   color: var(--on-primary);
 }
+
+/* ---- Small crews: center and scale up for 1-2 rowers ---- */
+.crew-list:not(:has(.crew-row:nth-child(6))) { justify-content: center; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row { padding: 52px 0; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .name { font-size: 50px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .seat { width: 62px; height: 62px; font-size: 30px; }

@@ -110,6 +110,12 @@ html, body {
   letter-spacing: 0.2px;
 }
 
+/* ---- Small crews: scale up row height ---- */
+.crew-list:not(:has(.crew-row:nth-child(6))) .crew-row { height: 100px; }
+.crew-list:not(:has(.crew-row:nth-child(6))) .crew-row .name { font-size: 38px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row { height: 160px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row .name { font-size: 48px; }
+
 /* photo column ------------------------------------------------------ */
 .photo-col {
   flex: 1;

@@ -151,8 +151,12 @@ html, body {
 .c-foot b { color: var(--on-white-color); }
 
 
+/* ---- Medium crews (3–5): taller rows to fill cartouche ---- */
+.c-list:not(:has(.c-row:nth-child(6))) .c-row { height: 110px; }
+.c-list:not(:has(.c-row:nth-child(6))) .c-row .name { font-size: 38px; }
+.c-list:not(:has(.c-row:nth-child(6))) .c-row .seat { flex: 0 0 52px; height: 52px; font-size: 22px; }
 /* ---- Small crews (1x, 2-): fill the cartouche ---- */
 .c-list:not(:has(.c-row:nth-child(3))) { gap: 30px; }
-.c-list:not(:has(.c-row:nth-child(3))) .c-row { height: 110px; }
-.c-list:not(:has(.c-row:nth-child(3))) .c-row .seat { width: 58px; height: 58px; font-size: 24px; }
-.c-list:not(:has(.c-row:nth-child(3))) .c-row .name { font-size: 46px; }
+.c-list:not(:has(.c-row:nth-child(3))) .c-row { height: 150px; }
+.c-list:not(:has(.c-row:nth-child(3))) .c-row .seat { flex: 0 0 62px; width: 62px; height: 62px; font-size: 26px; }
+.c-list:not(:has(.c-row:nth-child(3))) .c-row .name { font-size: 52px; }

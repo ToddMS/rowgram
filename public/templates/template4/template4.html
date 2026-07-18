@@ -32,25 +32,27 @@
 
     <!-- Band 3: crew grid on white -->
     <section class="band-names">
+      <div class="crew-block">
 
-      <!-- Cox centred above the rower grid -->
-      {{#hasCox}}
-      <div class="cox-cell">
-        <span class="seat">C</span>
-        <span class="name">{{COX_NAME}}</span>
-      </div>
-      {{/hasCox}}
-
-      <!-- Rowers: 2 columns of 4, stroke -> bow -->
-      <div class="crew-grid">
-        {{#crewMembersNoCox}}
-        <div class="crew-cell">
-          <span class="seat">{{badge}}</span>
-          <span class="name">{{name}}</span>
+        <!-- Cox above the rower grid -->
+        {{#hasCox}}
+        <div class="cox-cell">
+          <span class="seat">C</span>
+          <span class="name">{{COX_NAME}}</span>
         </div>
-        {{/crewMembersNoCox}}
-      </div>
+        {{/hasCox}}
 
+        <!-- Rowers: 2 columns of 4, stroke -> bow -->
+        <div class="crew-grid">
+          {{#crewMembersNoCox}}
+          <div class="crew-cell">
+            <span class="seat">{{badge}}</span>
+            <span class="name">{{name}}</span>
+          </div>
+          {{/crewMembersNoCox}}
+        </div>
+
+      </div>
     </section>
 
     <!-- Band 4: footer on primary -->

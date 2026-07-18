@@ -11,6 +11,8 @@ body { font-family: 'Inter', sans-serif; }
   background: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
   overflow: hidden;
   padding: 0 44px;
+  display: flex;
+  flex-direction: column;
 }
 /* darken the board with a flat overlay */
 .canvas::before {
@@ -21,6 +23,10 @@ body { font-family: 'Inter', sans-serif; }
   z-index: 0;
 }
 .canvas > * { position: relative; z-index: 1; }
+
+.board-head { flex-shrink: 0; }
+.board-body { flex: 1; min-height: 0; }
+.board-foot { flex-shrink: 0; }
 
 /* ---- Board header ---- */
 .board-head {
@@ -122,6 +128,12 @@ body { font-family: 'Inter', sans-serif; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ---- Small crews: distribute rows + scale up text ---- */
+.crew-list:not(:has(.crew-row:nth-child(6))) { justify-content: center; gap: 16px; }
+.crew-list:not(:has(.crew-row:nth-child(6))) .crew-row { height: auto; padding: 20px 18px; }
+.crew-list:not(:has(.crew-row:nth-child(6))) .name { font-size: 36px; }
+.crew-list:not(:has(.crew-row:nth-child(6))) .seat { width: 62px; height: 54px; font-size: 28px; }
 
 /* ---- Footer ---- */
 .board-foot {

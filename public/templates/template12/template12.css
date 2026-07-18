@@ -149,6 +149,7 @@ body { font-family: 'Inter', sans-serif; }
   padding: 8px 0;
   border-bottom: 1px solid rgba(9, 78, 42, 0.13); /* PRIMARY COLOR PLACEHOLDER (tint) */
 }
+.crew-list .crew-row:last-child { border-bottom: none; }
 .seat {
   flex-shrink: 0;
   width: 44px;
@@ -173,11 +174,12 @@ body { font-family: 'Inter', sans-serif; }
 .cox-row {
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 10px 0;
+  gap: 16px;
+  padding: 8px 0;
   border-bottom: 1px solid rgba(9, 78, 42, 0.13);
 }
 .cox-row .seat {
+  flex-shrink: 0;
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -186,14 +188,16 @@ body { font-family: 'Inter', sans-serif; }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
-  font-weight: 900;
-  flex-shrink: 0;
+  font-size: 23px;
+  font-weight: 800;
 }
 .cox-row .name {
-  font-size: 26px;
-  font-weight: 700;
+  font-size: 29px;
+  font-weight: 600;
   color: #161616;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .footer-bar {
   display: flex;
@@ -226,7 +230,8 @@ body { font-family: 'Inter', sans-serif; }
 
 
 /* ---- Small crews (1x, 2-): fill the badge ---- */
-.crew-list:not(:has(.crew-row:nth-child(3))) { margin-top: 60px; row-gap: 30px; }
-.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row { padding: 22px 0; }
-.crew-list:not(:has(.crew-row:nth-child(3))) .seat { width: 60px; height: 60px; font-size: 28px; }
-.crew-list:not(:has(.crew-row:nth-child(3))) .name { font-size: 42px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) { align-content: center; row-gap: 30px; }
+.crew-section:not(:has(.crew-row:nth-child(3))) .crew-row { padding: 22px 0; }
+.crew-section:not(:has(.crew-row:nth-child(3))) .cox-row { padding: 22px 0; }
+.crew-section:not(:has(.crew-row:nth-child(3))) .seat { width: 60px; height: 60px; font-size: 28px; }
+.crew-section:not(:has(.crew-row:nth-child(3))) .name { font-size: 42px; }

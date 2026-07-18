@@ -176,6 +176,12 @@ html, body {
   color: var(--on-secondary, #ffffff);
 }
 
+/* ---- Small crews: scale up rows ---- */
+.roster-list:not(:has(.r-row:nth-child(6))) .r-row { height: 82px; }
+.roster-list:not(:has(.r-row:nth-child(6))) .r-row .name { font-size: 38px; }
+.roster-list:not(:has(.r-row:nth-child(3))) .r-row { height: 130px; }
+.roster-list:not(:has(.r-row:nth-child(3))) .r-row .name { font-size: 48px; }
+
 /* footer ------------------------------------------------------------ */
 .foot {
   height: 64px;

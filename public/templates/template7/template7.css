@@ -48,6 +48,15 @@ body { font-family: 'Inter', sans-serif; }
 }
 .name { font-size: 36px; font-weight: 700; color: #1a1a17; }
 
+/* ---- Small crews: scale up oar, seat, and name ---- */
+.crew-list:not(:has(.crew-row:nth-child(6))) .oar { height: 55px; }
+.crew-list:not(:has(.crew-row:nth-child(6))) .name { font-size: 48px; }
+.crew-list:not(:has(.crew-row:nth-child(6))) .seat { width: 72px; height: 72px; font-size: 34px; }
+/* 1-2 rowers: larger still */
+.crew-list:not(:has(.crew-row:nth-child(3))) .oar { height: 58px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .name { font-size: 64px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .seat { width: 90px; height: 90px; font-size: 44px; }
+
 /* Footer */
 .footer {
   position: absolute; left: 0; bottom: 0; width: 1080px; height: 128px;

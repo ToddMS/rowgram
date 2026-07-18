@@ -139,8 +139,10 @@ body.hide-rings .ring-front { display: none; }
 .page {
   position: absolute;
   inset: 0;
-  padding: 40px 64px 40px 184px;
+  padding: 40px 64px 90px 184px;
   z-index: 4;
+  display: flex;
+  flex-direction: column;
 }
 
 .head {
@@ -184,16 +186,28 @@ body.hide-rings .ring-front { display: none; }
   transform: rotate(2.5deg);
 }
 
-/* each crew row draws its own ruled line — robust to any title length / crew size */
+/* ruled lines fill the full page — rows sit on fixed-height lines like a real notebook */
 .crew-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   border-top: 2px solid rgba(9,78,42,0.18); /* PRIMARY COLOR PLACEHOLDER (rule tint) */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 83px,
+    rgba(9,78,42,0.18) 83px,  /* PRIMARY COLOR PLACEHOLDER (rule tint) */
+    rgba(9,78,42,0.18) 85px
+  );
 }
 .crew-row {
   display: flex;
   align-items: center;
   gap: 20px;
-  height: 74px;
-  border-bottom: 2px solid rgba(9,78,42,0.18); /* PRIMARY COLOR PLACEHOLDER (rule tint) */
+  height: 85px;
+  padding: 0;
+  border-bottom: none;
 }
 .crew-row:last-child { border-bottom: none; }
 .seat {
@@ -218,6 +232,7 @@ body.hide-rings .ring-front { display: none; }
   font-weight: 600;
   color: #25221c;
 }
+
 
 /* coach/date footer */
 .coach-bar {

@@ -221,3 +221,9 @@ html, body {
   font-weight: 800;
   letter-spacing: 5px;
 }
+
+/* ---- 2×2 grid for 4 or fewer rowers ---- */
+.stamp-grid:not(:has(.stamp:nth-child(5))) .stamp { width: 440px; height: 330px; }
+.stamp-grid:not(:has(.stamp:nth-child(5))) .stamp .name { font-size: 40px; }
+.stamp-grid:not(:has(.stamp:nth-child(5))) .stamp .stamp-top { font-size: 18px; }
+.stamp-grid:not(:has(.stamp:nth-child(5))) .stamp .denom { font-size: 16px; letter-spacing: 2px; }

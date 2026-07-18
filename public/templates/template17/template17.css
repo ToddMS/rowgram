@@ -244,3 +244,12 @@ html, body {
   padding-bottom: 0;
 }
 .tb-logo img { width: 115px; height: 115px; display: block; object-fit: contain; }
+
+/* ---- Small crews: scale up rows to fill the crew table ---- */
+.crew-list:not(:has(.crew-row:nth-child(6))) .crew-row { height: 130px; }
+.crew-list:not(:has(.crew-row:nth-child(6))) .crew-row .name { font-size: 38px; }
+.crew-list:not(:has(.crew-row:nth-child(6))) .crew-row .seat { flex: 0 0 62px; height: 62px; font-size: 26px; }
+
+.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row { height: 280px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row .name { font-size: 54px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row .seat { flex: 0 0 80px; height: 80px; font-size: 34px; }

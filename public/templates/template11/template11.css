@@ -70,7 +70,7 @@ body { font-family: 'Inter', sans-serif; }
 /* ---- Roster: bigger freestanding dog-tag plates, no chain — full-width plates, name truly centered, seat pinned at a fixed inset so seats line up in a column ---- */
 .roster { position: absolute; left: 78px; right: 78px; top: 254px; bottom: 158px; z-index: 1; display: flex; flex-direction: column; justify-content: center; }
 /* when a club crest is present, reserve the space above the roster instead of overlapping it */
-.plaque:has(.club-charm) .roster { top: 318px; }
+.plaque:has(.club-charm) .roster { top: 360px; }
 .crew-list { display: flex; flex-direction: column; gap: 22px; }
 .roster > .crew-row { margin-bottom: 22px; }
 
@@ -118,7 +118,7 @@ body { font-family: 'Inter', sans-serif; }
 }
 .name {
   min-width: 0;
-  max-width: calc(100% - 172px);
+  max-width: calc(100% - 100px);
   font-family: 'Oswald', sans-serif;
   font-size: 58px;
   font-weight: 700;
@@ -133,11 +133,11 @@ body { font-family: 'Inter', sans-serif; }
 }
 
 /* ---- Scale for crew size ---- */
-.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .seat { font-size: 50px; width: 56px; left: 28px; }
-.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .name { font-size: 46px; max-width: calc(100% - 150px); }
-.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .crew-row { padding: 36px 44px; }
-.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .crew-list { gap: 16px; }
-.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) > .crew-row { margin-bottom: 16px; }
+.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .seat { font-size: 46px; width: 52px; left: 26px; }
+.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .name { font-size: 42px; max-width: calc(100% - 130px); }
+.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .crew-row { padding: 12px 44px; }
+.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .crew-list { gap: 6px; }
+.roster:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) > .crew-row { margin-bottom: 6px; }
 
 .roster:has(.crew-list .crew-row:nth-child(8)) .seat { font-size: 24px; width: 34px; left: 16px; line-height: 1; }
 .roster:has(.crew-list .crew-row:nth-child(8)) .name { font-size: 24px; line-height: 1; max-width: calc(100% - 100px); }

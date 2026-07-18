@@ -91,7 +91,10 @@ export default function CrewsPage() {
   }
 
   const uniqueClubs = Array.from(new Set(allCrews.map((c) => c.boatClub).filter(Boolean))).map((club) => ({ value: club, label: club }))
-  const uniqueBoatClasses = Array.from(new Set(allCrews.map((c) => c.boatClass).filter(Boolean))).map((bc) => ({ value: bc, label: bc }))
+  const BOAT_CLASS_ORDER: Record<string, number> = { '8+': 0, '4+': 1, '4-': 2, '4x': 3, '2-': 4, '2x': 5, '1x': 6 }
+  const uniqueBoatClasses = Array.from(new Set(allCrews.map((c) => c.boatClass).filter(Boolean)))
+    .sort((a, b) => (BOAT_CLASS_ORDER[a] ?? 99) - (BOAT_CLASS_ORDER[b] ?? 99))
+    .map((bc) => ({ value: bc, label: bc }))
 
   const confirmDeleteCrew = async (crew: any) => {
     if (crew.isGuest) {

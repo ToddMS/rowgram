@@ -142,6 +142,15 @@ body { font-family: 'Inter', sans-serif; }
   color: #161616;
 }
 
+/* ---- Small crews: scale up rows to fill certificate ---- */
+.crew-list:not(:has(.crew-row:nth-child(6))) .crew-row { padding: 16px 0; }
+.crew-list:not(:has(.crew-row:nth-child(6))) .crew-row .name { font-size: 38px; }
+.crew-list:not(:has(.crew-row:nth-child(6))) .seat { font-size: 30px; }
+/* 1-2 rowers: much larger */
+.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row { padding: 52px 0; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row .name { font-size: 62px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .seat { font-size: 46px; width: 52px; }
+
 /* ---- Coach/date — pushed to bottom of content ---- */
 .footer {
   margin-top: auto;

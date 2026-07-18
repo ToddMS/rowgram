@@ -91,7 +91,7 @@ body { font-family: 'Inter', sans-serif; }
   align-items: center;
   gap: 16px;
   margin-top: 26px;
-  margin-bottom: 10px;
+  padding: 8px 0;
 }
 
 /* ---- Crew list (rowers only, below cox) ---- */
@@ -135,6 +135,22 @@ body { font-family: 'Inter', sans-serif; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ---- Small crews: scale up text ---- */
+.crew-list:not(:has(.crew-row:nth-child(6))) .crew-row { padding: 16px 0; }
+.crew-list:not(:has(.crew-row:nth-child(6))) .name { font-size: 38px; }
+.crew-list:not(:has(.crew-row:nth-child(6))) .seat { width: 52px; height: 52px; font-size: 26px; border-radius: 9px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row { padding: 44px 0; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .name { font-size: 52px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .seat { width: 62px; height: 62px; font-size: 30px; border-radius: 10px; }
+.crew-list:not(:has(.crew-row:nth-child(2))) .crew-row { padding: 80px 0; }
+.crew-list:not(:has(.crew-row:nth-child(2))) .name { font-size: 66px; }
+.crew-list:not(:has(.crew-row:nth-child(2))) .seat { width: 76px; height: 76px; font-size: 36px; border-radius: 12px; }
+/* Scale cox text/badge to match crew size (no padding change — avoids overflow with 5 rows) */
+.bib:not(:has(.crew-list .crew-row:nth-child(6))) .cox-row .name { font-size: 38px; }
+.bib:not(:has(.crew-list .crew-row:nth-child(6))) .cox-row .seat { width: 52px; height: 52px; font-size: 26px; border-radius: 9px; }
+.bib:not(:has(.crew-list .crew-row:nth-child(3))) .cox-row .name { font-size: 52px; }
+.bib:not(:has(.crew-list .crew-row:nth-child(3))) .cox-row .seat { width: 62px; height: 62px; font-size: 30px; border-radius: 10px; }
 
 .coach {
   position: absolute;

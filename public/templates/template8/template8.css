@@ -116,12 +116,25 @@ body { font-family: 'Inter', sans-serif; }
   text-overflow: ellipsis;
 }
 
+/* ---- Small crews: scale up text to fill ticket space ---- */
+.crew-section:not(:has(.crew-row:nth-child(6))) .crew-row,
+.crew-section:not(:has(.crew-row:nth-child(6))) .cox-row { padding: 22px 0; }
+.crew-section:not(:has(.crew-row:nth-child(6))) .crew-row .name,
+.crew-section:not(:has(.crew-row:nth-child(6))) .cox-row .name { font-size: 34px; }
+.crew-section:not(:has(.crew-row:nth-child(6))) .seat { width: 50px; height: 50px; font-size: 26px; }
+.crew-section:not(:has(.crew-row:nth-child(3))) .crew-row,
+.crew-section:not(:has(.crew-row:nth-child(3))) .cox-row { padding: 38px 0; }
+.crew-section:not(:has(.crew-row:nth-child(3))) .crew-row .name,
+.crew-section:not(:has(.crew-row:nth-child(3))) .cox-row .name { font-size: 44px; }
+.crew-section:not(:has(.crew-row:nth-child(3))) .seat { width: 60px; height: 60px; font-size: 30px; }
+
 /* ---- Cox row (above crew list) ---- */
 .cox-row {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 10px;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(9, 78, 42, 0.13); /* PRIMARY COLOR PLACEHOLDER (tint) */
 }
 .cox-row .name {
   font-size: 29px;

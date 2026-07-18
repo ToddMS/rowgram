@@ -169,11 +169,18 @@ async function main() {
   console.log(`Total renders: ${crews.length * templatesToRun.length}\n`)
 
   const puppeteer = await import('puppeteer')
-  const browser = await puppeteer.default.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  })
 
+  const RESTART_EVERY = 50 // restart browser every N renders to prevent memory leak
+
+  async function launchBrowser() {
+    return puppeteer.default.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    })
+  }
+
+  let browser = await launchBrowser()
+  let renderCount = 0
   let passed = 0
   let failed = 0
   const failures: Array<string> = []
@@ -185,6 +192,12 @@ async function main() {
       await fs.mkdir(crewDir, { recursive: true })
 
       for (const num of templatesToRun) {
+        // Restart browser periodically to avoid memory exhaustion
+        if (renderCount > 0 && renderCount % RESTART_EVERY === 0) {
+          await browser.close()
+          browser = await launchBrowser()
+        }
+
         const label = `${crew.name} × template${num}`
         const start = Date.now()
         try {
@@ -201,6 +214,7 @@ async function main() {
           failures.push(`${label}: ${msg}`)
           failed++
         }
+        renderCount++
       }
     }
   } finally {

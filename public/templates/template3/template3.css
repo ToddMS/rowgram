@@ -173,8 +173,18 @@ body {
 }
 
 
-/* ---- Small crews (1x, 2-): scale rows so they aren't lost under the headline ---- */
-.crew-list:not(:has(.crew-row:nth-child(3))) { row-gap: 30px; }
+/* ---- Small/medium crews (< 6 rowers): fill available space evenly ---- */
+.crew-list:not(:has(.crew-row:nth-child(6))) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  bottom: 150px;
+}
+/* ---- Non-coxed small crews: move crew-list up to reduce gap above ---- */
+.canvas:not(:has(.cox-row)) .crew-list:not(:has(.crew-row:nth-child(6))) {
+  top: 340px;
+}
+/* ---- Very small crews (1–2 rowers): scale up text ---- */
 .crew-list:not(:has(.crew-row:nth-child(3))) .crew-row { padding: 26px 0; }
 .crew-list:not(:has(.crew-row:nth-child(3))) .seat { width: 66px; height: 66px; font-size: 32px; }
 .crew-list:not(:has(.crew-row:nth-child(3))) .name { font-size: 46px; }

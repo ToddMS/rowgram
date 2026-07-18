@@ -109,7 +109,6 @@ body {
   justify-content: flex-start;
   align-items: center;
   gap: 20px;
-  padding-bottom: 12px;
 }
 
 /* Rowers: 2 columns of 4, column-major */
@@ -156,6 +155,25 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ---- Small crews: scale up seat + name so content fills the band ---- */
+.band-names:not(:has(.crew-cell:nth-child(6))) .crew-cell .seat,
+.band-names:not(:has(.crew-cell:nth-child(6))) .cox-cell .seat {
+  width: 68px; height: 68px; font-size: 32px; border-radius: 14px;
+}
+.band-names:not(:has(.crew-cell:nth-child(6))) .crew-cell .name,
+.band-names:not(:has(.crew-cell:nth-child(6))) .cox-cell .name { font-size: 44px; }
+.band-names:not(:has(.crew-cell:nth-child(6))) .crew-grid { row-gap: 28px; }
+/* 1-2 members: larger still */
+.band-names:not(:has(.crew-cell:nth-child(3))) .crew-cell .seat,
+.band-names:not(:has(.crew-cell:nth-child(3))) .cox-cell .seat {
+  width: 90px; height: 90px; font-size: 42px; border-radius: 18px;
+}
+.band-names:not(:has(.crew-cell:nth-child(3))) .crew-cell .name,
+.band-names:not(:has(.crew-cell:nth-child(3))) .cox-cell .name { font-size: 62px; }
+/* ---- Crew block wrapper: cox + grid as one centered unit ---- */
+.crew-block { display: flex; flex-direction: column; gap: 18px; }
+.band-names:not(:has(.crew-cell:nth-child(6))) .crew-block { align-self: center; width: fit-content; gap: 28px; }
 
 /* ---- Band 4: footer on primary ---- */
 .band-footer {
