@@ -144,8 +144,8 @@ body { font-family: 'Inter', sans-serif; }
 .roster:has(.crew-list .crew-row:nth-child(8)) .crew-row { padding: 10px 26px; border-radius: 12px; width: 520px; }
 .roster:has(.crew-list .crew-row:nth-child(8)) .crew-list { gap: 4px; }
 .roster:has(.crew-list .crew-row:nth-child(8)) > .crew-row { margin-bottom: 4px; }
-.plaque:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .club-charm { width: 110px; height: 110px; }
-.plaque:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))):has(.club-charm) .roster { top: 290px; }
+.plaque:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .club-charm { width: 110px; height: 110px; top: 190px; }
+.plaque:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))):has(.club-charm) .roster { top: 320px; }
 .plaque:has(.crew-list .crew-row:nth-child(8)) .club-charm { width: 126px; height: 126px; top: 162px; }
 .plaque:has(.crew-list .crew-row:nth-child(8)):has(.club-charm) .roster { top: 286px; }
 

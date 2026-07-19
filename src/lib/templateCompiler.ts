@@ -525,16 +525,17 @@ export class TemplateCompiler {
     let result = html
 
     // ── Pass 1: CSS `color:` property → text-safe version ─────────────────
+    // Negative lookbehind (?<!-) prevents matching background-color:, border-color:, etc.
     for (const ph of PRIMARY_PLACEHOLDERS) {
       // Matches: color: #hex and color:#hex (with optional spaces)
       result = result.replace(
-        new RegExp(`(color:\\s*)${ph}`, 'gi'),
+        new RegExp(`(?<!-)(color:\\s*)${ph}`, 'gi'),
         `$1${primarySafe}`,
       )
     }
     for (const ph of SECONDARY_PLACEHOLDERS) {
       result = result.replace(
-        new RegExp(`(color:\\s*)${ph}`, 'gi'),
+        new RegExp(`(?<!-)(color:\\s*)${ph}`, 'gi'),
         `$1${secondarySafe}`,
       )
     }
