@@ -25,20 +25,22 @@
       <div class="rule"></div>
 
       <div class="crew-section">
-        {{#hasCox}}
-        <div class="cox-row">
-          <span class="seat">C</span>
-          <span class="name">{{COX_NAME}}</span>
-        </div>
-        {{/hasCox}}
-        <section class="crew-list">
-          {{#crewMembersNoCox}}
-          <div class="crew-row">
-            <span class="seat">{{badge}}</span>
-            <span class="name">{{name}}</span>
+        <div class="crew-block">
+          {{#hasCox}}
+          <div class="cox-row">
+            <span class="seat">C</span>
+            <span class="name">{{COX_NAME}}</span>
           </div>
-          {{/crewMembersNoCox}}
-        </section>
+          {{/hasCox}}
+          <section class="crew-list">
+            {{#crewMembersNoCox}}
+            <div class="crew-row">
+              <span class="seat">{{badge}}</span>
+              <span class="name">{{name}}</span>
+            </div>
+            {{/crewMembersNoCox}}
+          </section>
+        </div>
       </div>
 
       <div class="footer-bar">

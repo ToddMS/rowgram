@@ -122,6 +122,17 @@ body { font-family: 'Inter', sans-serif; }
   display: flex;
   flex-direction: column;
   min-height: 0;
+  align-items: center;
+}
+
+/* Crew block: centers as a unit, sized to its widest row */
+.crew-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: fit-content;
+  max-width: 100%;
 }
 
 /* ---- Crew list ---- */
@@ -130,14 +141,14 @@ body { font-family: 'Inter', sans-serif; }
   min-height: 0;
   margin-top: 0;
   display: grid;
-  grid-template-columns: 1fr;          /* default: single column for small crews */
+  grid-template-columns: max-content;  /* sizes to widest content row */
   grid-auto-flow: row;
   column-gap: 44px;
   align-content: space-between;
 }
 /* 6+ rowers (e.g. 8+) reflow into the original two-column, column-major grid */
 .crew-list:has(.crew-row:nth-child(6)) {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: max-content max-content;
   grid-template-rows: repeat(4, auto);
   grid-auto-flow: column;
   column-gap: 44px;
