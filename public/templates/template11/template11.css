@@ -71,8 +71,8 @@ body { font-family: 'Inter', sans-serif; }
 .roster { position: absolute; left: 78px; right: 78px; top: 254px; bottom: 158px; z-index: 1; display: flex; flex-direction: column; justify-content: center; }
 /* when a club crest is present, reserve the space above the roster instead of overlapping it */
 .plaque:has(.club-charm) .roster { top: 360px; }
-.crew-list { display: flex; flex-direction: column; gap: 22px; }
-.roster > .crew-row { margin-bottom: 22px; }
+.crew-list { display: flex; flex-direction: column; gap: 22px; flex-shrink: 0; }
+.roster > .crew-row { margin-bottom: 22px; flex-shrink: 0; }
 
 .crew-row {
   position: relative;
@@ -144,6 +144,8 @@ body { font-family: 'Inter', sans-serif; }
 .roster:has(.crew-list .crew-row:nth-child(8)) .crew-row { padding: 10px 26px; border-radius: 12px; width: 520px; }
 .roster:has(.crew-list .crew-row:nth-child(8)) .crew-list { gap: 4px; }
 .roster:has(.crew-list .crew-row:nth-child(8)) > .crew-row { margin-bottom: 4px; }
+.plaque:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))) .club-charm { width: 110px; height: 110px; }
+.plaque:has(.crew-list .crew-row:nth-child(4)):not(:has(.crew-list .crew-row:nth-child(8))):has(.club-charm) .roster { top: 290px; }
 .plaque:has(.crew-list .crew-row:nth-child(8)) .club-charm { width: 126px; height: 126px; top: 162px; }
 .plaque:has(.crew-list .crew-row:nth-child(8)):has(.club-charm) .roster { top: 286px; }
 
