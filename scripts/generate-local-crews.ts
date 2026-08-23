@@ -185,6 +185,9 @@ async function main() {
   console.log(`Output:    ${OUT_DIR}`)
   console.log(`Total renders: ${crews.length * templatesToRun.length}\n`)
 
+  await fs.rm(OUT_DIR, { recursive: true, force: true })
+  await fs.mkdir(OUT_DIR, { recursive: true })
+
   const puppeteer = await import('puppeteer')
 
   const RESTART_EVERY = 50 // restart browser every N renders to prevent memory leak
