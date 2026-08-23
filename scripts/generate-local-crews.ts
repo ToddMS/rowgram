@@ -12,6 +12,8 @@
  *   npx tsx scripts/generate-local-crews.ts --template=1,4,11   # subset of templates
  *   npx tsx scripts/generate-local-crews.ts --boat=4+,8+        # different boat codes
  *   npx tsx scripts/generate-local-crews.ts --out=my-dir        # custom output dir
+ *   npx tsx scripts/generate-local-crews.ts --long-names        # only crews with long names/races (≥15 chars)
+ *   npx tsx scripts/generate-local-crews.ts --long-names --min-length=20  # custom threshold
  */
 
 import fs from 'node:fs/promises'
@@ -36,6 +38,12 @@ const boatFilter = boatCodes.length ? boatCodes : ['8+']
 
 const outArg = args.find((a) => a.startsWith('--out='))?.slice('--out='.length)
 const OUT_DIR = path.join(process.cwd(), outArg ?? 'local-crew-output')
+
+// --long-names: only render crews where crew name OR race name is "long"
+// --min-length=N: threshold (default 15)
+const longNamesOnly = args.includes('--long-names')
+const minLengthArg = args.find((a) => a.startsWith('--min-length='))
+const MIN_LONG_LENGTH = minLengthArg ? parseInt(minLengthArg.slice('--min-length='.length), 10) : 15
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -146,6 +154,15 @@ async function main() {
     })
   } finally {
     await prisma.$disconnect()
+  }
+
+  if (longNamesOnly) {
+    crews = crews.filter((c) => {
+      const crewLen = (c.name ?? '').length
+      const raceLen = (c.raceName ?? '').length
+      return crewLen >= MIN_LONG_LENGTH || raceLen >= MIN_LONG_LENGTH
+    })
+    console.log(`--long-names: keeping crews with name or race name ≥ ${MIN_LONG_LENGTH} chars`)
   }
 
   if (crews.length === 0) {

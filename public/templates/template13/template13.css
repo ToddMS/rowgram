@@ -152,7 +152,7 @@ body.hide-rings .ring-front { display: none; }
   min-height: 116px;
   padding-bottom: 18px;
 }
-.titles { flex: 1; }
+.titles { flex: 1; min-width: 0; }
 .eyebrow {
   display: inline-block;
   font-size: 17px;
@@ -171,12 +171,18 @@ body.hide-rings .ring-front { display: none; }
   line-height: 0.98;
   letter-spacing: -1px;
   color: var(--on-white-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .category {
   margin-top: 6px;
   font-size: 21px;
   font-weight: 500;
   color: #4a463c;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .club-logo {
   width: 96px;
@@ -231,6 +237,10 @@ body.hide-rings .ring-front { display: none; }
   font-size: 33px;
   font-weight: 600;
   color: #25221c;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 
@@ -260,6 +270,10 @@ body.hide-rings .ring-front { display: none; }
   font-size: 32px;
   font-weight: 700;
   color: var(--on-white-color);
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .code-chip {
   position: absolute;

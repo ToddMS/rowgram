@@ -36,6 +36,7 @@ body { font-family: 'Inter', sans-serif; }
   color: var(--on-secondary);
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 .rail .club-logo {
   position: absolute;
@@ -78,6 +79,9 @@ body { font-family: 'Inter', sans-serif; }
   font-size: 30px;
   font-weight: 600;
   color: var(--on-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ghost-code {
@@ -127,6 +131,10 @@ body { font-family: 'Inter', sans-serif; }
   font-size: 33px;
   font-weight: 600;
   color: var(--on-primary);
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ---- Footer ---- */
@@ -177,6 +185,10 @@ body { font-family: 'Inter', sans-serif; }
   font-size: 30px;
   font-weight: 700;
   color: var(--on-primary);
+  max-width: 340px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ---- Small crews: center and scale up for 1-2 rowers ---- */

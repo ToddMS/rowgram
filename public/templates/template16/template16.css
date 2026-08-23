@@ -93,15 +93,16 @@ html, body { width: 1080px; height: 1080px; overflow: hidden; }
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   padding: 4px 0;
 }
 .c-row {
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   gap: 18px;
   max-height: 64px;
+  max-width: 100%;
 }
 .c-row .seat {
   min-width: 40px;
@@ -122,9 +123,10 @@ html, body { width: 1080px; height: 1080px; overflow: hidden; }
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  flex: 1;
-  min-width: 0;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .director {

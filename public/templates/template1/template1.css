@@ -48,8 +48,11 @@ body {
   font-weight: bold;
   font-family: 'Inter', sans-serif;
   margin: 0;
-  line-height: 1;
+  line-height: 1.15;
   max-width: 900px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .crew-category {
@@ -59,6 +62,9 @@ body {
   margin: 8px 0 0 0;
   line-height: 1;
   max-width: 800px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Boat container - optimized for 1x */
@@ -125,14 +131,21 @@ body {
   position: absolute;
   top: 25px;
   transform: translateY(-50%);
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Left side positions: names extend to the left */
+/* Left side positions: names extend to the left, toward the canvas edge.
+   Names are already shortened + hard-capped upstream (templateCompiler's
+   formatName), so this max-width is a clipping backstop for the rare case
+   that still doesn't fit — not the primary truncation mechanism. */
 .crew-position[data-seat="2"] .member-name,
 .crew-position[data-seat="4"] .member-name,
 .crew-position[data-seat="6"] .member-name,
 .crew-position[data-seat="S"] .member-name {
   right: 15px; /* Badge width (50px) + gap (15px) */
+  max-width: 290px;
   text-align: right;
 }
 

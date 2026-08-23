@@ -44,12 +44,18 @@ body {
   letter-spacing: -2px;
   text-transform: uppercase;
   color: var(--on-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .band-top .category {
   margin-top: 14px;
   font-size: 27px;
   font-weight: 600;
   color: var(--on-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ---- Band 2: boat on secondary ---- */
@@ -206,6 +212,10 @@ body {
   font-size: 30px;
   font-weight: 700;
   color: var(--on-primary);
+  max-width: 420px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .band-footer .club-logo {
   margin-left: auto;

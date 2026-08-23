@@ -49,6 +49,9 @@ body { font-family: 'Inter', sans-serif; }
   text-transform: uppercase;
   color: #ffffff;
   text-shadow: 0 2px 6px rgba(60,40,18,0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .header .category {
   margin-top: 12px;
@@ -56,6 +59,9 @@ body { font-family: 'Inter', sans-serif; }
   font-weight: 700;
   color: #fdf6e7;
   text-shadow: 0 1px 3px rgba(60,40,18,0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ---- Wall of photos ---- */
@@ -204,4 +210,8 @@ body { font-family: 'Inter', sans-serif; }
   font-size: 20px;
   font-weight: 700;
   color: #161616;
+  max-width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

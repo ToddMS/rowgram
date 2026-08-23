@@ -161,7 +161,9 @@ body {
   line-height: 1.2;
   color: #094e2a; /* Will be replaced with primary color */
   max-width: 732px;
-  word-wrap: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-align: center;
 }
 
@@ -222,6 +224,10 @@ body {
   margin: 0;
   color: #094e2a; /* Will be replaced with primary color */
   line-height: 1.2;
+  max-width: 420px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Crew names list */
@@ -295,4 +301,7 @@ body {
   font-family: 'Inter', sans-serif;
   color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

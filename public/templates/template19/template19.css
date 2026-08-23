@@ -52,9 +52,6 @@ html, body {
 .mast img {
   width: 112px;
   height: 112px;
-  background: rgba(255, 255, 255, 0.28);
-  border-radius: 18px;
-  padding: 8px;
   display: block;
 }
 

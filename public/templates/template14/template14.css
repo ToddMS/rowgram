@@ -93,12 +93,19 @@ html, body {
   font-weight: 900;
   letter-spacing: -0.5px;
   line-height: 1.0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .c-head .cat {
   margin-top: 10px;
   font-style: italic;
   font-size: 17px;
   color: #5a554a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* crew */
@@ -133,6 +140,10 @@ html, body {
 .c-row .name {
   font-size: 30px;
   font-weight: 600;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* footer */
@@ -147,6 +158,9 @@ html, body {
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .c-foot b { color: var(--on-white-color); }
 

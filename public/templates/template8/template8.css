@@ -66,12 +66,19 @@ body { font-family: 'Inter', sans-serif; }
   letter-spacing: -2px;
   text-transform: uppercase;
   color: var(--on-white-color);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .ticket-main .category {
   margin-top: 12px;
   font-size: 25px;
   font-weight: 600;
   color: #161616;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .crew-list {
   margin-top: 0;
@@ -215,4 +222,8 @@ body { font-family: 'Inter', sans-serif; }
   font-weight: 700;
   color: var(--on-secondary);
   text-align: center;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

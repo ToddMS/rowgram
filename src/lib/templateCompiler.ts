@@ -872,36 +872,41 @@ export class TemplateCompiler {
     console.log('  - Original positions:', reversedCrewOrder.map(m => m.POSITION))
     console.log('  - Abbreviated positions:', abbreviatedCrewOrder.map(m => m.POSITION))
 
+    const clubNameValue = this.truncate(crew.club?.name || crew.clubName || 'Rowing Club', this.LABEL_HARD_CAP)
+
     return {
-      CLUB_NAME: crew.club?.name || crew.clubName || 'Rowing Club',
-      CREW_NAME: crew.name || 'Crew',
+      CLUB_NAME: clubNameValue,
+      CREW_NAME: this.truncate(crew.name || 'Crew', this.LABEL_HARD_CAP),
       BOAT_TYPE: getBoatType(crew.boatCode)?.name || 'Eight',
       BOAT_CODE: boatCode,
       SEATS:
         getBoatType(crew.boatCode)?.seats ||
         crewMembers.filter((m) => m.POSITION !== 'Coxswain').length ||
         8,
-      RACE_NAME: crew.raceName || 'Championship Race',
-      RACE_CATEGORY: crew.raceCategory || undefined,
+      RACE_NAME: this.truncate(crew.raceName || 'Championship Race', this.TITLE_HARD_CAP),
+      RACE_CATEGORY: crew.raceCategory ? this.truncate(crew.raceCategory, this.LABEL_HARD_CAP) : undefined,
       RACE_DATE: crew.raceDate ? TemplateCompiler.formatRaceDate(crew.raceDate) : undefined,
       EDITION_TEXT: crew.raceDate ? TemplateCompiler.formatRaceDate(crew.raceDate) : 'Late Edition',
       SHEET_NUMBER: 1,
       TOTAL_SHEETS: 1,
-      BOAT_NAME: crew.boatName || `${getBoatType(crew.boatCode)?.name || 'Eight'} Shell`,
+      BOAT_NAME: this.truncate(
+        crew.boatName || `${getBoatType(crew.boatCode)?.name || 'Eight'} Shell`,
+        this.LABEL_HARD_CAP,
+      ),
       COACH_NAME: this.formatName(crew.coachName || crew.coach?.name || 'Head Coach'),
       CREW_MEMBERS: this.isTemplate2(template)
         ? abbreviatedCrewOrder
         : reversedCrewOrder,
       BOAT_IMAGE_URL: boatImageInfo.url,
       BOAT_IMAGE_AVAILABLE: boatImageInfo.available,
-      raceName: crew.raceName || 'Championship Regatta 2025',
-      crewCategory: crewCategory,
+      raceName: this.truncate(crew.raceName || 'Championship Regatta 2025', this.TITLE_HARD_CAP),
+      crewCategory: this.truncate(crewCategory, this.LABEL_HARD_CAP),
       crewMembers: crewMembersWithPositions,
       crewMembersNoCox,
       COX_NAME: coxPosition?.name,
       hasCox: !!coxPosition,
       clubLogo: clubLogoInfo.url || null,
-      clubName: crew.club?.name || crew.clubName || 'Rowing Club',
+      clubName: clubNameValue,
       boatImage: boatImageInfo.url,
       positions: this.generateOarPositions(boatCode),
     }
@@ -930,9 +935,28 @@ export class TemplateCompiler {
   }
 
   private static readonly NAME_MAX_LENGTH = 15
+  private static readonly NAME_HARD_CAP = 20
+  private static readonly TITLE_HARD_CAP = 60
+  private static readonly LABEL_HARD_CAP = 55
 
   /**
-   * Format name: full name by default, abbreviated to "F. Surname" if over NAME_MAX_LENGTH chars.
+   * Hard ceiling for any text placed into a template: cuts to maxLength - 1
+   * characters and appends an ellipsis. This is the last-resort backstop for
+   * text that's still too long after any upstream shortening (e.g. formatName's
+   * "F. Surname" abbreviation) — every template renders at a fixed 1080px
+   * canvas with no scroll, so unbounded text either overlaps neighbouring
+   * elements or gets clipped mid-character with no visual indication.
+   */
+  private static truncate(text: string, maxLength: number): string {
+    if (!text || typeof text !== 'string') return text || ''
+    const trimmed = text.trim()
+    if (trimmed.length <= maxLength) return trimmed
+    return `${trimmed.slice(0, maxLength - 1).trimEnd()}…`
+  }
+
+  /**
+   * Format name: full name by default, abbreviated to "F. Surname" if over NAME_MAX_LENGTH chars,
+   * then hard-capped at NAME_HARD_CAP so even long hyphenated surnames can't overflow a seat badge row.
    */
   private static formatName(name: string): string {
     if (!name || typeof name !== 'string') {
@@ -942,17 +966,18 @@ export class TemplateCompiler {
     const trimmedName = name.trim()
     const nameParts = trimmedName.split(/\s+/)
 
+    let formatted: string
     if (nameParts.length === 1) {
-      return nameParts[0]
+      formatted = nameParts[0]
+    } else if (trimmedName.length <= this.NAME_MAX_LENGTH) {
+      formatted = trimmedName
+    } else {
+      const firstInitial = nameParts[0].charAt(0).toUpperCase()
+      const lastName = nameParts[nameParts.length - 1]
+      formatted = `${firstInitial}. ${lastName}`
     }
 
-    if (trimmedName.length <= this.NAME_MAX_LENGTH) {
-      return trimmedName
-    }
-
-    const firstInitial = nameParts[0].charAt(0).toUpperCase()
-    const lastName = nameParts[nameParts.length - 1]
-    return `${firstInitial}. ${lastName}`
+    return this.truncate(formatted, this.NAME_HARD_CAP)
   }
 
   /**

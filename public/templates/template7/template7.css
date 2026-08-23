@@ -23,6 +23,8 @@ body { font-family: 'Inter', sans-serif; }
 .category {
   margin-top: 16px; font-size: 26px; font-weight: 600;
   color: #094e2a; /* PRIMARY COLOR PLACEHOLDER */
+  max-width: calc(100% - 200px);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .crest { position: absolute; top: 0; right: 0; width: 180px; height: 180px; object-fit: contain; }
 
@@ -46,7 +48,10 @@ body { font-family: 'Inter', sans-serif; }
   background: #f9a8d4; /* SECONDARY COLOR PLACEHOLDER */
   color: var(--on-secondary);
 }
-.name { font-size: 36px; font-weight: 700; color: #1a1a17; }
+.name {
+  font-size: 36px; font-weight: 700; color: #1a1a17;
+  min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 
 /* ---- Small crews: scale up oar, seat, and name ---- */
 .crew-list:not(:has(.crew-row:nth-child(6))) .oar { height: 55px; }
@@ -69,4 +74,7 @@ body { font-family: 'Inter', sans-serif; }
   color: var(--on-primary);
   opacity: 0.6;
 }
-.coach-name { font-size: 32px; font-weight: 700; color: var(--on-primary); }
+.coach-name {
+  font-size: 32px; font-weight: 700; color: var(--on-primary);
+  max-width: 420px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
