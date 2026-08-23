@@ -1339,9 +1339,9 @@ export class TemplateCompiler {
     // was centering the whole badge+name flex row on its own width, dragging
     // the badge left as the rower's name got longer.
     const positions: Record<string, string> = {
-      'S': 'top: 60% !important; left: 50% !important; transform: translateY(-50%) !important;',
-      '1x': 'top: 60% !important; left: 50% !important; transform: translateY(-50%) !important;',
-      'Sculler': 'top: 60% !important; left: 50% !important; transform: translateY(-50%) !important;'
+      'S': 'top: 37% !important; left: 55% !important; transform: translateY(-50%) !important;',
+      '1x': 'top: 37% !important; left: 55% !important; transform: translateY(-50%) !important;',
+      'Sculler': 'top: 37% !important; left: 55% !important; transform: translateY(-50%) !important;'
     }
     return positions[badge] || 'top: 53% !important; left: 50% !important; transform: translate(-50%, -50%) !important;'
   }
