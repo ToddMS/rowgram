@@ -158,12 +158,11 @@ body {
   left: 65px; /* Badge width (50px) + gap (15px) */
 }
 
-/* Special styling for 1x - badge with name to the right */
+/* Special styling for 1x - badge with name to the right.
+   Position (top/left/transform) comes from the inline style set by
+   templateCompiler's get1xPositions — kept in one place so it can't drift
+   out of sync with this layout rule. */
 .crew-position[data-seat="1x"] {
-  position: absolute !important;
-  top: 60% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
   display: flex !important;
   align-items: center !important;
   gap: 15px !important;
