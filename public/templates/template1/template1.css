@@ -137,15 +137,16 @@ body {
 }
 
 /* Left side positions: names extend to the left, toward the canvas edge.
-   Names are already shortened + hard-capped upstream (templateCompiler's
-   formatName), so this max-width is a clipping backstop for the rare case
-   that still doesn't fit — not the primary truncation mechanism. */
+   max-width is capped at 260px (not wider) because the closest badge anchor
+   (2x/2-'s "S" at left:290px) leaves only ~275px before the canvas edge —
+   a wider box here runs the name off-screen at that anchor. Don't raise this
+   without re-checking the tightest left-side anchor across all boat types. */
 .crew-position[data-seat="2"] .member-name,
 .crew-position[data-seat="4"] .member-name,
 .crew-position[data-seat="6"] .member-name,
 .crew-position[data-seat="S"] .member-name {
   right: 15px; /* Badge width (50px) + gap (15px) */
-  max-width: 290px;
+  max-width: 260px;
   text-align: right;
 }
 

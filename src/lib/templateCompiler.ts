@@ -1312,9 +1312,13 @@ export class TemplateCompiler {
    * Position layout for 2x boats (Double Sculls)
    */
   private static get2xPositions(badge: string): string {
+    // right:340/left:290 keep the badge clear of the oar-blade tips (measured
+    // against the bare boat silhouette). A later "nudge inward" to 375/325
+    // moved both badges ~35px closer to center, landing them right on the
+    // blades — reverted back to the values that actually clear the boat.
     const positions: Record<string, string> = {
-      'B': 'top: 46% !important; right: 375px !important;',
-      'S': 'top: 63% !important; left: 325px !important;'
+      'B': 'top: 46% !important; right: 340px !important;',
+      'S': 'top: 63% !important; left: 290px !important;'
     }
     return positions[badge] || 'top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important;'
   }
@@ -1323,9 +1327,10 @@ export class TemplateCompiler {
    * Position layout for 2- boats (Coxless Pair)
    */
   private static get2MinusPositions(badge: string): string {
+    // See get2xPositions — same oar-blade clearance fix.
     const positions: Record<string, string> = {
-      'B': 'top: 49% !important; right: 375px !important;',
-      'S': 'top: 63% !important; left: 325px !important;'
+      'B': 'top: 49% !important; right: 340px !important;',
+      'S': 'top: 63% !important; left: 290px !important;'
     }
     return positions[badge] || 'top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important;'
   }
