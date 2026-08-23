@@ -1313,8 +1313,8 @@ export class TemplateCompiler {
    */
   private static get2xPositions(badge: string): string {
     const positions: Record<string, string> = {
-      'B': 'top: 46% !important; right: 340px !important;',
-      'S': 'top: 63% !important; left: 290px !important;'
+      'B': 'top: 46% !important; right: 375px !important;',
+      'S': 'top: 63% !important; left: 325px !important;'
     }
     return positions[badge] || 'top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important;'
   }
@@ -1324,8 +1324,8 @@ export class TemplateCompiler {
    */
   private static get2MinusPositions(badge: string): string {
     const positions: Record<string, string> = {
-      'B': 'top: 49% !important; right: 340px !important;',
-      'S': 'top: 63% !important; left: 290px !important;'
+      'B': 'top: 49% !important; right: 375px !important;',
+      'S': 'top: 63% !important; left: 325px !important;'
     }
     return positions[badge] || 'top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important;'
   }
