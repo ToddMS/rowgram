@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { getBoatType } from './boat-types'
-import { textSafeOnWhite, textSafeOnDark, getContrastRatio, clampToMinContrast } from './colorUtils'
+import { textSafeOnWhite, textSafeOnDark, getContrastRatio, clampToMinContrast, colorSafeOnWhite } from './colorUtils'
 
 export interface TemplateData {
   CLUB_NAME: string
@@ -400,6 +400,12 @@ export class TemplateCompiler {
   private static applyColorScheme(html: string, colors: ColorScheme): string {
     let styledHtml = html
 
+    // Some templates render a club color as a decorative fill directly on a
+    // white background (Template 2's corner brackets, Template 3's rule).
+    // Swap to the other club color when the assigned one is too close to white.
+    styledHtml = this.applyTemplate2BracketColors(styledHtml, colors)
+    styledHtml = this.applyTemplate3RuleColor(styledHtml, colors)
+
     // Apply comprehensive color mappings for all templates
     styledHtml = this.applyGradientColors(styledHtml, colors)
     styledHtml = this.applySolidColors(styledHtml, colors)
@@ -549,6 +555,51 @@ export class TemplateCompiler {
     }
 
     return result
+  }
+
+  /**
+   * Swap the background color declared for `selector`'s CSS rule to `newHex` when
+   * it currently equals `originalHex`. Scoped to that one rule block, so identical
+   * placeholder colors used elsewhere in the same stylesheet are left untouched.
+   */
+  private static swapSelectorBackgroundColor(
+    html: string,
+    selector: string,
+    originalHex: string,
+    newHex: string,
+  ): string {
+    const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const escapedHex = originalHex.replace('#', '')
+    // `[^{]*` (not `\s*`) between the selector and `{` so this still matches when
+    // `selector` is just one entry in a comma-separated selector list.
+    const pattern = new RegExp(
+      `(${escapedSelector}[^{]*\\{[^}]*background(?:-color)?:\\s*)#${escapedHex}([^}]*\\})`,
+    )
+    return html.replace(pattern, `$1${newHex}$2`)
+  }
+
+  /**
+   * Swap a Template 2 corner bracket to the other club color when its assigned
+   * color is too close to the white card background to read as a visible bracket.
+   * No-op for every other template (the target selectors only appear in template2.css).
+   */
+  private static applyTemplate2BracketColors(html: string, colors: ColorScheme): string {
+    const pinkColor = colorSafeOnWhite(colors.secondaryColor, colors.primaryColor)
+    const greenColor = colorSafeOnWhite(colors.primaryColor, colors.secondaryColor)
+
+    let result = this.swapSelectorBackgroundColor(html, '.pink .bracket-horizontal', '#f3bfd4', pinkColor)
+    result = this.swapSelectorBackgroundColor(result, '.green .bracket-horizontal', '#15803d', greenColor)
+    return result
+  }
+
+  /**
+   * Swap Template 3's secondary-colour rule (the bar under the race name) to the
+   * primary color when secondary is too close to the white canvas to read as a
+   * visible line. No-op for every other template (`.rule` only appears in template3.css).
+   */
+  private static applyTemplate3RuleColor(html: string, colors: ColorScheme): string {
+    const ruleColor = colorSafeOnWhite(colors.secondaryColor, colors.primaryColor)
+    return this.swapSelectorBackgroundColor(html, '.rule', '#f9a8d4', ruleColor)
   }
 
   /**

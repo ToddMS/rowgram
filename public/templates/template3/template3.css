@@ -195,7 +195,13 @@ body {
 .canvas:not(:has(.cox-row)) .crew-list:not(:has(.crew-row:nth-child(6))) {
   top: 340px;
 }
-/* ---- Very small crews (1–2 rowers): scale up text ---- */
-.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row { padding: 26px 0; }
-.crew-list:not(:has(.crew-row:nth-child(3))) .seat { width: 66px; height: 66px; font-size: 32px; }
-.crew-list:not(:has(.crew-row:nth-child(3))) .name { font-size: 46px; }
+/* ---- Very small crews (1–2 rowers): make the row a second typographic
+   anchor (echoing the headline treatment) so it doesn't read as empty ---- */
+.crew-list:not(:has(.crew-row:nth-child(3))) .crew-row { padding: 32px 0; gap: 32px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .seat { width: 100px; height: 100px; font-size: 44px; }
+.crew-list:not(:has(.crew-row:nth-child(3))) .name {
+  font-size: 76px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -1.5px;
+}

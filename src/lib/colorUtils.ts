@@ -120,6 +120,23 @@ export function textSafeOnDark(color: string, minRatio = 4.5): string {
 }
 
 /**
+ * Returns `color` if it's visible against a white background, otherwise `fallback`
+ * (normally the other club color). For decorative fills/shapes — not text — so the
+ * threshold is much looser than WCAG text contrast: a solid block just needs to read
+ * as a distinct shape against white, not carry a 4.5:1 text-legibility guarantee.
+ * The default (1.3:1) passes ordinary saturated colors, including pale pastels like
+ * the templates' own default pink (~1.6:1), while still catching near-white colors,
+ * washed-out pastels, and bright yellow (~1.0-1.3:1).
+ */
+export function colorSafeOnWhite(
+  color: string,
+  fallback: string,
+  minRatio = 1.3,
+): string {
+  return getContrastRatio(color, '#ffffff') >= minRatio ? color : fallback
+}
+
+/**
  * Validates a color pair and returns a list of human-readable warnings.
  * Useful for surfacing issues in the UI before/after a user picks club colors.
  */
